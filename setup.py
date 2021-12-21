@@ -25,7 +25,6 @@ setup(
     author_email="L.B.Rollik@protonmail.com",
     license=license_text,
     install_requires=[]
-    + rpi_install_requires,
     extras_require={
         "dev": [
             "black",
