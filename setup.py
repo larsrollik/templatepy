@@ -24,7 +24,7 @@ setup(
     author="Lars B. Rollik",
     author_email="L.B.Rollik@protonmail.com",
     license=license_text,
-    install_requires=[]
+    install_requires=[],
     extras_require={
         "dev": [
             "black",
