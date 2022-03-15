@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/370470893.svg)](https://zenodo.org/badge/latestdoi/370470893)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6360738.svg)](https://doi.org/10.5281/zenodo.6360738)
 [![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fgithub.com/larsrollik/templatepy)](https://github.com/larsrollik/templatepy)
 [![PyPI](https://img.shields.io/pypi/v/templatepy.svg)](https://pypi.org/project/templatepy)
 [![Wheel](https://img.shields.io/pypi/wheel/templatepy.svg)](https://pypi.org/project/templatepy)
@@ -36,6 +36,8 @@ Template repo for python repositories & PyPi integration
 - [ ] Verify inclusions/exclusions of installable files/folders in `MANIFEST.in`
 - [ ] Check `.gitignore` contains relevant criteria
 - [ ] Add all locations to `setup.cfg` that will contain the version string. Use same syntax as for `[bumpversion:file:PACKAGEFOLDER/__init__.py]` line to describe how to find version on version increment
+- [ ] Add repository secret to upload to pypi via github action on release/commit tag (see above)
+- [ ] Upload to [Zenodo](https://zenodo.org) if is publication: (1) Connect Zenodo to Github account, (2) Flip switch on zenodo view of repo, (3) Create new release version of github repo (tag or manual), (4) Wait! Zenodo view with DOI assignment should update within about a minute, (5) Add DOI batch to repo `README`
 
 
 ## License
