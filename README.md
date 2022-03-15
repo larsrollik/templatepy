@@ -17,8 +17,9 @@ Template repo for python repositories & PyPi integration
 - `LICENSE`: legal info about sharing and using of this code
 - `README.md`: markdown readme file
 - `.github`: folder that contains github automation workflows and issues templates
+  - workflow for linting: install pre-commit hooks locally via `pre-commit install` in the repo dir
+  - workflow for uploading package to [pypi](pypi.org): (1) get pypi API key in your account, (2) add new github repo secret for actions at [https://github.com/larsrollik/templatepy/settings/secrets/actions/new](https://github.com/larsrollik/templatepy/settings/secrets/actions/new) as `TWINE_API_KEY`, (3) create new release by tagging a commit with `git tag $TAG_NAME` or on github at [https://github.com/larsrollik/templatepy/releases/new](https://github.com/larsrollik/templatepy/releases/new)
 - `.gitignore`: ignored files/folders in git tools
-
 - `package`: placeholder folder for any python package that is configured for install via `setup.py`
 
 
