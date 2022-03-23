@@ -14,7 +14,7 @@ with open(path.join(this_directory, "LICENSE")) as f:
 
 setup(
     name="templatepy",
-    version="0.0.1.dev0",
+    version="0.0.1.dev1",
     description="templatepy",
     long_description=long_description,
     long_description_content_type="text/markdown",
