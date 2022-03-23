@@ -39,7 +39,7 @@ Template repo for python repositories & PyPi integration
 - [ ] Add repository secret to upload to pypi via github action on release/commit tag (see above)
 - [ ] Upload to [Zenodo](https://zenodo.org) if is publication: (1) Connect Zenodo to Github account, (2) Flip switch on zenodo view of repo, (3) Create new release version of github repo (tag or manual), (4) Wait! Zenodo view with DOI assignment should update within about a minute, (5) Add DOI batch to repo `README`
 
-    ```NOTE: Zenodo can only take **public** repos```
+    ```NOTE: Zenodo can only take public repos```
 
 
 ## License
