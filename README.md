@@ -2,6 +2,7 @@
 [![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fgithub.com/larsrollik/templatepy)](https://github.com/larsrollik/templatepy)
 [![PyPI](https://img.shields.io/pypi/v/templatepy.svg)](https://pypi.org/project/templatepy)
 [![Wheel](https://img.shields.io/pypi/wheel/templatepy.svg)](https://pypi.org/project/templatepy)
+![CI](https://github.com/larsrollik/templatepy/workflows/tests/badge.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
 
@@ -33,6 +34,7 @@ Template repo for python repositories & PyPi integration
 - [ ] Change package name: (1) `package` folder, (2) README.md, (3) `name` argument in `setup.py`, (4) `.github/workflows` files, (5) `setup.cfg`: `[bumpversion:file:PACKAGEFOLDER/__init__.py]`
 - [ ] Change details about project author, etc. in `setup.py`, `README.md`, and `package/__init__.py`
 - [ ] Change license holder in `LICENSE`
+- [ ] Change `README` badge paths at top
 - [ ] Verify inclusions/exclusions of installable files/folders in `MANIFEST.in`
 - [ ] Check `.gitignore` contains relevant criteria
 - [ ] Add all locations to `setup.cfg` that will contain the version string. Use same syntax as for `[bumpversion:file:PACKAGEFOLDER/__init__.py]` line to describe how to find version on version increment
