@@ -1,5 +1,6 @@
 # IDE files
 .idea/
+.vscode/
 
 # Ignored file types
 .DS_Store
