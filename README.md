@@ -115,7 +115,9 @@ Template repo for python repositories & PyPi integration
   - tested with `pip install .  --use-feature=in-tree-build` for forward-compatibility with `pip 21.3`
   - keeping empty `setup.py` for enabling install in editable mode `-e` as this still requires such a file
   - added `wheel` as build-system dependency for compatibility with pip that does not implement `PEP 517`
-- `setup.cfg`/`setup.py` might be fully replaced with `pyproject.toml`. [See this discussion.](https://stackoverflow.com/questions/44878600/is-setup-cfg-deprecated)
+- `setup.cfg`/`setup.py` might be fully replaced with `pyproject.toml`. [See this discussion](https://stackoverflow.com/questions/44878600/is-setup-cfg-deprecated) about [PEP-426](https://peps.python.org/pep-0426/), [PEP-517](https://peps.python.org/pep-0517), [PEP-518](https://peps.python.org/pep-0518)
+
+
 
 ## License
 This software is released under the **[BSD 3-Clause License](https://github.com/larsrollik/templatepy/blob/main/LICENSE)**
