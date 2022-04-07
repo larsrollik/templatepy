@@ -52,7 +52,7 @@ Template repo for python repositories & PyPi integration
   - `example.data.file.config`: a file to demonstrate that data files are included based on `setup.cfg` criteria
   - `example.data.file.test-extension-yu48`: a file to demonstrate data exclusion via `setup.py`
 
-#### Packaging system
+#### Packaging system (see: [packaging] and [setup.cfg])
   - `MANIFEST.in`: [manifest] file describes included/excluded files for build
 
   - `pyproject.toml`:
