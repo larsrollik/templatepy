@@ -16,6 +16,7 @@
 
 [//]: # (Badges)
 
+[![Contributions](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg)](https://github.com/larsrollik/templatepy/blob/main/CONTRIBUTING.md)
 [![DOI](https://zenodo.org/badge/370470893.svg)](https://zenodo.org/badge/latestdoi/370470893)
 [![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fgithub.com/larsrollik/templatepy)](https://github.com/larsrollik/templatepy)
 [![PyPI](https://img.shields.io/pypi/v/templatepy.svg)](https://pypi.org/project/templatepy)
