@@ -119,6 +119,9 @@ Template repo for python repositories & PyPi integration
 - `setup.cfg`/`setup.py` might be fully replaced with `pyproject.toml`. [See this discussion](https://stackoverflow.com/questions/44878600/is-setup-cfg-deprecated) about [PEP-426](https://peps.python.org/pep-0426/), [PEP-517](https://peps.python.org/pep-0517), [PEP-518](https://peps.python.org/pep-0518)
 
 
+## Contributing
+Contributions are very welcome!
+Please see the [contribution guidelines](https://github.com/larsrollik/templatepy/blob/main/CONTRIBUTING.md) or check out the [issues](https://github.com/larsrollik/templatepy/issues)
 
 ## License
 This software is released under the **[BSD 3-Clause License](https://github.com/larsrollik/templatepy/blob/main/LICENSE)**
