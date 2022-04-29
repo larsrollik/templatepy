@@ -13,7 +13,7 @@
 ## **What kind of change does this PR introduce?** (Bug fix, feature, docs update, ...)
 - [ ] Bug fix
 - [ ] New feature
-- [ ] Other: 
+- [ ] Other:
 
 
 ## What is the current behavior?
@@ -37,5 +37,5 @@ If any features have changed, or have been added. Please explain how the documen
 
 ## Other information
 Add any further details here.
- 
+
 <!-- Closes #X  -->
