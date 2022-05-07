@@ -23,6 +23,7 @@
 [![Wheel](https://img.shields.io/pypi/wheel/templatepy.svg)](https://pypi.org/project/templatepy)
 ![CI](https://github.com/larsrollik/templatepy/workflows/tests/badge.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 
 # templatepy
@@ -43,6 +44,7 @@ Template repo for python repositories & PyPi integration
 
 ## File overview
 
+
 #### General
 - `LICENSE`: license text
 
@@ -53,6 +55,12 @@ Template repo for python repositories & PyPi integration
   - `example.data.file.config`: a file to demonstrate that data files are included based on `setup.cfg` criteria
   - `example.data.file.test-extension-yu48`: a file to demonstrate data exclusion via `setup.py`
 
+
+#### Testing
+- `tests`: placeholder folder for unit/integration tests and associated data
+- `pytest.ini`: config for testing framework with `pytest` and `coverage` plugin (`pytest-cov`)
+
+
 #### Packaging system (see: [packaging] and [setup.cfg])
   - `MANIFEST.in`: [manifest] file describes included/excluded files for build
 
@@ -62,9 +70,10 @@ Template repo for python repositories & PyPi integration
 
   - `setup.cfg`:
     - package specification and install dependencies
-    - config for [bump2version] and `flake8` formatting (see pre-commit)
+    - config for `flake8` formatting (see pre-commit)
 
   - `setup.py`: legacy file (see notes on new build-system below)
+
 
 #### Code maintenance (linting/formatting/github)
 - `.pre-commit-config.yaml`: use [pre-commit] to run code formatting (e.g. with [black] and `flake8`) and PEP compliance checks
@@ -75,6 +84,7 @@ Template repo for python repositories & PyPi integration
 
 - `.gitignore`: ignored files/folders in git tools
 
+- `.bumpversion.cfg`:  config for [bump2version]
 
 
 ## TODO for **adapting** template to new project
