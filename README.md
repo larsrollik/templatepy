@@ -14,6 +14,12 @@
 
 [Zenodo]: https://zenodo.org
 
+[contribution guidelines]: https://github.com/larsrollik/templatepy/blob/main/CONTRIBUTING.md
+[issues]: https://github.com/larsrollik/templatepy/issues
+[BSD 3-Clause License]: https://github.com/larsrollik/templatepy/blob/main/LICENSE
+[Github]: https://github.com/larsrollik/templatepy/settings/secrets/actions/new
+[release]: https://github.com/larsrollik/templatepy/releases/new
+
 [//]: # (Badges)
 
 [![Contributions](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg)](https://github.com/larsrollik/templatepy/blob/main/CONTRIBUTING.md)
@@ -114,8 +120,8 @@ Template repo for python repositories & PyPi integration
 
 ## Workflow for (automatically) uploading package to [pypi] or [test.pypi]
 - (1) On [pypi], make new API key for repo or general
-- (2) On [Github](https://github.com/larsrollik/templatepy/settings/secrets/actions/new), in repository settings add a new **actions secret** named `TWINE_API_KEY` and copy in the pypi API key
-- (3) Create a new [release](https://github.com/larsrollik/templatepy/releases/new) manually on github or by triggering the github workflow with a version without release extension (e.g. `x.y.z`)
+- (2) On [Github], in repository settings add a new **actions secret** named `TWINE_API_KEY` and copy in the pypi API key
+- (3) Create a new [release] manually on github or by triggering the github workflow with a version without release extension (e.g. `x.y.z`)
 
 
 
@@ -126,12 +132,16 @@ Template repo for python repositories & PyPi integration
   - tested with `pip install .  --use-feature=in-tree-build` for forward-compatibility with `pip 21.3`
   - keeping empty `setup.py` for enabling install in editable mode `-e` as this still requires such a file
   - added `wheel` as build-system dependency for compatibility with pip that does not implement `PEP 517`
-- `setup.cfg`/`setup.py` might be fully replaced with `pyproject.toml`. [See this discussion](https://stackoverflow.com/questions/44878600/is-setup-cfg-deprecated) about [PEP-426](https://peps.python.org/pep-0426/), [PEP-517](https://peps.python.org/pep-0517), [PEP-518](https://peps.python.org/pep-0518)
+- `setup.cfg`/`setup.py` might be fully replaced with `pyproject.toml`. 
+[See this discussion](https://stackoverflow.com/questions/44878600/is-setup-cfg-deprecated) about 
+[PEP-426](https://peps.python.org/pep-0426/), 
+[PEP-517](https://peps.python.org/pep-0517), 
+[PEP-518](https://peps.python.org/pep-0518)
 
 
 ## Contributing
 Contributions are very welcome!
-Please see the [contribution guidelines](https://github.com/larsrollik/templatepy/blob/main/CONTRIBUTING.md) or check out the [issues](https://github.com/larsrollik/templatepy/issues)
+Please see the [contribution guidelines] or check out the [issues]
 
 ## License
-This software is released under the **[BSD 3-Clause License](https://github.com/larsrollik/templatepy/blob/main/LICENSE)**
+This software is released under the **[BSD 3-Clause License]**
