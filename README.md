@@ -51,7 +51,7 @@ Template repo for python repositories & PyPi integration
 ## File overview
 
 
-#### General
+### General
 - `LICENSE`: license text
 
 - `README.md`: [Github-flavored markdown] file
@@ -62,12 +62,12 @@ Template repo for python repositories & PyPi integration
   - `example.data.file.test-extension-yu48`: a file to demonstrate data exclusion via `setup.py`
 
 
-#### Testing
+### Testing
 - `tests`: placeholder folder for unit/integration tests and associated data
 - `pytest.ini`: config for testing framework with `pytest` and `coverage` plugin (`pytest-cov`)
 
 
-#### Packaging System (see: [packaging] and [pyproject.toml])
+### Packaging System (see: [packaging] and [pyproject.toml])
 
 - **`MANIFEST.in`**:
   Defines additional files to include/exclude in the build (if not automatically detected).
@@ -83,8 +83,27 @@ Template repo for python repositories & PyPi integration
   Legacy file retained only for backward compatibility if needed (e.g., older tooling). New projects should avoid it entirely.
 
 
+## CI Workflow Overview
 
-#### Code maintenance (linting/formatting/github)
+The CI workflow is triggered on push to `main` or when a tag is created. It ensures code quality and automates the release process:
+
+1. **Linting and Testing**:
+   - `lint`: Checks code style with `black` and `flake8`, runs pre-commit hooks.
+   - `test`: Runs tests with `pytest` and generates coverage reports.
+
+2. **Tag Validation**:
+   - `check-tag`: Verifies that the tag is valid (not `dev` or `rc`) before proceeding.
+
+3. **Release Creation**:
+   - `release`: Creates a GitHub release when the tag is valid.
+
+4. **Deployment to PyPI**:
+   - `deploy`: Builds and uploads the package to PyPI using `twine`.
+
+The pipeline ensures code quality, passing tests, and automated deployment on new releases.
+
+
+### Code maintenance (linting/formatting/github)
 - `.pre-commit-config.yaml`: use [pre-commit] to run code formatting (e.g. with [black] and `flake8`) and PEP compliance checks
   - Install pre-commit hook with `pre-commit install` (Note: only installs it in the current virtual environment)
   - Run it manually with `pre-commit run --all` or leave it to run on commit (requires to re-stage changed files!)
@@ -118,9 +137,7 @@ Template repo for python repositories & PyPi integration
   - (4) Wait for Zenodo to sync and assign a DOI (this usually takes about a minute).
   - (5) Add the DOI badge to `README.md`.
 
-
-
-
+  
 ## Workflow for Automatically Uploading Package to [PyPI] or [Test PyPI]
 
 1. **Generate a PyPI API Key**:
