@@ -16,11 +16,16 @@ def install_package():
     subprocess.run(["pip", "uninstall", "-y", "templatepy"], check=True)
 
 
-def get_current_version():
+def get_current_version(quote_char='"'):
     # Get the current version from `__init__.py` or the version file
     with open("templatepy/__init__.py", "r") as f:
         version = f.read()
-    return version.split("__version__ = '")[1].split("'")[0]
+
+    # Use the provided quote character to extract the version
+    version_str = version.split(f"__version__ = {quote_char}")[1].split(
+        quote_char
+    )[0]
+    return version_str
 
 
 def test_pre_commit_hooks(install_package):
