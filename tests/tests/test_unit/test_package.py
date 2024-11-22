@@ -28,19 +28,19 @@ def get_current_version(quote_char='"'):
     return version_str
 
 
-def reset_version():
-    # Ensure the repository is clean before resetting
-    status_result = subprocess.run(
-        ["git", "status", "--porcelain"],
-        capture_output=True,
-        text=True,
+def ensure_repo_clean():
+    # Ensure that the repository is clean before running the tests
+    result = subprocess.run(
+        ["git", "status", "--porcelain"], capture_output=True, text=True
     )
-    if status_result.stdout.strip():
-        raise RuntimeError(
-            "Repository has uncommitted changes. "
-            "Please commit or discard them before resetting."
-        )
 
+    # Check if the repository is clean
+    assert (
+        not result.stdout
+    ), "Repository is not clean. Please commit or stash your changes."
+
+
+def reset_version():
     # Reset the version by checking out the latest git commit
     subprocess.run(
         ["git", "checkout", "--", "templatepy/__init__.py"], check=True
@@ -63,6 +63,9 @@ def test_pre_commit_hooks(install_package):
 
 
 def test_bump_version_minor(install_package):
+    # Ensure that the repository is clean before running the tests
+    ensure_repo_clean()
+
     # Get the current version before the bump
     current_version = get_current_version()
 
@@ -100,6 +103,9 @@ def test_bump_version_minor(install_package):
 
 
 def test_bump_version_major(install_package):
+    # Ensure that the repository is clean before running the tests
+    ensure_repo_clean()
+
     # Get the current version before the bump
     current_version = get_current_version()
 
@@ -137,6 +143,9 @@ def test_bump_version_major(install_package):
 
 
 def test_bump_version_release(install_package):
+    # Ensure that the repository is clean before running the tests
+    ensure_repo_clean()
+
     # Get the current version before the bump
     current_version = get_current_version()
 
