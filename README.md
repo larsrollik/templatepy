@@ -164,10 +164,28 @@ The pipeline ensures code quality, passing tests, and automated deployment on ne
 3. **Create a New Release**:
    - On [GitHub](https://github.com/), create a new release manually via the **Releases** page.
      - Use a version number without a release extension (e.g., `x.y.z`).
-   - Alternatively, trigger the GitHub workflow configured for releasing.
+   - Alternatively, trigger the GitHub workflow configured for releasing by incrementing the version with `bump2version` (see info below)
+   - Desperately, manually update the version strings in the relevant files and add git commit tag to trigger the release workflow on push
 
 The package will then be automatically uploaded to [PyPI](https://pypi.org/) or [Test PyPI](https://test.pypi.org/) as configured in your CI/CD workflow.
 
+
+## Using `bump2version` for Versioning
+
+`bump2version` is used to increment version numbers based on semantic versioning. Here’s how you can use it with the current setup to trigger a release:
+
+1. **Bumping the Minor Version**:
+   Increment the minor version (e.g., from `1.2.3` to `1.3.0`):
+   ```bash
+   # Bumping the minor Version:
+   bump2version minor
+
+   # Bumping the major version (e.g., from 1.2.3 to 2.0.0):
+   bump2version major
+
+   # Bumping for a release Version (e.g., from 1.0.0.dev to 1.0.0.rc or 1.0.0):
+   bump2version release
+   ```
 
 ## Notes
 
