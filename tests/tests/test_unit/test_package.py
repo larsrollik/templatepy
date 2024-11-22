@@ -1,7 +1,10 @@
-# import os
+import re
 import subprocess
 
 import pytest
+
+# Bump2version flags for easy modification
+BUMPER_FLAGS = ["--no-commit", "--no-tag"]
 
 
 @pytest.fixture(scope="module")
@@ -11,6 +14,18 @@ def install_package():
     yield
     # Cleanup (optional)
     subprocess.run(["pip", "uninstall", "-y", "templatepy"], check=True)
+
+
+def get_current_version():
+    """Read the current version from the __init__.py file."""
+    with open("templatepy/__init__.py", "r") as f:
+        content = f.read()
+        # Use regex to get version (assuming it is in a __version__ variable)
+        match = re.search(r"__version__ = ['\"]([^'\"]+)['\"]", content)
+        if match:
+            return match.group(1)
+        else:
+            raise ValueError("Version not found in templatepy/__init__.py")
 
 
 def test_pre_commit_hooks(install_package):
@@ -26,60 +41,69 @@ def test_pre_commit_hooks(install_package):
 
 
 def test_bump_version_major(install_package):
-    # Bump version major
+    # Get the current version before the bump
+    current_version = get_current_version()
+
+    # Bump version major (without commit or tag)
     result = subprocess.run(
-        ["bump2version", "major", "--dry-run"], capture_output=True, text=True
+        ["bump2version", "major"] + BUMPER_FLAGS,
+        capture_output=True,
+        text=True,
     )
 
-    # Ensure that no commit happens (dry-run should not make any commits)
+    # Ensure that no commit happens (no commit message in stdout)
     assert "Committed" not in result.stdout, "Version bump made a commit"
 
-    # Check that the version file would be bumped
-    # (check for expected version change in the output)
-    assert "bumped version" in result.stdout, "Version bump did not happen"
+    # Ensure no tag is created
+    assert "tag" not in result.stdout, "Version bump created a tag"
 
-    # Check the version in `__init__.py` or version file to see if it's changed
-    with open("templatepy/__init__.py", "r") as f:
-        version = f.read()
-        assert (
-            "0.0.4" in version
-        )  # Example, this should match the bumped version.
+    # Ensure the version has been bumped (check new version in the output)
+    bumped_version = get_current_version()
+    assert bumped_version != current_version, "Version bump did not happen"
 
 
 def test_bump_version_minor(install_package):
-    # Bump version minor
+    # Get the current version before the bump
+    current_version = get_current_version()
+
+    # Bump version minor (without commit or tag)
     result = subprocess.run(
-        ["bump2version", "minor", "--dry-run"], capture_output=True, text=True
+        ["bump2version", "minor"] + BUMPER_FLAGS,
+        capture_output=True,
+        text=True,
     )
 
     # Ensure no commit happens
     assert "Committed" not in result.stdout, "Version bump made a commit"
 
-    # Check for expected version change
-    assert "bumped version" in result.stdout, "Version bump did not happen"
+    # Ensure no tag is created
+    assert "tag" not in result.stdout, "Version bump created a tag"
 
-    # Optionally, check the version in `__init__.py`
-    with open("templatepy/__init__.py", "r") as f:
-        version = f.read()
-        assert "0.1.0" in version  # Example, match expected version
+    # Ensure the version has been bumped (check the new version in the output)
+    bumped_version = get_current_version()
+    assert bumped_version != current_version, "Version bump did not happen"
 
 
 def test_bump_version_patch(install_package):
-    # Bump version patch
+    # Get the current version before the bump
+    current_version = get_current_version()
+
+    # Bump version patch (without commit or tag)
     result = subprocess.run(
-        ["bump2version", "patch", "--dry-run"], capture_output=True, text=True
+        ["bump2version", "patch"] + BUMPER_FLAGS,
+        capture_output=True,
+        text=True,
     )
 
     # Ensure no commit happens
     assert "Committed" not in result.stdout, "Version bump made a commit"
 
-    # Check for expected version change
-    assert "bumped version" in result.stdout, "Version bump did not happen"
+    # Ensure no tag is created
+    assert "tag" not in result.stdout, "Version bump created a tag"
 
-    # Optionally, check the version in `__init__.py`
-    with open("templatepy/__init__.py", "r") as f:
-        version = f.read()
-        assert "0.0.4" in version  # Example, match expected version
+    # Ensure the version has been bumped (check the new version in the output)
+    bumped_version = get_current_version()
+    assert bumped_version != current_version, "Version bump did not happen"
 
 
 if __name__ == "__main__":
