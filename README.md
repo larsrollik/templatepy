@@ -67,18 +67,21 @@ Template repo for python repositories & PyPi integration
 - `pytest.ini`: config for testing framework with `pytest` and `coverage` plugin (`pytest-cov`)
 
 
-#### Packaging system (see: [packaging] and [setup.cfg])
-  - `MANIFEST.in`: [manifest] file describes included/excluded files for build
+#### Packaging System (see: [packaging] and [pyproject.toml])
 
-  - `pyproject.toml`:
-    - specifies build system: this replaces the usual `setup.py` architecture for setuptools
-    - config for [black] code formatter
+- **`MANIFEST.in`**:  
+  Defines additional files to include/exclude in the build (if not automatically detected).
 
-  - `setup.cfg`:
-    - package specification and install dependencies
-    - config for `flake8` formatting (see pre-commit)
+- **`pyproject.toml`**:  
+  Central configuration file that replaces the traditional `setup.cfg` and `setup.py` files:
+  - **Build System**: Specifies the build system requirements and configuration, as defined in [PEP 518](https://peps.python.org/pep-0518/) and [PEP 621](https://peps.python.org/pep-0621/).
+  - **Package Metadata**: Includes the project's metadata (name, version, dependencies, etc.).
+  - **Code Formatting**: Configuration for tools like [black] and [flake8] (if used).
+  - **Optional Dependencies**: Organizes extra dependencies for development or other environments.
 
-  - `setup.py`: legacy file (see notes on new build-system below)
+- **`setup.py`**:  
+  Legacy file retained only for backward compatibility if needed (e.g., older tooling). New projects should avoid it entirely.
+
 
 
 #### Code maintenance (linting/formatting/github)
@@ -92,51 +95,76 @@ Template repo for python repositories & PyPi integration
 
 - `.bumpversion.cfg`:  config for [bump2version]
 
-
 ## TODO for **adapting** template to new project
 
 - [ ] Change package name:
-  - (1) `templatepy` folder
-  - (2) README.md
-  - (3) `name` argument in `setup.cfg`
-  - (4) `.github/workflows` files
-  - (5) `setup.cfg`: `[bumpversion:file:templatepy/__init__.py]`
-- [ ] Change details about project author, etc. in `setup.cfg`, `README.md`, and `templatepy/__init__.py`
-- [ ] Change license holder in `LICENSE`
-- [ ] Change `README` badge paths at top
-- [ ] Verify inclusions/exclusions of installable files/folders in `MANIFEST.in` and `setup.cfg`
-- [ ] Check `.gitignore` contains relevant criteria
-- [ ] Add all version string locations to `setup.cfg`/bump2version field.
-  - Use same syntax as for `[bumpversion:file:PACKAGEFOLDER/__init__.py]` line to describe how to find version on version increment
-- [ ] To upload to [pypi]: see below for workflow
-- [ ] To upload to [Zenodo] if repo is a publication:
-  - (1) Connect Zenodo to Github account
-  - (2) Flip switch on zenodo view of repo - **NOTE**: Zenodo can only copy from **public** repos
-  - (3) Create new release version of github repo (manual or via `.github/workflows/CI.yaml`)
-  - (4) Wait! Zenodo view with DOI assignment should update within about a minute
-  - (5) Add DOI badge to `README` file
+  - (1) Rename the `templatepy` folder.
+  - (2) Update all occurrences in `README.md`.
+  - (3) Update the `name` field in `pyproject.toml`.
+  - (4) Update `.github/workflows` files.
+  - (5) Update version references in `pyproject.toml` and `templatepy/__init__.py`.
+- [ ] Update project author and metadata details in `pyproject.toml`, `README.md`, and `templatepy/__init__.py`.
+- [ ] Update the license holder in the `LICENSE` file.
+- [ ] Update `README.md` badge paths at the top.
+- [ ] Verify inclusions/exclusions of installable files/folders in `MANIFEST.in` and `pyproject.toml` under `[tool.setuptools]`.
+- [ ] Ensure `.gitignore` contains relevant entries for the new project.
+- [ ] Add all version string locations to `[tool.bump2version]` in `pyproject.toml`.
+  - Use syntax like `[bumpversion:file:templatepy/__init__.py]` to specify locations for version updates.
+- [ ] To upload to [PyPI], follow the instructions in the section below.
+- [ ] To upload to [Zenodo] (if the repository is for a publication):
+  - (1) Connect Zenodo to your GitHub account.
+  - (2) Enable Zenodo integration for the repository (Zenodo requires the repository to be **public**).
+  - (3) Create a new GitHub release (manually or via `.github/workflows/CI.yaml`).
+  - (4) Wait for Zenodo to sync and assign a DOI (this usually takes about a minute).
+  - (5) Add the DOI badge to `README.md`.
 
 
 
-## Workflow for (automatically) uploading package to [pypi] or [test.pypi]
-- (1) On [pypi], make new API key for repo or general
-- (2) On [Github], in repository settings add a new **actions secret** named `TWINE_API_KEY` and copy in the pypi API key
-- (3) Create a new [release] manually on github or by triggering the github workflow with a version without release extension (e.g. `x.y.z`)
 
+## Workflow for Automatically Uploading Package to [PyPI] or [Test PyPI]
+
+1. **Generate a PyPI API Key**:  
+   - Go to [PyPI](https://pypi.org/) and create a new API key, either specific to the repository or a general-purpose key.
+
+2. **Add the API Key to GitHub**:  
+   - In your repository's settings on [GitHub](https://github.com/):
+     - Navigate to **Settings > Secrets and variables > Actions**.
+     - Add a new **Actions secret** with the name `TWINE_API_KEY`.
+     - Paste the PyPI API key into the secret's value field.
+
+3. **Create a New Release**:  
+   - On [GitHub](https://github.com/), create a new release manually via the **Releases** page.  
+     - Use a version number without a release extension (e.g., `x.y.z`).  
+   - Alternatively, trigger the GitHub workflow configured for releasing.
+
+The package will then be automatically uploaded to [PyPI](https://pypi.org/) or [Test PyPI](https://test.pypi.org/) as configured in your CI/CD workflow.
 
 
 ## Notes
 
-#### New(er) build system with `pyproject.toml` and `setup.cfg`
-- `pip`
-  - tested with `pip install .  --use-feature=in-tree-build` for forward-compatibility with `pip 21.3`
-  - keeping empty `setup.py` for enabling install in editable mode `-e` as this still requires such a file
-  - added `wheel` as build-system dependency for compatibility with pip that does not implement `PEP 517`
-- `setup.cfg`/`setup.py` might be fully replaced with `pyproject.toml`. 
-[See this discussion](https://stackoverflow.com/questions/44878600/is-setup-cfg-deprecated) about 
-[PEP-426](https://peps.python.org/pep-0426/), 
-[PEP-517](https://peps.python.org/pep-0517), 
-[PEP-518](https://peps.python.org/pep-0518)
+#### New(er) Build System with `pyproject.toml` and `setup.cfg`
+
+Historically, packaging in Python was governed by standards such as `PEP-426`, `PEP-517`, and `PEP-518`. These PEPs introduced various mechanisms for packaging and building Python projects, but with certain limitations, especially regarding flexibility and future-proofing.
+
+- **PEP-426**: Introduced the `setup.cfg` and `setup.py` files as the standard way to define package metadata and build configuration.
+- **PEP-517**: Introduced a standardized interface for building Python projects, separating the build process from the packaging process and allowing for more flexible build systems.
+- **PEP-518**: Defined how `pyproject.toml` should be used to declare build dependencies and system requirements, allowing tools like `pip` to know which backend to use for the build process.
+
+While these PEPs were important milestones, the latest changes to the packaging ecosystem make `pyproject.toml` the preferred way to configure projects going forward.
+
+- **`pip`**:
+  - Tested with `pip install . --use-feature=in-tree-build` for forward compatibility with `pip 21.3` and later.
+  - While `setup.py` is technically optional, an empty `setup.py` is still kept for enabling editable installs (`pip install -e .`), as this requires such a file for now.
+  - `wheel` is added as a build-system dependency to maintain compatibility with versions of `pip` that do not yet fully implement `PEP 517`.
+
+- **Replacing `setup.cfg` and `setup.py` with `pyproject.toml`**:  
+  - In the modern packaging ecosystem, `pyproject.toml` is increasingly the standard for declaring build systems, dependencies, and metadata. This configuration file simplifies the process and eliminates the need for separate `setup.py` and `setup.cfg` files in many cases.
+
+For further reading on the transition to `pyproject.toml` and the removal of `setup.py`/`setup.cfg`, see the following discussions:
+- [PEP-426](https://peps.python.org/pep-0426/)
+- [PEP-517](https://peps.python.org/pep-0517/)
+- [PEP-518](https://peps.python.org/pep-0518/)
+- [Discussion on Setup.cfg Deprecation](https://stackoverflow.com/questions/44878600/is-setup-cfg-deprecated)
 
 
 ## Contributing

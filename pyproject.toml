@@ -1,13 +1,68 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "templatepy"
+version = "0.0.3"
+authors = [
+    { name = "Lars B. Rollik", email = "L.B.Rollik@protonmail.com" }
+]
+license = { file = "LICENSE" }
+description = "templatepy: template for derivative python packages"
+readme = { file = "README.md", content-type = "text/markdown" }
+url = "https://github.com/larsrollik/templatepy"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "black"
+]
+
+[project.urls]
+Repository = "https://github.com/larsrollik/templatepy"
+Issue Tracker = "https://github.com/larsrollik/templatepy/issues"
+
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "bump2version",
+    "pytest-cov",  # implies: pytest, coverage dependencies
+    "pre-commit",
+    "flake8"
+]
+
+[project.entry-points.console_scripts]
+templatepy-entrypoint = "templatepy.__init__:run"
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = [""]
+
+[tool.setuptools.package-data]
+"*" = ["*.config"]
 
 [tool.black]
-target-version = ['py310', 'py311', 'py312']
+target-version = ["py310", "py311", "py312"]
 skip-string-normalization = false
 line-length = 79
-include = '\.pyi?$'
+include = '\\.pyi?$'
 exclude = '''
 /(
     \.eggs
-  | \ .git
+  | \.git
   | \.hg
   | \.mypy_cache
   | \.tox
@@ -19,6 +74,9 @@ exclude = '''
 )/
 '''
 
-[build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
+[tool.flake8]
+ignore = ["E203", "E266", "E501", "W503", "F403", "F401"]
+max-line-length = 79
+max-complexity = 18
+select = ["B", "C", "E", "F", "W", "T4", "B9"]
+exclude = ["__init__.py", "build", "__pycache__", ".git", "tests"]
