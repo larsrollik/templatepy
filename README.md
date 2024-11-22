@@ -137,7 +137,7 @@ The pipeline ensures code quality, passing tests, and automated deployment on ne
   - (4) Wait for Zenodo to sync and assign a DOI (this usually takes about a minute).
   - (5) Add the DOI badge to `README.md`.
 
-  
+
 ## Workflow for Automatically Uploading Package to [PyPI] or [Test PyPI]
 
 1. **Generate a PyPI API Key**:
