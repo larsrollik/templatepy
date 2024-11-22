@@ -94,6 +94,8 @@ def test_bump_version_minor(install_package):
         new_version.count(".") == 2
     ), f"New version {new_version} is not in 'major.minor.patch' format"
 
+    reset_version()
+
 
 def test_bump_version_major(install_package):
     # Get the current version before the bump
@@ -128,6 +130,8 @@ def test_bump_version_major(install_package):
         new_version.count(".") == 2
     ), f"New version {new_version} is not in the expected format"
 
+    reset_version()
+
 
 def test_bump_version_release(install_package):
     # Get the current version before the bump
@@ -161,6 +165,8 @@ def test_bump_version_release(install_package):
     assert (
         current_version != new_version
     ), f"Version did not bump: {current_version} -> {new_version}"
+
+    reset_version()
 
 
 if __name__ == "__main__":
