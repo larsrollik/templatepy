@@ -46,6 +46,7 @@ def reset_version():
         ["git", "checkout", "--", "templatepy/__init__.py"], check=True
     )
     subprocess.run(["git", "checkout", "--", "pyproject.toml"], check=True)
+    subprocess.run(["git", "checkout", "--", ".bumpversion.cfg"], check=True)
     subprocess.run(["git", "checkout", "--", "README.md"], check=True)
 
 
