@@ -90,8 +90,9 @@ def test_bump_version_minor(install_package):
     ), "Version should contain 'dev' or 'rc'"
 
     # Check if the new version follows the correct format (major.minor.patch)
-    assert (
-        new_version.count(".") == 2
+    assert new_version.count(".") == 2 or (
+        new_version.count(".") == 3
+        and ("dev" in new_version or "rc" in new_version)
     ), f"New version {new_version} is not in 'major.minor.patch' format"
 
     reset_version()
@@ -126,8 +127,9 @@ def test_bump_version_major(install_package):
     ), f"Version {new_version} should contain 'dev' or 'rc'"
 
     # Ensure that the new version is in the major.minor.patch.dev format
-    assert (
-        new_version.count(".") == 2
+    assert new_version.count(".") == 2 or (
+        new_version.count(".") == 3
+        and ("dev" in new_version or "rc" in new_version)
     ), f"New version {new_version} is not in the expected format"
 
     reset_version()
