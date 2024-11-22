@@ -102,6 +102,18 @@ The CI workflow is triggered on push to `main` or when a tag is created. It ensu
 
 The pipeline ensures code quality, passing tests, and automated deployment on new releases.
 
+### Testing CI Locally
+
+- Install `act`:
+  - **macOS/Linux**: `brew install act` / `sudo apt install act`
+  - **Windows**: Download from [act GitHub Releases](https://github.com/nektos/act/releases) and follow the installation instructions.
+- Ensure Docker is installed and running. Download from [Docker Desktop](https://www.docker.com/products/docker).
+- Run the CI workflow with `act`:
+  ```bash
+  act push
+  act push --verbose  # very verbose output !
+  ```
+
 
 ### Code maintenance (linting/formatting/github)
 - `.pre-commit-config.yaml`: use [pre-commit] to run code formatting (e.g. with [black] and `flake8`) and PEP compliance checks
