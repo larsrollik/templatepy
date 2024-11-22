@@ -28,6 +28,27 @@ def get_current_version(quote_char='"'):
     return version_str
 
 
+def reset_version():
+    # Ensure the repository is clean before resetting
+    status_result = subprocess.run(
+        ["git", "status", "--porcelain"],
+        capture_output=True,
+        text=True,
+    )
+    if status_result.stdout.strip():
+        raise RuntimeError(
+            "Repository has uncommitted changes. "
+            "Please commit or discard them before resetting."
+        )
+
+    # Reset the version by checking out the latest git commit
+    subprocess.run(
+        ["git", "checkout", "--", "templatepy/__init__.py"], check=True
+    )
+    subprocess.run(["git", "checkout", "--", "pyproject.toml"], check=True)
+    subprocess.run(["git", "checkout", "--", "README.md"], check=True)
+
+
 def test_pre_commit_hooks(install_package):
     # Run pre-commit hooks (without making changes to the main repo)
     result = subprocess.run(
