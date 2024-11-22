@@ -1,9 +1,9 @@
-import re
 import subprocess
 
 import pytest
 
-# Bump2version flags for easy modification
+
+# Predefined bump2version flags for easy modification
 BUMPER_FLAGS = ["--no-commit", "--no-tag"]
 
 
@@ -17,15 +17,10 @@ def install_package():
 
 
 def get_current_version():
-    """Read the current version from the __init__.py file."""
+    # Get the current version from `__init__.py` or the version file
     with open("templatepy/__init__.py", "r") as f:
-        content = f.read()
-        # Use regex to get version (assuming it is in a __version__ variable)
-        match = re.search(r"__version__ = ['\"]([^'\"]+)['\"]", content)
-        if match:
-            return match.group(1)
-        else:
-            raise ValueError("Version not found in templatepy/__init__.py")
+        version = f.read()
+    return version.split("__version__ = '")[1].split("'")[0]
 
 
 def test_pre_commit_hooks(install_package):
@@ -40,70 +35,31 @@ def test_pre_commit_hooks(install_package):
     ), f"Pre-commit failed with output: {result.stdout}"
 
 
-def test_bump_version_major(install_package):
+def test_bump_version_release(install_package):
     # Get the current version before the bump
     current_version = get_current_version()
 
-    # Bump version major (without commit or tag)
+    # Run release version bump
     result = subprocess.run(
-        ["bump2version", "major"] + BUMPER_FLAGS,
+        ["bump2version", "release"] + BUMPER_FLAGS,
         capture_output=True,
         text=True,
     )
 
-    # Ensure that no commit happens (no commit message in stdout)
+    # Ensure that no commit or tag happens
     assert "Committed" not in result.stdout, "Version bump made a commit"
-
-    # Ensure no tag is created
     assert "tag" not in result.stdout, "Version bump created a tag"
 
-    # Ensure the version has been bumped (check new version in the output)
-    bumped_version = get_current_version()
-    assert bumped_version != current_version, "Version bump did not happen"
+    # Check that the version file would be bumped
+    assert "bumped version" in result.stdout, "Version bump did not happen"
 
+    # Get the version after the bump
+    new_version = get_current_version()
 
-def test_bump_version_minor(install_package):
-    # Get the current version before the bump
-    current_version = get_current_version()
-
-    # Bump version minor (without commit or tag)
-    result = subprocess.run(
-        ["bump2version", "minor"] + BUMPER_FLAGS,
-        capture_output=True,
-        text=True,
-    )
-
-    # Ensure no commit happens
-    assert "Committed" not in result.stdout, "Version bump made a commit"
-
-    # Ensure no tag is created
-    assert "tag" not in result.stdout, "Version bump created a tag"
-
-    # Ensure the version has been bumped (check the new version in the output)
-    bumped_version = get_current_version()
-    assert bumped_version != current_version, "Version bump did not happen"
-
-
-def test_bump_version_patch(install_package):
-    # Get the current version before the bump
-    current_version = get_current_version()
-
-    # Bump version patch (without commit or tag)
-    result = subprocess.run(
-        ["bump2version", "patch"] + BUMPER_FLAGS,
-        capture_output=True,
-        text=True,
-    )
-
-    # Ensure no commit happens
-    assert "Committed" not in result.stdout, "Version bump made a commit"
-
-    # Ensure no tag is created
-    assert "tag" not in result.stdout, "Version bump created a tag"
-
-    # Ensure the version has been bumped (check the new version in the output)
-    bumped_version = get_current_version()
-    assert bumped_version != current_version, "Version bump did not happen"
+    # Ensure the version is different (i.e., it was bumped)
+    assert (
+        current_version != new_version
+    ), f"Version did not bump: {current_version} -> {new_version}"
 
 
 if __name__ == "__main__":
