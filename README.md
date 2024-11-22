@@ -69,17 +69,17 @@ Template repo for python repositories & PyPi integration
 
 #### Packaging System (see: [packaging] and [pyproject.toml])
 
-- **`MANIFEST.in`**:  
+- **`MANIFEST.in`**:
   Defines additional files to include/exclude in the build (if not automatically detected).
 
-- **`pyproject.toml`**:  
+- **`pyproject.toml`**:
   Central configuration file that replaces the traditional `setup.cfg` and `setup.py` files:
   - **Build System**: Specifies the build system requirements and configuration, as defined in [PEP 518](https://peps.python.org/pep-0518/) and [PEP 621](https://peps.python.org/pep-0621/).
   - **Package Metadata**: Includes the project's metadata (name, version, dependencies, etc.).
   - **Code Formatting**: Configuration for tools like [black] and [flake8] (if used).
   - **Optional Dependencies**: Organizes extra dependencies for development or other environments.
 
-- **`setup.py`**:  
+- **`setup.py`**:
   Legacy file retained only for backward compatibility if needed (e.g., older tooling). New projects should avoid it entirely.
 
 
@@ -123,18 +123,18 @@ Template repo for python repositories & PyPi integration
 
 ## Workflow for Automatically Uploading Package to [PyPI] or [Test PyPI]
 
-1. **Generate a PyPI API Key**:  
+1. **Generate a PyPI API Key**:
    - Go to [PyPI](https://pypi.org/) and create a new API key, either specific to the repository or a general-purpose key.
 
-2. **Add the API Key to GitHub**:  
+2. **Add the API Key to GitHub**:
    - In your repository's settings on [GitHub](https://github.com/):
      - Navigate to **Settings > Secrets and variables > Actions**.
      - Add a new **Actions secret** with the name `TWINE_API_KEY`.
      - Paste the PyPI API key into the secret's value field.
 
-3. **Create a New Release**:  
-   - On [GitHub](https://github.com/), create a new release manually via the **Releases** page.  
-     - Use a version number without a release extension (e.g., `x.y.z`).  
+3. **Create a New Release**:
+   - On [GitHub](https://github.com/), create a new release manually via the **Releases** page.
+     - Use a version number without a release extension (e.g., `x.y.z`).
    - Alternatively, trigger the GitHub workflow configured for releasing.
 
 The package will then be automatically uploaded to [PyPI](https://pypi.org/) or [Test PyPI](https://test.pypi.org/) as configured in your CI/CD workflow.
@@ -157,7 +157,7 @@ While these PEPs were important milestones, the latest changes to the packaging 
   - While `setup.py` is technically optional, an empty `setup.py` is still kept for enabling editable installs (`pip install -e .`), as this requires such a file for now.
   - `wheel` is added as a build-system dependency to maintain compatibility with versions of `pip` that do not yet fully implement `PEP 517`.
 
-- **Replacing `setup.cfg` and `setup.py` with `pyproject.toml`**:  
+- **Replacing `setup.cfg` and `setup.py` with `pyproject.toml`**:
   - In the modern packaging ecosystem, `pyproject.toml` is increasingly the standard for declaring build systems, dependencies, and metadata. This configuration file simplifies the process and eliminates the need for separate `setup.py` and `setup.cfg` files in many cases.
 
 For further reading on the transition to `pyproject.toml` and the removal of `setup.py`/`setup.cfg`, see the following discussions:
