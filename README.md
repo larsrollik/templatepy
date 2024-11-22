@@ -214,6 +214,39 @@ For further reading on the transition to `pyproject.toml` and the removal of `se
 - [Discussion on Setup.cfg Deprecation](https://stackoverflow.com/questions/44878600/is-setup-cfg-deprecated)
 
 
+## Common issues
+
+### `bump2version` fails on git tag with exit status 128
+
+- check a signing key is configured: `git config --global user.signingkey` (see below for generating a key)
+- repo is a detached HEAD? check out a branch: `git checkout main`
+- there are changes that need to be committed? `git commit -am "commit message"`
+- tag already exists? `git tag` to list tags, `git tag -d <tag>` to delete a tag
+
+### no gpg key for signing commits
+- generate a key with `gpg --full-generate-key`
+- list keys with `gpg --list-secret-keys --keyid-format LONG`
+- set the key for signing commits with `git config --global user.signingkey <key-id>`
+- enable signing commits with `git config --global commit.gpgsign true`
+- set the key for signing tags with `git config --global tag.gpgSign true`
+- export the public key with `gpg --armor --export <key-id>`
+  - and add it to your GitHub account: select 'New key' -> paste output of command above
+
+Which one is the key id you might ask?
+```
+/home/user/.gnupg/secring.gpg
+------------------------------
+sec   4096R/<KEY_ID> 2024-11-22 [expires: 2025-11-22]
+      uid                          Your Name <youremail@example.com>
+ssb   4096R/<KEY_SUBKEY_ID> 2024-11-22
+
+```
+
+### GPG hangs/errors and never asks for passphrase of key?
+
+- try: `export GPG_TTY=$(tty)`
+
+
 ## Contributing
 Contributions are very welcome!
 Please see the [contribution guidelines] or check out the [issues]
