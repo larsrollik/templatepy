@@ -35,7 +35,7 @@
 # templatepy
 Template repo for python repositories & PyPi integration
 ---
-**Version: "0.2.0"**
+**Version: "0.2.2"**
 
 
 ## Usage
@@ -175,17 +175,79 @@ The package will then be automatically uploaded to [PyPI](https://pypi.org/) or 
 `bump2version` is used to increment version numbers based on semantic versioning. Here’s how you can use it with the current setup to trigger a release:
 
 1. **Bumping the Minor Version**:
-   Increment the minor version (e.g., from `1.2.3` to `1.3.0`):
+   Increment the minor version (e.g., from `v1.2.3` to `v1.3.0`):
    ```bash
    # Bumping the minor Version:
    bump2version minor
 
-   # Bumping the major version (e.g., from 1.2.3 to 2.0.0):
+   # Bumping the major version (e.g., from v1.2.3 to v2.0.0):
    bump2version major
 
-   # Bumping for a release Version (e.g., from 1.0.0.dev to 1.0.0.rc or 1.0.0):
+   # Bumping for a release Version (e.g., from v1.0.0.dev to v1.0.0.rc or v1.0.0):
    bump2version release
    ```
+
+## Workflows Summary
+
+| **Workflow**               | **Triggers**                                      | **Purpose**                                | **Outputs**                            |
+|----------------------------|---------------------------------------------------|--------------------------------------------|----------------------------------------|
+| **Lint and Test**          | Push to any branch                                | Runs linting and testing for Python code   | Ensures code quality and functionality |
+| **Release to PyPI**        | Push to `prod` branch with a tag (e.g., `v1.0.0`) | Builds and uploads the package to PyPI     | Publishes a new release on PyPI        |
+| **Squash Merge to `prod`** | Pull requests merged into `main`                  | Squashes and merges commits into `prod`    | Maintains clean history in `prod`      |
+| **AI Pull Request Review** | Pull request events (`opened`, `synchronize`)     | Provides AI-generated pull request reviews | Adds review comments to the PR         |
+
+
+## Required Repository Secrets
+
+| **Secret**       | **Purpose**                                 | **How to Obtain**                                                                           |
+|------------------|---------------------------------------------|---------------------------------------------------------------------------------------------|
+| `TWINE_API_KEY`  | Authentication for publishing to PyPI       | Generate from [PyPI Account Settings](https://pypi.org/manage/account/) under "API Tokens." |
+| `OPENAI_API_KEY` | Required for AI Pull Request Reviewer       | Generate from [OpenAI API Settings](https://platform.openai.com/account/api-keys).          |
+| `GITHUB_TOKEN`   | Built-in token for accessing the repository | Automatically provided by GitHub (no setup needed).                                         |
+
+
+## Github Flow overview
+
+
+1) Create a new feature branch from main using git checkout -b.
+2) Make and commit a dummy change (e.g., adding a file).
+3) Use bumpversion to bump the version (you can adjust patch, minor, or major based on what change you want), and create a release tag.
+4) Push both the feature branch and the release tag to the remote repository.
+5) Open a pull request using GitHub CLI (gh pr create) or the GitHub UI to merge the feature branch into main.
+6) After the PR is merged, delete the feature branch both locally and remotely.
+
+### Example commands for the workflow:
+
+```bash
+# 1. Checkout a new feature branch from main
+git checkout main  # Ensure you are on the main branch
+git pull origin main  # Fetch latest changes from main
+git checkout -b feature/my-new-feature  # Create and switch to a new feature branch
+
+# 2. Make a dummy commit (e.g., add a new file or change)
+echo "Some feature work" > feature.txt  # Add a new file or make a change
+git add feature.txt  # Stage the file for commit
+git commit -m "Add feature.txt - dummy commit"  # Commit the changes
+
+# 3. Bump the version and automatically tag the release
+# (Bumpversion will handle both version bumping and tagging)
+bumpversion patch  # Bumps version, e.g., from v0.1.0 to v0.1.1 (adjust based on version part you want)
+
+# 4. Push the changes to remote (feature branch and the tag)
+git push origin feature/my-new-feature  # Push the feature branch
+git push origin --tags  # Push the new tag(s) created by bumpversion
+
+# 5. Open a pull request from the feature branch to the main branch
+# This can be done via GitHub UI, or using GitHub CLI
+gh pr create --base main --head feature/my-new-feature --title "New Feature" --body "This is a new feature that adds feature.txt."
+
+# 6. After the PR is accepted and merged, delete the feature branch locally and remotely
+git checkout main  # Switch back to main branch
+git pull origin main  # Ensure your main branch is up-to-date
+git branch -d feature/my-new-feature  # Delete the local feature branch
+git push origin --delete feature/my-new-feature  # Delete the remote feature branch
+
+```
 
 ## Notes
 
@@ -250,6 +312,7 @@ ssb   4096R/<KEY_SUBKEY_ID> 2024-11-22
 ## Contributing
 Contributions are very welcome!
 Please see the [contribution guidelines] or check out the [issues]
+
 
 ## License
 This software is released under the **[BSD 3-Clause License]**

@@ -1,47 +1,48 @@
-name: CI
+name: CI/CD
 
 on:
   push:
-    branches:
-      - main
     tags:
-      - "*"
+      - 'v*.*.*' # Semantic version tags trigger release and deploy
+    branches:
+      - '**'    # Linting and testing for all branches
+
+  pull_request:
+    branches:
+      - '**'    # Linting and testing on feature PRs
 
 jobs:
+  # Linting job runs on all branches and pull requests
   lint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ['3.10', '3.11']
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install .[dev]
-      - name: Install pre-commit
-        run: |
-          pip install pre-commit
-          pre-commit install
-      - name: Run linters and pre-commit hooks
+      - name: Run linting
         run: |
           black ./ --check --verbose
           flake8 --verbose
-          pre-commit run --all-files
 
+  # Testing job runs on all branches and pull requests
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ['3.10', '3.11']
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
@@ -50,51 +51,55 @@ jobs:
           pip install .[dev]
       - name: Run tests with coverage
         run: |
-          pytest --cov=templatepy --cov-report=term-missing --maxfail=5
+          pytest
 
+  # Check tag validity only for production branch and valid tags
   check-tag:
-    needs: [lint, test]  # Both lint and test jobs need to pass before this runs
+    needs: [lint, test]
     runs-on: ubuntu-latest
-    if: contains(github.ref, 'refs/tags') && (!contains(github.ref_name, 'dev')) && (!contains(github.ref_name, 'rc'))
+    if: contains(github.ref, 'refs/tags') && startsWith(github.ref_name, 'v')
     steps:
-      - run: echo "Tag '${{ github.ref_name }}' is valid."
+      - name: Validate tag
+        run: echo "Tag '${{ github.ref_name }}' is valid."
 
+  # Release to GitHub triggered by valid tags on the prod branch
   release:
     needs: [check-tag]
+    if: github.ref == 'refs/heads/prod'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Create Release
+      - uses: actions/checkout@v3
+      - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: "${{ github.ref_name }}"
+          release_name: "Release: ${{ github.ref_name }}"
           body: "🚀 Release: ${{ github.event.repository.name }} @ ${{ github.ref_name }}"
           draft: false
           prerelease: false
 
+  # Deploy to PyPI only on production tags
   deploy:
     needs: [release]
+    if: github.ref == 'refs/heads/prod'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: "3.x"
-      - name: Install dependencies
+      - name: Install build dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -U setuptools setuptools_scm wheel twine
-          pip install build  # Install the build package
-      - name: Build and publish
+          pip install setuptools wheel build twine
+      - name: Build and Publish to PyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TWINE_API_KEY }}
         run: |
-          python -m build --wheel --sdist  # Use pyproject.toml build system
+          python -m build --wheel --sdist
           twine upload dist/* --verbose

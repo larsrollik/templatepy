@@ -1,0 +1,63 @@
+name: squash_merge_to_prod
+
+on:
+  pull_request:
+    branches-ignore: [ prod ]  # Avoid triggering on the 'prod' branch
+    types: [ closed ]          # Run only when a PR is closed
+
+jobs:
+  squash_merge_to_target:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true  # Run only if PR was merged
+
+    env:
+      BASE_BRANCH: main       # Source branch (can be overridden via inputs)
+      TARGET_BRANCH: prod     # Target branch for squash merge
+
+    steps:
+      # Step 1: Checkout the repository with full history
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # Step 2: Configure Git with the actor's credentials
+      - name: Configure Git
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+      # Step 3: Checkout the target branch
+      - name: Checkout Target Branch
+        run: |
+          git checkout $TARGET_BRANCH || git checkout -b $TARGET_BRANCH
+        env:
+          TARGET_BRANCH: ${{ env.TARGET_BRANCH }}
+
+      # Step 4: Perform Squash Merge
+      - name: Perform Squash Merge
+        run: |
+          # Capture the latest commit message from the base branch
+          COMMIT_MSG=$(git log $BASE_BRANCH -1 --pretty=format:%s)
+
+          echo "Latest commit message: $COMMIT_MSG"
+
+          # Attempt to merge with squash
+          git merge --squash -X theirs $BASE_BRANCH || {
+            echo "Error: Merge conflicts detected. Aborting merge.";
+            git merge --abort;
+            exit 1;
+          }
+
+          # Commit the squash-merged changes
+          git commit -m "$COMMIT_MSG"
+
+        env:
+          BASE_BRANCH: ${{ env.BASE_BRANCH }}
+
+      # Step 5: Push the changes to the target branch
+      - name: Push to Target Branch
+        run: |
+          git push origin $TARGET_BRANCH
+        env:
+          TARGET_BRANCH: ${{ env.TARGET_BRANCH }}
