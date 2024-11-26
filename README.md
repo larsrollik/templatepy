@@ -35,7 +35,7 @@
 # templatepy
 Template repo for python repositories & PyPi integration
 ---
-**Version: "0.2.0"**
+**Version: "0.2.1.dev"**
 
 
 ## Usage
@@ -175,17 +175,36 @@ The package will then be automatically uploaded to [PyPI](https://pypi.org/) or 
 `bump2version` is used to increment version numbers based on semantic versioning. Here’s how you can use it with the current setup to trigger a release:
 
 1. **Bumping the Minor Version**:
-   Increment the minor version (e.g., from `1.2.3` to `1.3.0`):
+   Increment the minor version (e.g., from `v1.2.3` to `v1.3.0`):
    ```bash
    # Bumping the minor Version:
    bump2version minor
 
-   # Bumping the major version (e.g., from 1.2.3 to 2.0.0):
+   # Bumping the major version (e.g., from v1.2.3 to v2.0.0):
    bump2version major
 
-   # Bumping for a release Version (e.g., from 1.0.0.dev to 1.0.0.rc or 1.0.0):
+   # Bumping for a release Version (e.g., from v1.0.0.dev to v1.0.0.rc or v1.0.0):
    bump2version release
    ```
+
+## Workflows Summary
+
+| **Workflow**               | **Triggers**                                      | **Purpose**                                | **Outputs**                            |
+|----------------------------|---------------------------------------------------|--------------------------------------------|----------------------------------------|
+| **Lint and Test**          | Push to any branch                                | Runs linting and testing for Python code   | Ensures code quality and functionality |
+| **Release to PyPI**        | Push to `prod` branch with a tag (e.g., `v1.0.0`) | Builds and uploads the package to PyPI     | Publishes a new release on PyPI        |
+| **Squash Merge to `prod`** | Pull requests merged into `main`                  | Squashes and merges commits into `prod`    | Maintains clean history in `prod`      |
+| **AI Pull Request Review** | Pull request events (`opened`, `synchronize`)     | Provides AI-generated pull request reviews | Adds review comments to the PR         |
+
+
+## Required Repository Secrets
+
+| **Secret**       | **Purpose**                                 | **How to Obtain**                                                                           |
+|------------------|---------------------------------------------|---------------------------------------------------------------------------------------------|
+| `TWINE_API_KEY`  | Authentication for publishing to PyPI       | Generate from [PyPI Account Settings](https://pypi.org/manage/account/) under "API Tokens." |
+| `OPENAI_API_KEY` | Required for AI Pull Request Reviewer       | Generate from [OpenAI API Settings](https://platform.openai.com/account/api-keys).          |
+| `GITHUB_TOKEN`   | Built-in token for accessing the repository | Automatically provided by GitHub (no setup needed).                                         |
+
 
 ## Notes
 
