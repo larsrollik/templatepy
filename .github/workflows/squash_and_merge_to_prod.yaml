@@ -2,62 +2,69 @@ name: squash_merge_to_prod
 
 on:
   pull_request:
-    branches-ignore: [ prod ]  # Avoid triggering on the 'prod' branch
-    types: [ closed ]          # Run only when a PR is closed
+    branches-ignore: [ prod ]
+    types: [ closed ]
 
 jobs:
   squash_merge_to_target:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true  # Run only if PR was merged
+    if: github.event.pull_request.merged == true
 
     env:
-      BASE_BRANCH: main       # Source branch (can be overridden via inputs)
-      TARGET_BRANCH: prod     # Target branch for squash merge
+      BASE_BRANCH: main
+      TARGET_BRANCH: prod
 
     steps:
-      # Step 1: Checkout the repository with full history
+      # Step 1: Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      # Step 2: Configure Git with the actor's credentials
+      # Step 2: Configure Git
       - name: Configure Git
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
 
-      # Step 3: Checkout the target branch
+      # Step 3: Checkout Target Branch
       - name: Checkout Target Branch
         run: |
           git checkout $TARGET_BRANCH || git checkout -b $TARGET_BRANCH
-        env:
-          TARGET_BRANCH: ${{ env.TARGET_BRANCH }}
 
-      # Step 4: Perform Squash Merge
+      # Step 4: Generate Commit Message for Squash Merge
+      - name: Generate Commit Message
+        id: commit_message
+        run: |
+          # Find the last commit on prod
+          LAST_COMMIT_ON_TARGET=$(git rev-parse $TARGET_BRANCH)
+
+          # Get all commit messages between prod and main
+          COMMITS=$(git log $LAST_COMMIT_ON_TARGET..$BASE_BRANCH --oneline)
+
+          # Format the messages into a structured list
+          COMMIT_MSG="Squash merge from $BASE_BRANCH:\n\n"
+          COMMIT_MSG+=$(echo "$COMMITS" | awk '{printf "- %s\n", substr($0, index($0, $2))}')
+
+          echo "Generated commit message:"
+          echo "$COMMIT_MSG"
+
+          echo "::set-output name=message::$COMMIT_MSG"
+
+      # Step 5: Perform Squash Merge
       - name: Perform Squash Merge
         run: |
-          # Capture the latest commit message from the base branch
-          COMMIT_MSG=$(git log $BASE_BRANCH -1 --pretty=format:%s)
-
-          echo "Latest commit message: $COMMIT_MSG"
-
-          # Attempt to merge with squash
-          git merge --squash -X theirs $BASE_BRANCH || {
+          # Perform the squash merge
+          git merge --squash $BASE_BRANCH || {
             echo "Error: Merge conflicts detected. Aborting merge.";
             git merge --abort;
             exit 1;
           }
 
-          # Commit the squash-merged changes
-          git commit -m "$COMMIT_MSG"
+          # Commit the changes with the generated message
+          git commit -m "${{ steps.commit_message.outputs.message }}"
 
-        env:
-          BASE_BRANCH: ${{ env.BASE_BRANCH }}
-
-      # Step 5: Push the changes to the target branch
+      # Step 6: Push Changes to Target Branch
       - name: Push to Target Branch
         run: |
           git push origin $TARGET_BRANCH
-        env:
-          TARGET_BRANCH: ${{ env.TARGET_BRANCH }}
