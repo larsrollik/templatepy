@@ -10,7 +10,7 @@ on:
 jobs:
   squash_merge_to_prod:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true  # Only run if the PR was merged
+    if: github.event.pull_request.merged == true
 
     steps:
       # Step 1: Checkout Repository
