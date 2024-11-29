@@ -9,8 +9,6 @@ jobs:
   # Step 1: Check if the version is a full release and if the tag already exists
   check-version-and-tag:
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.get_version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
 
@@ -22,25 +20,25 @@ jobs:
         id: get_version
         run: |
           VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['project']['version'])")
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
-          echo "::set-output name=version::${VERSION}"  # Set version as an output
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV  # Set version as an environment variable
 
       - name: Validate version and check if tag exists
         run: |
-          if [[ "${{ steps.get_version.outputs.version }}" =~ (dev|rc)$ ]]; then
+          # Use the version set in the environment variable
+          if [[ "${{ env.VERSION }}" =~ (dev|rc)$ ]]; then
             echo "Skipping release for version ${VERSION}. This is a pre-release version (dev/rc)."
             exit 0  # Skip release for dev/rc versions
           fi
 
-          TAG_EXISTS=$(git tag -l "v${{ steps.get_version.outputs.version }}")
+          TAG_EXISTS=$(git tag -l "v${{ env.VERSION }}")
           if [[ -n "$TAG_EXISTS" ]]; then
-            echo "Tag v${{ steps.get_version.outputs.version }} already exists. Skipping release."
+            echo "Tag v${{ env.VERSION }} already exists. Skipping release."
             exit 0  # Skip release if tag exists
           fi
 
           echo "Version ${VERSION} is valid and tag doesn't exist. Proceeding with release."
 
-#  print-version:
+  #  print-version:
 #    needs: check-version-and-tag
 #    runs-on: ubuntu-latest
 #    steps:
@@ -53,15 +51,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: "v${{ needs.check-version-and-tag.outputs.version }}"
-          release_name: "Release v${{ needs.check-version-and-tag.outputs.version }}"
-          body: "Release: v${{ needs.check-version-and-tag.outputs.version }}"
+          tag_name: "v${{ env.VERSION }}"  # Access the version from the environment variable
+          release_name: "Release v${{ env.VERSION }}"
+          body: "Release: v${{ env.VERSION }}"
           draft: false
           prerelease: false
 
