@@ -54,33 +54,43 @@ jobs:
 
   # Secrets scanning job runs only on PRs targeting main
   secrets-scanning:
+    name: Checking for Secrets
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main'
     steps:
-      - uses: actions/checkout@v3
-      - name: Scan for secrets using GitHub's secret scanning
-        uses: github/codeql-action/autobuild@v2
-        with:
-          language: python  # Change this based on your repo's language
-      - name: Check for secrets in commit
-        run: |
-          curl -sSL https://raw.githubusercontent.com/awslabs/git-secrets/master/git-secrets | bash
-          git secrets --scan
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Secret Scanner
+        uses: secret-scanner/action@0.2.1
 
   # Vulnerability scanning job runs only on PRs targeting main
   vulnerability-scanning:
+    name: CodeQL Vulnerability Scan
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main'
     steps:
-      - uses: actions/checkout@v3
-      - name: Scan for vulnerabilities with OWASP Dependency-Check
-        uses: aquasecurity/trivy-action@v0.0.13
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
         with:
-          scan-type: 'dependencies'
-          severity: 'high,critical'
-      - name: Show Trivy report
+          languages: python
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies and build project
         run: |
-          cat trivy-report.json
+          python -m pip install --upgrade pip
+          python -m pip install build hatch
+          python -m build --wheel --outdir dist
+          pip install dist/*.whl
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
 
   # Full Pre-PR checks (runs only on PRs targeting main)
   pre-pr-checks:
