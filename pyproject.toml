@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "templatepy"
-version = "0.2.3"
+version = "0.2.4.dev0"
 authors = [
     { name = "Lars B. Rollik", email = "L.B.Rollik@protonmail.com" }
 ]
 license = { file = "LICENSE" }
-description = "templatepy: template for derivative python packages"
+description = "templatepy: Template repo for python repositories & PyPi integration"
 readme = { file = "README.md", content-type = "text/markdown" }
 classifiers = [
     "Intended Audience :: Developers",
