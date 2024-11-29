@@ -78,7 +78,7 @@ jobs:
           git merge --squash main
 
           # Resolve conflicts automatically in favor of 'main'
-          git merge -X theirs main
+          # git merge -X theirs main
 
           # Create a commit message summarizing the commit messages
           FEATURE_BRANCH="${{ github.event.pull_request.head.ref }}"
