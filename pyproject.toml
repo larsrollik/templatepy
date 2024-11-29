@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "templatepy"
-version = "0.2.2"
+version = "0.2.3"
 authors = [
     { name = "Lars B. Rollik", email = "L.B.Rollik@protonmail.com" }
 ]
@@ -37,7 +37,8 @@ dev = [
     "bump2version",
     "pytest-cov",  # implies: pytest, coverage dependencies
     "pre-commit",
-    "flake8"
+    "flake8",
+    "toml",
 ]
 
 [project.entry-points.console_scripts]

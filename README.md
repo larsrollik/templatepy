@@ -35,7 +35,7 @@
 # templatepy
 Template repo for python repositories & PyPi integration
 ---
-**Version: "0.2.2"**
+**Version: "0.2.3"**
 
 
 ## Usage
@@ -130,10 +130,10 @@ The pipeline ensures code quality, passing tests, and automated deployment on ne
 
 - [ ] Change package name:
   - (1) Rename the `templatepy` folder.
-  - (2) Update all occurrences in `README.md`.
+  - (2) Update all occurrences  of `templatepy` in `README.md`.
   - (3) Update the `name` field in `pyproject.toml`.
-  - (4) Update `.github/workflows` files.
-  - (5) Update version references in `pyproject.toml` and `templatepy/__init__.py`.
+  - (4) (optional) Update `.github/workflows` files.
+  - (5) Reset version references in `pyproject.toml` and `templatepy/__init__.py` to `0.0.0.dev0`.
 - [ ] Update project author and metadata details in `pyproject.toml`, `README.md`, and `templatepy/__init__.py`.
 - [ ] Update the license holder in the `LICENSE` file.
 - [ ] Update `README.md` badge paths at the top.
