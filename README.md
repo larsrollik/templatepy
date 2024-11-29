@@ -208,13 +208,13 @@ The package will then be automatically uploaded to [PyPI](https://pypi.org/) or 
 
 ## Github Flow overview
 
-
 1) Create a new feature branch from main using git checkout -b.
 2) Make and commit a dummy change (e.g., adding a file).
 3) Use bumpversion to bump the version (you can adjust patch, minor, or major based on what change you want), and create a release tag.
 4) Push both the feature branch and the release tag to the remote repository.
 5) Open a pull request using GitHub CLI (gh pr create) or the GitHub UI to merge the feature branch into main.
 6) After the PR is merged, delete the feature branch both locally and remotely.
+
 
 ### Example commands for the workflow:
 

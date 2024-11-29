@@ -8,6 +8,7 @@ on:
     types:
       - closed # Run only when a PR is closed
 
+
 jobs:
   squash_merge_to_prod:
     runs-on: ubuntu-latest
@@ -50,15 +51,50 @@ jobs:
 
           # Create a structured commit message
           COMMIT_MSG="From '${FEATURE_BRANCH}':\n\n$(git log --format='- %s' main..HEAD)"
-          echo "::set-output name=message::$COMMIT_MSG"
 
-      # Step 5: Perform Squash Merge
-      - name: Perform Squash Merge
+          # Set commit message as environment variable
+          echo "COMMIT_MSG=${COMMIT_MSG}" >> $GITHUB_ENV
+
+#      # Step 5: Perform Squash Merge with Conflict Resolution
+#      - name: Perform Squash Merge
+#        run: |
+#          git fetch origin main
+#          git merge -X theirs main  # Regular merge with 'theirs' strategy to resolve conflicts
+#          git merge --squash main  # Perform squash after resolving conflicts
+#          git commit -m "${{ env.COMMIT_MSG }}"  # Use the commit message from the previous step
+#
+#      # Step 6: Push Squashed Commit to Prod
+#      - name: Push to Prod Branch
+#        run: |
+#          git push origin prod
+
+      # Step 5: Perform Squash and Resolve Conflicts in Favor of Main
+      - name: Perform Squash and Resolve Conflicts in Favor of Main
         run: |
+          # Fetch the latest changes from 'main'
+          git fetch origin main
+
+          # Squash the commits from 'main' into a single commit
           git merge --squash main
-          git commit -m "${{ steps.commit_message.outputs.message }}"
 
-      # Step 6: Push Squashed Commit to Prod
-      - name: Push to Prod Branch
-        run: |
+          # Resolve conflicts automatically in favor of 'main'
+          git merge -X theirs main
+
+          # Create a commit message summarizing the commit messages
+          FEATURE_BRANCH="${{ github.event.pull_request.head.ref }}"
+          NEW_COMMITS=$(git log main --merges --grep="${FEATURE_BRANCH}" --oneline)
+          if [ -z "$NEW_COMMITS" ]; then
+            echo "No new commits to squash merge. Exiting."
+            exit 0
+          fi
+
+          COMMIT_MSG="Squashed changes from '${FEATURE_BRANCH}':\n\n$(git log --format='- %s' main..HEAD)"
+
+          # Write commit message to GitHub environment to use it in the next step
+          echo "COMMIT_MSG=${COMMIT_MSG}" >> $GITHUB_ENV
+
+          # Commit the squashed changes
+          git commit -m "${{ env.COMMIT_MSG }}"  # Use the commit message from the previous step
+
+          # Push the changes to the 'prod' branch
           git push origin prod
