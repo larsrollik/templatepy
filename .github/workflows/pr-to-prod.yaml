@@ -8,6 +8,7 @@ on:
     types:
       - closed # Run only when a PR is closed
 
+
 jobs:
   squash_merge_to_prod:
     runs-on: ubuntu-latest
@@ -50,13 +51,15 @@ jobs:
 
           # Create a structured commit message
           COMMIT_MSG="From '${FEATURE_BRANCH}':\n\n$(git log --format='- %s' main..HEAD)"
-          echo "::set-output name=message::$COMMIT_MSG"
+
+          # Set commit message as environment variable
+          echo "COMMIT_MSG=${COMMIT_MSG}" >> $GITHUB_ENV
 
       # Step 5: Perform Squash Merge
       - name: Perform Squash Merge
         run: |
           git merge --squash main
-          git commit -m "${{ steps.commit_message.outputs.message }}"
+          git commit -m "${{ env.COMMIT_MSG }}"
 
       # Step 6: Push Squashed Commit to Prod
       - name: Push to Prod Branch
