@@ -18,7 +18,12 @@ jobs:
       - name: Get version from pyproject.toml
         id: version
         run: |
-          VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['project']['version'])") && echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          VERSION=$(python -c "import toml; version = toml.load('pyproject.toml')['project'].get('version', ''); print(version)")
+          if [ -z "$VERSION" ]; then
+            echo "ERROR: Version not found in pyproject.toml"
+            exit 1  # Fail the job if no version is found
+          fi
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Validate version and check if tag exists
         run: |
