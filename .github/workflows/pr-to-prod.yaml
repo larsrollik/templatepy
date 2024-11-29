@@ -55,11 +55,13 @@ jobs:
           # Set commit message as environment variable
           echo "COMMIT_MSG=${COMMIT_MSG}" >> $GITHUB_ENV
 
-      # Step 5: Perform Squash Merge
+      # Step 5: Perform Squash Merge with Conflict Resolution
       - name: Perform Squash Merge
         run: |
-          git merge --squash main
-          git commit -m "${{ env.COMMIT_MSG }}"
+          git fetch origin main
+          git merge -X theirs main  # Regular merge with 'theirs' strategy to resolve conflicts
+          git merge --squash main  # Perform squash after resolving conflicts
+          git commit -m "${{ env.COMMIT_MSG }}"  # Use the commit message from the previous step
 
       # Step 6: Push Squashed Commit to Prod
       - name: Push to Prod Branch
