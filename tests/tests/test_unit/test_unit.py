@@ -1,33 +1,37 @@
-import os
 import subprocess
+import sys
 
-import toml
 
-
-def get_package_name():
-    """Retrieve package name from pyproject.toml."""
-    project_data = toml.load("pyproject.toml")
-    return project_data["project"]["name"]
+def ensure_toml_installed():
+    """Ensure toml is installed in the current environment."""
+    try:
+        __import__("toml")
+    except ImportError:
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", "toml"],
+            check=True,
+        )
 
 
 def test_python_version():
     """Test that Python version is compatible with the environment."""
-    assert os.sys.version_info >= (
-        3,
-        8,
-    ), "Python version must be 3.8 or higher"
+    assert sys.version_info >= (3, 8), "Python version must be 3.8 or higher"
 
 
 def test_package_installation():
     """Test dynamic installation and uninstallation of the package."""
-    package_name = get_package_name()
+    ensure_toml_installed()
+    import toml
+
+    # Dynamically read the package name
+    package_name = toml.load("pyproject.toml")["project"]["name"]
 
     # Install the package
-    subprocess.run(["pip", "install", "."], check=True)
+    subprocess.run([sys.executable, "-m", "pip", "install", "."], check=True)
 
     # Check that the package is installed
     result = subprocess.run(
-        ["pip", "show", package_name],
+        [sys.executable, "-m", "pip", "show", package_name],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
@@ -35,11 +39,14 @@ def test_package_installation():
     assert result.returncode == 0, "Package installation failed"
 
     # Uninstall the package
-    subprocess.run(["pip", "uninstall", "-y", package_name], check=True)
+    subprocess.run(
+        [sys.executable, "-m", "pip", "uninstall", "-y", package_name],
+        check=True,
+    )
 
     # Verify the package is uninstalled
     result = subprocess.run(
-        ["pip", "show", package_name],
+        [sys.executable, "-m", "pip", "show", package_name],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,

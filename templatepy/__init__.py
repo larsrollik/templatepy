@@ -4,4 +4,4 @@ __version__ = "0.2.2"
 
 def run():
     """Example `run` function for entrypoint in `setup.cfg`"""
-    pass
+    print("Hello, world!")

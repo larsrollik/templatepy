@@ -37,7 +37,8 @@ dev = [
     "bump2version",
     "pytest-cov",  # implies: pytest, coverage dependencies
     "pre-commit",
-    "flake8"
+    "flake8",
+    "toml",
 ]
 
 [project.entry-points.console_scripts]
