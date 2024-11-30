@@ -69,32 +69,27 @@ jobs:
 #          git push origin prod
 
       # Step 5: Perform Squash and Resolve Conflicts in Favor of Main
-      - name: Perform Squash and Resolve Conflicts in Favor of Main
+      - name: Squash and Resolve Conflicts in Favor of "main"
         run: |
-          # Fetch the latest changes from 'main'
+          # Fetch the latest changes from 'main' and 'prod'
           git fetch origin main
+          git fetch origin prod
 
-          # Squash the commits from 'main' into a single commit
-          git merge --squash main
+          # Step 1: Checkout 'prod' branch
+          git checkout prod
 
-          # Resolve conflicts automatically in favor of 'main'
-          # git merge -X theirs main
+          # Step 2: Merge 'main' into 'prod' (no commit)
+          git merge --no-commit main
 
-          # Create a commit message summarizing the commit messages
-          FEATURE_BRANCH="${{ github.event.pull_request.head.ref }}"
-          NEW_COMMITS=$(git log main --merges --grep="${FEATURE_BRANCH}" --oneline)
-          if [ -z "$NEW_COMMITS" ]; then
-            echo "No new commits to squash merge. Exiting."
-            exit 0
-          fi
+          # Step 3: Resolve conflicts by checking out the 'main' version (theirs)
+          git checkout -f main -- .
 
-          COMMIT_MSG="Squashed changes from '${FEATURE_BRANCH}':\n\n$(git log --format='- %s' main..HEAD)"
+          # Step 4: Add resolved files (if any)
+          git add .
 
-          # Write commit message to GitHub environment to use it in the next step
-          echo "COMMIT_MSG=${COMMIT_MSG}" >> $GITHUB_ENV
+          # Step 5: Commit the changes, squashing them if necessary
+          COMMIT_MSG="Squashed changes from 'main' into 'prod': $(git log --format='- %s' main..HEAD)"
+          git commit -m "$COMMIT_MSG"
 
-          # Commit the squashed changes
-          git commit -m "${{ env.COMMIT_MSG }}"  # Use the commit message from the previous step
-
-          # Push the changes to the 'prod' branch
+          # Step 6: Push the changes to the 'prod' branch
           git push origin prod
