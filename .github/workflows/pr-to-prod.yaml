@@ -47,8 +47,15 @@ jobs:
             echo "No new commits to squash merge. Exiting."
             exit 0
           fi
+
+          # Generate the commit message
           COMMIT_MSG="From '${FEATURE_BRANCH}':\n\n$(git log --format='- %s' main..HEAD)"
-          echo "COMMIT_MSG=${COMMIT_MSG}" >> $GITHUB_ENV
+
+          # Escape the commit message to make it safe for GITHUB_ENV
+          ESCAPED_COMMIT_MSG=$(echo "$COMMIT_MSG" | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g')
+
+          # Write the escaped commit message to GITHUB_ENV
+          echo "COMMIT_MSG=${ESCAPED_COMMIT_MSG}" >> $GITHUB_ENV
 
       # Step 5: Perform Squash Merge and Resolve Conflicts in Favor of Main
       - name: Squash and Resolve Conflicts in Favor of "main"
