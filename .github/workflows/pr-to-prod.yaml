@@ -78,10 +78,15 @@ jobs:
           # Stage all changes to mark conflicts as resolved
           git add .
 
-          # Check if there are changes to commit
+          # Ensure there are no empty changes before committing
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
+            # Ensure there's a commit message before committing
+            if [ -z "$COMMIT_MSG" ]; then
+              COMMIT_MSG="Squash merge from 'main' into 'prod'."
+            fi
+
             # Commit the squashed changes with the generated message
             git commit -m "$COMMIT_MSG"
 
