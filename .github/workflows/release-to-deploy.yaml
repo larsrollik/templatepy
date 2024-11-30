@@ -3,7 +3,7 @@ name: Release and Deploy from Prod
 on:
   push:
     branches:
-      - prod  # Trigger only on push to prod branch
+      - prod
 
 jobs:
   check-version-and-tag:
@@ -40,6 +40,7 @@ jobs:
 
           echo "Version $VERSION is valid and tag doesn't exist. Proceeding with release."
 
+
   print-version:
     needs: [check-version-and-tag]
     runs-on: ubuntu-latest
@@ -49,6 +50,7 @@ jobs:
       - name: Print version
         run: |
           echo "The version from pyproject.toml is: v${VERSION}"
+
 
   release:
     needs: [check-version-and-tag]
@@ -68,7 +70,7 @@ jobs:
             --title "Release v${VERSION}" \
             --notes "Release: v${VERSION}"
 
-  # Step 3: Deploy to PyPI if it's a valid release
+
   deploy:
     needs: release
     if: success()  # Proceed if release creation is successful
