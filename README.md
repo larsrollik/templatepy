@@ -239,7 +239,11 @@ git push origin --tags  # Push the new tag(s) created by bumpversion
 
 # 5. Open a pull request from the feature branch to the main branch
 # This can be done via GitHub UI, or using GitHub CLI
-gh pr create --base main --head feature/my-new-feature --title "New Feature" --body "This is a new feature that adds feature.txt."
+gh pr create \
+  --base main \
+  --head feature/my-new-feature \
+  --title "pr_title" \
+  --body "pr_body"
 
 # 6. After the PR is accepted and merged, delete the feature branch locally and remotely
 git checkout main  # Switch back to main branch
