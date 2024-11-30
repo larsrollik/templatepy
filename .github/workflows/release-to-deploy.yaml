@@ -6,11 +6,10 @@ on:
       - prod  # Trigger only on push to prod branch
 
 jobs:
-  # Step 1: Check if the version is a full release and if the tag already exists
   check-version-and-tag:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.get_version.outputs.version }}
+      version: ${{ steps.get-version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
 
@@ -19,38 +18,41 @@ jobs:
           python -m pip install toml  # Install toml to parse pyproject.toml
 
       - name: Get version from pyproject.toml
-        id: get_version
+        id: get-version
         run: |
           VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['project']['version'])")
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV  # Set version as an environment variable
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT  # Set version as an output
 
       - name: Validate version and check if tag exists
         run: |
-          # Use the version set in the environment variable
-          if [[ "${{ env.VERSION }}" =~ (dev|rc)$ ]]; then
-            echo "Skipping release for version ${VERSION}. This is a pre-release version (dev/rc)."
+          if [[ "${{ steps.get-version.outputs.version }}" =~ (dev|rc)$ ]]; then
+            echo "Skipping release for version ${{ steps.get-version.outputs.version }}. This is a pre-release version (dev/rc)."
             exit 0  # Skip release for dev/rc versions
           fi
 
-          TAG_EXISTS=$(git tag -l "v${{ env.VERSION }}")
+          TAG_EXISTS=$(git tag -l "v${{ steps.get-version.outputs.version }}")
           if [[ -n "$TAG_EXISTS" ]]; then
-            echo "Tag v${{ env.VERSION }} already exists. Skipping release."
+            echo "Tag v${{ steps.get-version.outputs.version }} already exists. Skipping release."
             exit 0  # Skip release if tag exists
           fi
 
-          echo "Version ${VERSION} is valid and tag doesn't exist. Proceeding with release."
+          echo "Version ${{ steps.get-version.outputs.version }} is valid and tag doesn't exist. Proceeding with release."
 
   print-version:
-    needs: check-version-and-tag
+    needs: [check-version-and-tag]
     runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.check-version-and-tag.outputs.version }}
     steps:
       - name: Print version
         run: |
-          echo "The version from pyproject.toml is: v${{ env.VERSION }}"
+          echo "The version from pyproject.toml is: v${VERSION}"
 
   release:
-    needs: check-version-and-tag
+    needs: [check-version-and-tag]
     runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.check-version-and-tag.outputs.version }}
     steps:
       - uses: actions/checkout@v4
 
@@ -60,11 +62,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: "v${{ env.VERSION }}"  # Access the version from the environment variable
-          release_name: "Release v${{ env.VERSION }}"
-          body: "Release: v${{ env.VERSION }}"
+          tag_name: "v${VERSION}"  # Use env.VERSION for simplicity
+          release_name: "Release v${VERSION}"
+          body: "Release: v${VERSION}"
           draft: false
           prerelease: false
+
 
   # Step 3: Deploy to PyPI if it's a valid release
   deploy:
