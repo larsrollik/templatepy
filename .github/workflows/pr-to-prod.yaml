@@ -59,6 +59,8 @@ jobs:
 
       # Step 5: Perform Squash Merge and Resolve Conflicts in Favor of Main
       - name: Squash and Resolve Conflicts in Favor of "main"
+        env:
+          COMMIT_MSG: ${{ steps.commit_message.outputs.COMMIT_MSG }}
         run: |
           # Fetch latest changes for safety
           git fetch origin main
@@ -68,16 +70,21 @@ jobs:
           git checkout prod
 
           # Perform a squash merge from 'main' (staged changes without committing)
-          git merge --squash main
+          git merge --squash main || true
 
           # Resolve conflicts in favor of 'main'
           git checkout -f main -- .
 
-          # Stage all changes (mark conflicts as resolved)
+          # Stage all changes to mark conflicts as resolved
           git add .
 
-          # Commit the squashed changes with the generated message
-          git commit -m "${{ env.COMMIT_MSG }}"
+          # Check if there are changes to commit
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            # Commit the squashed changes with the generated message
+            git commit -m "$COMMIT_MSG"
 
-          # Push the updated 'prod' branch to the repository
-          git push origin prod
+            # Push the updated 'prod' branch to the repository
+            git push origin prod
+          fi
