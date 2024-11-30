@@ -1,4 +1,4 @@
-name: PR into main -> Squash Merge to Prod
+name: pr_to_prod
 
 on:
   pull_request:
