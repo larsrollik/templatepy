@@ -35,7 +35,7 @@
 # templatepy
 Template repo for python repositories & PyPi integration
 ---
-**Version: "0.2.6.dev1"**
+**Version: "0.2.6"**
 
 
 ## Usage
