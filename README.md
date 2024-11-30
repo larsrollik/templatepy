@@ -35,7 +35,7 @@
 # templatepy
 Template repo for python repositories & PyPi integration
 ---
-**Version: "0.2.5"**
+**Version: "0.2.6.dev0"**
 
 
 ## Usage
@@ -279,6 +279,16 @@ For further reading on the transition to `pyproject.toml` and the removal of `se
 - [PEP-518](https://peps.python.org/pep-0518/)
 - [Discussion on Setup.cfg Deprecation](https://stackoverflow.com/questions/44878600/is-setup-cfg-deprecated)
 
+#### Using Github CLI in actions workflows
+
+[CLI in actions (docs)](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/using-github-cli-in-workflows)
+
+```yaml
+- name: Create a pull request
+  run: gh pr create --title "My pull request" --body "This is an amazing PR" --label bug
+  env:
+    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
 
 ## Common issues
 
