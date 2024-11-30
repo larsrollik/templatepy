@@ -70,6 +70,30 @@ jobs:
           draft: false
           prerelease: false
 
+  release:
+    needs: [check-version-and-tag]
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.check-version-and-tag.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh
+
+      - name: Authenticate GitHub CLI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Create Release
+        run: |
+          gh release create "v${VERSION}" \
+            --title "Release v${VERSION}" \
+            --notes "Release: v${VERSION}"
 
   # Step 3: Deploy to PyPI if it's a valid release
   deploy:
