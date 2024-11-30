@@ -12,6 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
 
+    permissions:
+      contents: write
+      actions: write
+
     steps:
       # Step 1: Checkout Repository
       - name: Checkout Repository
