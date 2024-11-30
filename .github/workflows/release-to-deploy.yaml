@@ -38,13 +38,13 @@ jobs:
 
           echo "Version ${VERSION} is valid and tag doesn't exist. Proceeding with release."
 
-  #  print-version:
-#    needs: check-version-and-tag
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Print version
-#        run: |
-#          echo "The version from pyproject.toml is: ${{ needs.check-version-and-tag.outputs.version }}"
+  print-version:
+    needs: check-version-and-tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print version
+        run: |
+          echo "The version from pyproject.toml is: v${{ env.VERSION }}"
 
   release:
     needs: check-version-and-tag
