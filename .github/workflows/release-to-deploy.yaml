@@ -24,19 +24,21 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT  # Set version as an output
 
       - name: Validate version and check if tag exists
+        env:
+          VERSION: ${{ steps.get-version.outputs.version }}
         run: |
-          if [[ "${{ steps.get-version.outputs.version }}" =~ (dev|rc)$ ]]; then
-            echo "Skipping release for version ${{ steps.get-version.outputs.version }}. This is a pre-release version (dev/rc)."
+          if [[ "$VERSION" =~ (dev|rc)$ ]]; then
+            echo "Skipping release for version $VERSION. This is a pre-release version (dev/rc)."
             exit 0  # Skip release for dev/rc versions
           fi
 
-          TAG_EXISTS=$(git tag -l "v${{ steps.get-version.outputs.version }}")
+          TAG_EXISTS=$(git tag -l "v$VERSION")
           if [[ -n "$TAG_EXISTS" ]]; then
-            echo "Tag v${{ steps.get-version.outputs.version }} already exists. Skipping release."
+            echo "Tag v$VERSION already exists. Skipping release."
             exit 0  # Skip release if tag exists
           fi
 
-          echo "Version ${{ steps.get-version.outputs.version }} is valid and tag doesn't exist. Proceeding with release."
+          echo "Version $VERSION is valid and tag doesn't exist. Proceeding with release."
 
   print-version:
     needs: [check-version-and-tag]
