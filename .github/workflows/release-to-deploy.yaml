@@ -27,7 +27,7 @@ jobs:
         env:
           VERSION: ${{ steps.get-version.outputs.version }}
         run: |
-          if [[ "$VERSION" =~ (dev|rc)$ ]]; then
+          if [[ "$VERSION" =~ (dev|rc)[0-9]*$ ]]; then
             echo "Skipping release for version $VERSION. This is a pre-release version (dev/rc)."
             exit 0  # Skip release for dev/rc versions
           fi
@@ -60,7 +60,6 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: write
-
     steps:
       - uses: actions/checkout@v4
 
