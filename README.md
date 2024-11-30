@@ -279,9 +279,11 @@ For further reading on the transition to `pyproject.toml` and the removal of `se
 - [PEP-518](https://peps.python.org/pep-0518/)
 - [Discussion on Setup.cfg Deprecation](https://stackoverflow.com/questions/44878600/is-setup-cfg-deprecated)
 
-#### Using Github CLI in actions workflows
+#### Using GitHub CLI in Workflow Actions
 
-[CLI in actions (docs)](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/using-github-cli-in-workflows)
+Easily integrate GitHub CLI into workflows to perform repository tasks. See the [GitHub CLI in workflows documentation](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/using-github-cli-in-workflows).
+
+**Example: Create a pull request**
 
 ```yaml
 - name: Create a pull request
@@ -289,6 +291,7 @@ For further reading on the transition to `pyproject.toml` and the removal of `se
   env:
     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
+
 
 ## Common issues
 
@@ -310,7 +313,7 @@ For further reading on the transition to `pyproject.toml` and the removal of `se
 
 Which one is the key id you might ask?
 ```
-/home/user/.gnupg/secring.gpg
+/home/$USER/.gnupg/secring.gpg
 ------------------------------
 sec   4096R/<KEY_ID> 2024-11-22 [expires: 2025-11-22]
       uid                          Your Name <youremail@example.com>
