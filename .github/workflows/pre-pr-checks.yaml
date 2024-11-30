@@ -1,6 +1,6 @@
 # Commits in feature branches will run linting and testing jobs.
 # PRs targeting the main branch will run the full pre-PR checks.
-name: Pre-PR Checks
+name: pre_pr_checks
 
 on:
   push:

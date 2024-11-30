@@ -1,9 +1,15 @@
-name: Release and Deploy from Prod
+name: release_to_deploy
+
+#on:
+#  push:
+#    branches:
+#      - prod
 
 on:
-  push:
-    branches:
-      - prod
+  workflow_run:
+    workflows: [pr_to_prod]
+    types:
+      - completed
 
 jobs:
   check-version-and-tag:
