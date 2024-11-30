@@ -1,27 +1,36 @@
+# Update versions with: pre-commit autoupdate
+# Check for other available hooks: https://github.com/pre-commit/pre-commit-hooks
 repos:
--   repo: https://github.com/asottile/reorder_python_imports
-    rev: v2.6.0
+  - repo: https://github.com/asottile/reorder_python_imports
+    rev: v3.14.0
     hooks:
-    -   id: reorder-python-imports
--   repo: https://github.com/ambv/black
-    rev: 22.6.0
+      - id: reorder-python-imports
+
+  - repo: https://github.com/ambv/black
+    rev: 24.10.0
     hooks:
-    - id: black
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+      - id: black
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
     hooks:
-    - id: end-of-file-fixer
-      exclude: '.bumpversion.cfg'
-    - id: trailing-whitespace
-      exclude: '.bumpversion.cfg'
-    - id: check-case-conflict
-    - id: check-merge-conflict
-    - id: check-yaml
-      args: [ '--unsafe' ]
-    - id: detect-private-key
-    - id: forbid-new-submodules
-    - id: check-json
-    - id: pretty-format-json
-      args: ['--autofix', '--indent=4', '--no-ensure-ascii', ]
-    - id: check-added-large-files
-    - id: flake8
+      - id: end-of-file-fixer
+        exclude: '.bumpversion.cfg'
+      - id: trailing-whitespace
+        exclude: '.bumpversion.cfg'
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-yaml
+        args: [ '--unsafe' ]
+      - id: debug-statements
+      - id: detect-private-key
+      - id: forbid-new-submodules
+      - id: check-json
+      - id: pretty-format-json
+        args: ['--autofix', '--indent=4', '--no-ensure-ascii']
+      - id: check-added-large-files
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.1.1
+    hooks:
+    -   id: flake8
