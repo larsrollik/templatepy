@@ -53,8 +53,7 @@ jobs:
   release:
     needs: [check-version-and-tag]
     runs-on: ubuntu-latest
-    env:
-      VERSION: ${{ needs.check-version-and-tag.outputs.version }}
+    if: needs.check-version-and-tag.outputs.version != null  # Proceed only if version is valid
     steps:
       - uses: actions/checkout@v4
 
@@ -63,6 +62,7 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.check-version-and-tag.outputs.version }}
         with:
           tag_name: "v${VERSION}"  # Use env.VERSION for simplicity
           release_name: "Release v${VERSION}"
