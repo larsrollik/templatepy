@@ -9,6 +9,8 @@ jobs:
   # Step 1: Check if the version is a full release and if the tag already exists
   check-version-and-tag:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
 
