@@ -302,8 +302,9 @@ Easily integrate GitHub CLI into workflows to perform repository tasks. See the 
 - there are changes that need to be committed? `git commit -am "commit message"`
 - tag already exists? `git tag` to list tags, `git tag -d <tag>` to delete a tag
 
-### no gpg key for signing commits
+### No gpg key for signing commits
 - generate a key with `gpg --full-generate-key`
+  - standard options for keys: "(9) ECC (sign and encrypt) *default*" -> Curve 25519 -> expiry 2 years: "2y" -> name/email
 - list keys with `gpg --list-secret-keys --keyid-format LONG`
 - set the key for signing commits with `git config --global user.signingkey <key-id>`
 - enable signing commits with `git config --global commit.gpgsign true`
