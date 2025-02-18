@@ -246,7 +246,13 @@ gh pr create \
   --title "pr_title" \
   --body "pr_body"
 
-# 6. After the PR is accepted and merged, delete the feature branch locally and remotely
+# 6.
+gh pr list  # -> shows PRs and their IDs
+gh pr view <id>
+
+gh pr merge <id> --merge --delete-branch
+
+# 7. After the PR is accepted and merged, delete the feature branch locally and remotely
 git checkout main  # Switch back to main branch
 git pull origin main  # Ensure your main branch is up-to-date
 git branch -d feature/my-new-feature  # Delete the local feature branch
