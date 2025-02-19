@@ -9,6 +9,7 @@ except PackageNotFoundError:
     # package is not installed
     pass
 
+
 def run():
     """Example `run` function for entrypoint in `setup.cfg`"""
     print("Hello, world!")
