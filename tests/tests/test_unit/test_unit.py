@@ -2,7 +2,7 @@ import subprocess
 import sys
 
 
-def ensure_toml_installed():
+def ensure_toml_installed() -> None:
     """Ensure toml is installed in the current environment."""
     try:
         __import__("toml")
@@ -13,12 +13,12 @@ def ensure_toml_installed():
         )
 
 
-def test_python_version():
+def test_python_version() -> None:
     """Test that Python version is compatible with the environment."""
     assert sys.version_info >= (3, 8), "Python version must be 3.8 or higher"
 
 
-def test_package_installation():
+def test_package_installation() -> None:
     """Test dynamic installation and uninstallation of the package."""
     ensure_toml_installed()
     import toml
@@ -32,8 +32,7 @@ def test_package_installation():
     # Check that the package is installed
     result = subprocess.run(
         [sys.executable, "-m", "pip", "show", package_name],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        capture_output=True,
         text=True,
     )
     assert result.returncode == 0, "Package installation failed"
@@ -47,8 +46,7 @@ def test_package_installation():
     # Verify the package is uninstalled
     result = subprocess.run(
         [sys.executable, "-m", "pip", "show", package_name],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        capture_output=True,
         text=True,
     )
     assert result.returncode != 0, "Package uninstallation failed"

@@ -29,8 +29,7 @@ jobs:
           pip install .[dev]
       - name: Run linting
         run: |
-          black ./ --check --verbose
-          flake8 --verbose
+          pre-commit run --all-files --verbose --show-diff-on-failure
 
   # Testing job runs on all branches (including feature branches)
   test:
