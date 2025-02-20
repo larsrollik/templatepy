@@ -9,6 +9,8 @@ repos:
         args:
         - "--fix"
         - "--show-fixes"
+        - "--show-diff-on-failure"
+        - "--verbose"
        # Run the formatter.
       - id: ruff-format
 
