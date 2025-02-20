@@ -7,7 +7,10 @@
 
 [bump2version]: (https://github.com/c4urself/bump2version
 [pre-commit]: https://pre-commit.com
-[black]: https://github.com/psf/black
+
+[//]: # ([black]: https://github.com/psf/black)
+[ruff]: https://docs.astral.sh/ruff
+[mypy]: https://mypy.readthedocs.io
 
 [pypi]: pypi.org
 [test.pypi]: test.pypi.org
@@ -28,7 +31,6 @@
 [![PyPI](https://img.shields.io/pypi/v/templatepy.svg)](https://pypi.org/project/templatepy)
 [![Wheel](https://img.shields.io/pypi/wheel/templatepy.svg)](https://pypi.org/project/templatepy)
 ![CI](https://github.com/larsrollik/templatepy/workflows/tests/badge.svg)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 
@@ -76,7 +78,7 @@ Template repo for python repositories & PyPi integration
   Central configuration file that replaces the traditional `setup.cfg` and `setup.py` files:
   - **Build System**: Specifies the build system requirements and configuration, as defined in [PEP 518](https://peps.python.org/pep-0518/) and [PEP 621](https://peps.python.org/pep-0621/).
   - **Package Metadata**: Includes the project's metadata (name, version, dependencies, etc.).
-  - **Code Formatting**: Configuration for tools like [black] and [flake8] (if used).
+  - **Code Formatting**: Configuration for tools like [ruff] and [mypy] (if used).
   - **Optional Dependencies**: Organizes extra dependencies for development or other environments.
 
 - **`setup.py`**:
@@ -213,7 +215,8 @@ The package will then be automatically uploaded to [PyPI](https://pypi.org/) or 
 3) Use bumpversion to bump the version (you can adjust patch, minor, or major based on what change you want), and create a release tag.
 4) Push both the feature branch and the release tag to the remote repository.
 5) Open a pull request using GitHub CLI (gh pr create) or the GitHub UI to merge the feature branch into main.
-6) After the PR is merged, delete the feature branch both locally and remotely.
+6) Review the pull request online or in the CLI (e.g.: `gh pr list`, `gh pr view <nr>`, `gh pr merge <nr> --merge --delete-branch`)
+7) After the PR is merged, delete the feature branch both locally and remotely.
 
 
 ### Example commands for the workflow:
@@ -245,7 +248,13 @@ gh pr create \
   --title "pr_title" \
   --body "pr_body"
 
-# 6. After the PR is accepted and merged, delete the feature branch locally and remotely
+# 6.
+gh pr list  # -> shows PRs and their IDs
+gh pr view <id>
+
+gh pr merge <id> --merge --delete-branch
+
+# 7. After the PR is accepted and merged, delete the feature branch locally and remotely
 git checkout main  # Switch back to main branch
 git pull origin main  # Ensure your main branch is up-to-date
 git branch -d feature/my-new-feature  # Delete the local feature branch
