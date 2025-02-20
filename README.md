@@ -7,7 +7,10 @@
 
 [bump2version]: (https://github.com/c4urself/bump2version
 [pre-commit]: https://pre-commit.com
-[black]: https://github.com/psf/black
+
+[//]: # ([black]: https://github.com/psf/black)
+[ruff]: https://docs.astral.sh/ruff
+[mypy]: https://mypy.readthedocs.io
 
 [pypi]: pypi.org
 [test.pypi]: test.pypi.org
@@ -28,7 +31,6 @@
 [![PyPI](https://img.shields.io/pypi/v/templatepy.svg)](https://pypi.org/project/templatepy)
 [![Wheel](https://img.shields.io/pypi/wheel/templatepy.svg)](https://pypi.org/project/templatepy)
 ![CI](https://github.com/larsrollik/templatepy/workflows/tests/badge.svg)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 
@@ -76,7 +78,7 @@ Template repo for python repositories & PyPi integration
   Central configuration file that replaces the traditional `setup.cfg` and `setup.py` files:
   - **Build System**: Specifies the build system requirements and configuration, as defined in [PEP 518](https://peps.python.org/pep-0518/) and [PEP 621](https://peps.python.org/pep-0621/).
   - **Package Metadata**: Includes the project's metadata (name, version, dependencies, etc.).
-  - **Code Formatting**: Configuration for tools like [black] and [flake8] (if used).
+  - **Code Formatting**: Configuration for tools like [ruff] and [mypy] (if used).
   - **Optional Dependencies**: Organizes extra dependencies for development or other environments.
 
 - **`setup.py`**:
