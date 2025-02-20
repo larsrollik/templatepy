@@ -74,8 +74,8 @@ select = [
     "YTT", # check for YAML issues
     "SIM", # detect unnecessary comprehensions, loops, etc.
     "PTH", # checks for pathlib best practices
-    "TCH",
-    "PYI",
+    "TCH", # checks for typing best practices
+    "PYI", # checks for pyi files
 ]
 ignore = []
 
