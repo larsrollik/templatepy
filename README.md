@@ -30,7 +30,7 @@
 [![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fgithub.com/larsrollik/templatepy)](https://github.com/larsrollik/templatepy)
 [![PyPI](https://img.shields.io/pypi/v/templatepy.svg)](https://pypi.org/project/templatepy)
 [![Wheel](https://img.shields.io/pypi/wheel/templatepy.svg)](https://pypi.org/project/templatepy)
-![CI](https://github.com/larsrollik/templatepy/workflows/tests/badge.svg)
+![CI](https://img.shields.io/github/actions/workflow/status/larsrollik/templatepy/pre-pr-checks.yaml?branch=main&label=build)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 
