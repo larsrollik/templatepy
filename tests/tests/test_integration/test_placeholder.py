@@ -12,6 +12,8 @@ def get_package_name() -> str:
 def test_package_functionality() -> None:
     """Test the package dynamically after installation."""
     package_name = get_package_name()
+    # Replace hyphens with underscores for import compatibility
+    package_name = package_name.replace("-", "_")
 
     # Install the package
     subprocess.run(["pip", "install", "."], check=True)
