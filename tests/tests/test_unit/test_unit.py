@@ -25,6 +25,7 @@ def test_package_installation() -> None:
 
     # Dynamically read the package name
     package_name = toml.load("pyproject.toml")["project"]["name"]
+    package_name = package_name.replace("-", "_")
 
     # Install the package
     subprocess.run([sys.executable, "-m", "pip", "install", "."], check=True)
