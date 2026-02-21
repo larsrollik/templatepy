@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "templatepy"
-version = "0.2.9"
+version = "0.2.10"
 authors = [
     { name = "Lars B. Rollik", email = "L.B.Rollik@protonmail.com" }
 ]
@@ -106,9 +106,18 @@ docstring-code-line-length = "dynamic"
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
-[tool.ruff.lint.per-file-ignores]
-".bumpversion.cfg" = ["E501", "W291", "W292"]
-
 [tool.mypy]
 warn_return_any = false
 ignore_missing_imports = true
+
+[tool.bumpversion]
+current_version = "0.2.10"
+commit = true
+tag = true
+tag_name = "v{new_version}"
+message = "Bump version: {current_version} → {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = "version = \"{current_version}\""
+replace = "version = \"{new_version}\""
