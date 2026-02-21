@@ -26,7 +26,7 @@ def test_package_installation() -> None:
     assert result.returncode == 0, "Package installation failed"
 
     # Uninstall the package
-    subprocess.run(["uv", "pip", "uninstall", "-y", package_name], check=True)
+    subprocess.run(["uv", "pip", "uninstall", package_name], check=True)
 
     # Verify the package is uninstalled
     result = subprocess.run(
