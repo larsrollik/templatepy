@@ -39,6 +39,69 @@ Template repo for python repositories & PyPi integration
 ---
 **Version: "0.2.9"**
 
+## Quick Start
+
+### Prerequisites
+
+- **Python 3.10+**
+- **UV** for dependency management (replaces pip/poetry/venv)
+
+### Installation
+
+1. **Install UV**:
+```bash
+   # macOS/Linux
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   
+   # Windows
+   powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+   
+   # Or with pip
+   pip install uv
+```
+
+2. **Clone and setup** (UV handles everything - Python, venv, dependencies):
+```bash
+   git clone https://github.com/jantine-praimera/templatepy.git
+   cd templatepy
+   
+   # One command does it all: installs Python, creates venv, installs deps
+   uv sync --all-extras
+```
+
+3. **Set up pre-commit hooks**:
+```bash
+   uv run pre-commit install
+```
+
+4. **Verify installation**:
+```bash
+   uv run pytest
+```
+
+### Development Workflow
+```bash
+# Run tests
+uv run pytest
+
+# Run linting
+uv run pre-commit run --all-files
+
+# Add a dependency
+uv add numpy
+
+# Add a dev dependency
+uv add --dev mypy
+
+# Run your script
+uv run python my_script.py
+
+# Build and publish
+uv build
+uv publish
+```
+
+
 
 ## Usage
 1. **Change** files according to overview in `TODO` below
@@ -87,7 +150,7 @@ Template repo for python repositories & PyPi integration
 
 ## CI Workflow Overview
 
-The CI workflow is triggered on push to `main` or when a tag is created. It ensures code quality and automates the release process:
+The CI/CD pipeline uses UV for fast, reliable builds and consists of three workflows. The CI workflow is triggered on push to `main` or when a tag is created. It ensures code quality and automates the release process:
 
 1. **Linting and Testing**:
    - `lint`: Checks code style with `black` and `flake8`, runs pre-commit hooks.
@@ -128,8 +191,13 @@ The pipeline ensures code quality, passing tests, and automated deployment on ne
 
 - `.bumpversion.cfg`:  config for [bump2version]
 
+
 ## TODO for **adapting** template to new project
 
+- [ ] **Set up your environment**:
+  - (1) Install UV: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+  - (2) Clone and sync: `uv sync --all-extras`
+  - (3) Set up pre-commit: `uv run pre-commit install`
 - [ ] Change package name:
   - (1) Rename the `templatepy` folder.
   - (2) Update all occurrences  of `templatepy` in `README.md`.
@@ -141,8 +209,15 @@ The pipeline ensures code quality, passing tests, and automated deployment on ne
 - [ ] Update `README.md` badge paths at the top.
 - [ ] Verify inclusions/exclusions of installable files/folders in `MANIFEST.in` and `pyproject.toml` under `[tool.setuptools]`.
 - [ ] Ensure `.gitignore` contains relevant entries for the new project.
-- [ ] Add all version string locations to `[tool.bump2version]` in `pyproject.toml`.
-  - Use syntax like `[bumpversion:file:templatepy/__init__.py]` to specify locations for version updates.
+- [ ] Add all version string locations to `[tool.bumpversion]` in `pyproject.toml`.
+  - Files are specified using `[[tool.bumpversion.files]]` array of tables syntax.
+  - Example:
+```toml
+    [[tool.bumpversion.files]]
+    filename = "templatepy/__init__.py"
+    search = '__version__ = "{current_version}"'
+    replace = '__version__ = "{new_version}"'
+```
 - [ ] To upload to [PyPI], follow the instructions in the section below.
 - [ ] To upload to [Zenodo] (if the repository is for a publication):
   - (1) Connect Zenodo to your GitHub account.
