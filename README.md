@@ -268,16 +268,16 @@ The package will then be automatically uploaded to [PyPI](https://pypi.org/) or 
   ### Bumping Versions
   ```bash
   # Bump patch version (e.g., from 1.2.3 to 1.2.4)
-  bump-my-version bump patch
+  uv run bump-my-version bump patch
 
   # Bump minor version (e.g., from 1.2.3 to 1.3.0)
-  bump-my-version bump minor
+  uv run bump-my-version bump minor
 
   # Bump major version (e.g., from 1.2.3 to 2.0.0)
-  bump-my-version bump major
+  uv run bump-my-version bump major
 
   # Bump for a release version (e.g., from 1.0.0.dev0 to 1.0.0.rc1 or 1.0.0)
-  bump-my-version bump release
+  uv run bump-my-version bump release
   ```
 
   ### Useful Commands
