@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "templatepy"
-version = "0.2.9"
+version = "0.2.10"
 authors = [
     { name = "Lars B. Rollik", email = "L.B.Rollik@protonmail.com" }
 ]
@@ -111,7 +111,7 @@ warn_return_any = false
 ignore_missing_imports = true
 
 [tool.bumpversion]
-current_version = "0.2.9"
+current_version = "0.2.10"
 commit = true
 tag = true
 tag_name = "v{new_version}"
