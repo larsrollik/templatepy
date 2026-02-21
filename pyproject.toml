@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "templatepy"
@@ -20,40 +20,43 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-#    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.12",
 ]
 requires-python = ">=3.10"
-dependencies = [
-    "black"
-]
+dependencies = []
 
 [project.urls]
 Repository = "https://github.com/larsrollik/templatepy"
 "Issue Tracker" = "https://github.com/larsrollik/templatepy/issues"
 
-
-[project.optional-dependencies]
-dev = [
-    "black",
-    "bump2version",
-    "pytest-cov",  # implies: pytest, coverage dependencies
-    "pre-commit",
-    "flake8",
-    "toml",
-]
-
-[project.entry-points.console_scripts]
+[project.scripts]
 templatepy-entrypoint = "templatepy.__init__:run"
 
-[tool.setuptools]
-zip-safe = false
-include-package-data = true
+[tool.hatch.build.targets.wheel]
+packages = ["templatepy"]
 
-[tool.setuptools.packages.find]
-where = [""]
+[tool.hatch.build.targets.sdist]
+include = [
+    "/templatepy",
+    "/tests",
+    "/README.md",
+    "/LICENSE",
+    "/pyproject.toml",
+]
+exclude = [
+    "*.pyc",
+    "__pycache__",
+]
 
-[tool.setuptools.package-data]
-"*" = ["*.config"]
+[dependency-groups]
+dev = [
+    "black",
+    "bump-my-version",
+    "pytest-cov",
+    "pre-commit",
+    "toml",
+    "types-pyyaml",
+]
 
 [tool.pytest.ini_options]
 addopts = "--cov=templatepy --cov-report=term-missing --maxfail=5"
@@ -61,54 +64,51 @@ addopts = "--cov=templatepy --cov-report=term-missing --maxfail=5"
 [tool.ruff]
 line-length = 88
 indent-width = 4
-include = ["*.pyi"]
-extend-exclude = ["*.eggs", "*.git", "*.hg", "*.mypy_cache", "*.tox", "*.venv", "*_build", "*buck-out", "*build", "*dist"]
+include = ["*.py", "*.pyi"]
+extend-exclude = [
+    "*.eggs",
+    "*.git",
+    "*.hg",
+    "*.mypy_cache",
+    "*.tox",
+    "*.venv",
+    "*_build",
+    "*buck-out",
+    "*build",
+    "*dist",
+]
 
 [tool.ruff.lint]
 select = [
-    "E",   # Pyflakes (general errors)
-    "W",   # Pycodestyle warnings
-    "F",   # Pyflakes checks (includes unused imports)
-    "I",   # isort (import sorting)
-    "UP",  # pyupgrade (Python syntax upgrades)
-    "YTT", # check for YAML issues
-    "SIM", # detect unnecessary comprehensions, loops, etc.
-    "PTH", # checks for pathlib best practices
-    "TCH", # checks for typing best practices
-    "PYI", # checks for pyi files
+    "E",
+    "W",
+    "F",
+    "I",
+    "UP",
+    "YTT",
+    "SIM",
+    "PTH",
+    "TCH",
+    "PYI",
 ]
 ignore = []
-
-# Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
 unfixable = []
 
 [tool.ruff.format]
-# Like Black, use double quotes for strings.
 quote-style = "double"
-# Like Black, indent with spaces, rather than tabs.
 indent-style = "space"
-# Like Black, respect magic trailing commas.
 skip-magic-trailing-comma = false
-# Like Black, automatically detect the appropriate line ending.
 line-ending = "auto"
-
-# Enable auto-formatting of code examples in docstrings. Markdown,
-# reStructuredText code/literal blocks and doctests are all supported.
-#
-# This is currently disabled by default, but it is planned for this
-# to be opt-out in the future.
 docstring-code-format = true
 docstring-code-line-length = "dynamic"
 
 [tool.ruff.lint.pydocstyle]
-convention = "numpy"  # Accepts: "google", "numpy", or "pep257".
+convention = "numpy"
 
 [tool.ruff.lint.per-file-ignores]
-".bumpversion.cfg" = ["E501", "W291", "W292"]  # Equivalent to excluding it from whitespace checks
+".bumpversion.cfg" = ["E501", "W291", "W292"]
 
 [tool.mypy]
-# strict = true
-# follow_imports = "silent"
 warn_return_any = false
 ignore_missing_imports = true

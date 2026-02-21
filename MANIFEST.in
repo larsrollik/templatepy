@@ -1,4 +1,0 @@
-prune tests
-prune data
-prune resources
-prune .github
