@@ -5,7 +5,7 @@
 [packaging]: https://packaging.python.org/en/latest/tutorials/packaging-projects
 [setup.cfg]: https://setuptools.pypa.io/en/latest/userguide/declarative_config.html
 
-[bump2version]: (https://github.com/c4urself/bump2version
+[bump-my-version]: https://github.com/callowayproject/bump-my-version
 [pre-commit]: https://pre-commit.com
 
 [//]: # ([black]: https://github.com/psf/black)
@@ -189,8 +189,6 @@ The pipeline ensures code quality, passing tests, and automated deployment on ne
 
 - `.gitignore`: ignored files/folders in git tools
 
-- `.bumpversion.cfg`:  config for [bump2version]
-
 
 ## TODO for **adapting** template to new project
 
@@ -241,28 +239,73 @@ The pipeline ensures code quality, passing tests, and automated deployment on ne
 3. **Create a New Release**:
    - On [GitHub](https://github.com/), create a new release manually via the **Releases** page.
      - Use a version number without a release extension (e.g., `x.y.z`).
-   - Alternatively, trigger the GitHub workflow configured for releasing by incrementing the version with `bump2version` (see info below)
+   - Alternatively, trigger the GitHub workflow configured for releasing by incrementing the version with `bump-my-version` (see info below)
    - Desperately, manually update the version strings in the relevant files and add git commit tag to trigger the release workflow on push
 
 The package will then be automatically uploaded to [PyPI](https://pypi.org/) or [Test PyPI](https://test.pypi.org/) as configured in your CI/CD workflow.
 
 
-## Using `bump2version` for Versioning
+## Using `bump-my-version` for Versioning
 
-`bump2version` is used to increment version numbers based on semantic versioning. Here’s how you can use it with the current setup to trigger a release:
+`bump-my-version` is the modern, actively maintained tool for incrementing version numbers based on semantic versioning.
 
-1. **Bumping the Minor Version**:
-   Increment the minor version (e.g., from `v1.2.3` to `v1.3.0`):
-   ```bash
-   # Bumping the minor Version:
-   bump2version minor
+  ### Installation
 
-   # Bumping the major version (e.g., from v1.2.3 to v2.0.0):
-   bump2version major
+  Already included in dev dependencies. To install manually:
+  ```bash
+  uv add --dev bump-my-version
+  ```
 
-   # Bumping for a release Version (e.g., from v1.0.0.dev to v1.0.0.rc or v1.0.0):
-   bump2version release
-   ```
+  ### Configuration
+
+  Version bumping is configured in `pyproject.toml` under `[tool.bumpversion]`:
+  - Specifies which files to update (e.g., `pyproject.toml`, `__init__.py`)
+  - Defines version format and parsing rules
+  - Controls Git tag settings and commit messages
+
+  See the `[tool.bumpversion]` section in `pyproject.toml` for full configuration.
+
+  ### Bumping Versions
+  ```bash
+  # Bump patch version (e.g., from 1.2.3 to 1.2.4)
+  bump-my-version bump patch
+
+  # Bump minor version (e.g., from 1.2.3 to 1.3.0)
+  bump-my-version bump minor
+
+  # Bump major version (e.g., from 1.2.3 to 2.0.0)
+  bump-my-version bump major
+
+  # Bump for a release version (e.g., from 1.0.0.dev0 to 1.0.0.rc1 or 1.0.0)
+  bump-my-version bump release
+  ```
+
+  ### Useful Commands
+  ```bash
+  # Show current version
+  bump-my-version show current_version
+
+  # Preview changes without executing (dry run)
+  bump-my-version bump patch --dry-run --verbose
+
+  # Show all configuration
+  bump-my-version show-bump
+
+  # List all parts that can be bumped
+  bump-my-version show part
+  ```
+
+  ### What Happens When You Bump
+
+  1. ✅ Updates version in all configured files
+  2. ✅ Creates a git commit with the change
+  3. ✅ Creates a git tag (e.g., `v0.3.0`)
+  4. ✅ Push the commit and tag to trigger release workflow
+  ```bash
+  # After bumping, push to remote
+  git push && git push --tags
+  ```
+
 
 ## Workflows Summary
 
@@ -379,12 +422,15 @@ Easily integrate GitHub CLI into workflows to perform repository tasks. See the 
 
 ## Common issues
 
-### `bump2version` fails on git tag with exit status 128
+### `bump-my-version` fails on git tag with exit status 128
 
-- check a signing key is configured: `git config --global user.signingkey` (see below for generating a key)
-- repo is a detached HEAD? check out a branch: `git checkout main`
-- there are changes that need to be committed? `git commit -am "commit message"`
-- tag already exists? `git tag` to list tags, `git tag -d <tag>` to delete a tag
+Common reasons and solutions:
+
+- Signing key not configured: Check with `git config --global user.signingkey` (see below for setup)
+- Detached HEAD: Check out a branch first: `git checkout main`
+- Uncommitted changes: Commit your changes: `git commit -am "commit message"`
+- Tag already exists: List tags with `git tag`, delete with `git tag -d <tag>`
+- No permission to push tags: Ensure you have push access to the repository
 
 ### No gpg key for signing commits
 - generate a key with `gpg --full-generate-key`

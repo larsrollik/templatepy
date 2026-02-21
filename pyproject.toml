@@ -106,9 +106,6 @@ docstring-code-line-length = "dynamic"
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
-[tool.ruff.lint.per-file-ignores]
-".bumpversion.cfg" = ["E501", "W291", "W292"]
-
 [tool.mypy]
 warn_return_any = false
 ignore_missing_imports = true
