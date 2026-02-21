@@ -62,7 +62,7 @@ Template repo for python repositories & PyPi integration
 
 2. **Clone and setup** (UV handles everything - Python, venv, dependencies):
 ```bash
-   git clone https://github.com/jantine-praimera/templatepy.git
+   git clone https://github.com/larsrollik/templatepy.git
    cd templatepy
    
    # One command does it all: installs Python, creates venv, installs deps
