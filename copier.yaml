@@ -1,5 +1,5 @@
 # templatepy — copier template configuration
-# Usage: copier copy gh:YOUR_ORG/templatepy my-new-project
+# Usage: copier copy gh:larsrollik/templatepy my-new-project
 # Update: copier update (inside an existing generated project)
 
 _subdirectory: template

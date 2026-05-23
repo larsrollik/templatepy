@@ -25,7 +25,7 @@ jobs:
           python-version: "[[ python_requires ]]"
 
       - name: Install dependencies
-        run: uv sync --group dev
+        run: uv sync --extra dev
 
       - name: Deploy
         run: uv run mkdocs gh-deploy --force

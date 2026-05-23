@@ -24,6 +24,7 @@ Repository = "https://github.com/[[ github_username ]]/[[ github_repo ]]"
 
 [tool.hatch.version]
 source = "vcs"
+fallback-version = "1.0.0"
 
 [tool.hatch.build.hooks.vcs]
 version-file = "src/[[ project_slug ]]/_version.py"
@@ -38,7 +39,7 @@ include = ["/src", "/tests", "/README.md", "/LICENSE", "/pyproject.toml"]
 # Dependencies
 # ---------------------------------------------------------------------------
 
-[dependency-groups]
+[project.optional-dependencies]
 dev = [
     "commitizen",
     "pytest>=8",
