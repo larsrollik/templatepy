@@ -30,4 +30,4 @@ jobs:
           generate_release_notes: false
 
       - name: Publish to PyPI
-        run: uv publish --trusted-publishing auto
+        run: uv publish --trusted-publishing automatic
