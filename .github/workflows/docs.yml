@@ -19,10 +19,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: astral-sh/setup-uv@v5
-
-      - name: Install mkdocs
-        run: uv tool install mkdocs --with mkdocs-material
-
       - name: Deploy
-        run: mkdocs gh-deploy --force
+        run: |
+          pip install mkdocs-material
+          mkdocs gh-deploy --force
