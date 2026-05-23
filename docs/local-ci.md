@@ -46,23 +46,9 @@ On first run, `act` asks which Docker image size to use:
 
 For this template's workflows, **Medium** is sufficient.
 
-## Passing secrets locally
-
-```sh
-act push --secret UV_PUBLISH_TOKEN=<token>
-# or using a secrets file:
-act push --secret-file .env.act
-```
-
-`.env.act` format (add to `.gitignore`):
-
-```
-UV_PUBLISH_TOKEN=pypi-...
-ANTHROPIC_API_KEY=sk-ant-...
-```
-
 ## Known limitations
 
 - `act` doesn't support all GitHub Actions features (e.g. `workflow_run`, some contexts)
 - Some actions that call back to GitHub APIs may behave differently
-- `secret-scanner/action` may not work locally — skip with `act push -j lint -j test`
+- `gitleaks` uses the `golang` language in its pre-commit hook and requires Go to be installed locally — see [Pre-commit hooks](pre-commit.md)
+- OIDC trusted publishing (`uv publish --trusted-publishing auto`) does not work locally; skip the publish step when testing `release.yml` with act

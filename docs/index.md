@@ -8,8 +8,8 @@ Copier template for modern Python packages.
 |---|---|
 | **uv** | Dependency management, virtual environments, running tools |
 | **hatchling + hatch-vcs** | Build backend; version derived from git tags |
-| **commitizen** | Conventional Commits enforcement; version bumping via `cz bump` |
-| **ruff** | Linting and formatting (replaces flake8 + black) |
+| **commitizen** | Conventional Commits enforcement; auto version bump on merge |
+| **ruff** | Linting and formatting |
 | **mypy** | Static type checking |
 | **pytest + pytest-cov** | Testing with coverage |
 | **MkDocs Material** | Documentation (this site) |
@@ -46,11 +46,15 @@ Copier reads `.copier-answers.yml` (committed in the generated repo) to know wha
 ## Day-to-day commands
 
 ```sh
-cz commit                        # structured commit (enforces Conventional Commits)
-uv run pytest                    # run tests
+cz commit                          # structured commit (enforces Conventional Commits)
+uv run pytest                      # run tests
 uv run pre-commit run --all-files  # run all lint checks manually
-cz bump                          # bump version, create tag
-git push --follow-tags           # push commits + tag → triggers release workflow
+```
+
+Version bumping and releasing are handled automatically by `bump.yml` and `release.yml` on every merge to `main`. Manual override:
+
+```sh
+cz bump && git push --follow-tags
 ```
 
 ## Project structure (generated)
@@ -72,6 +76,7 @@ my-project/
 │       ├── release.yml          # on v* tag: GitHub release + PyPI (OIDC)
 │       └── docs.yml             # deploy MkDocs to GitHub Pages on push to main
 ├── pyproject.toml
+├── CITATION.cff                 # citation metadata for Zenodo + GitHub
 ├── .pre-commit-config.yaml
-└── LICENSE                      # copyright + all rights reserved (replace before publishing)
+└── LICENSE
 ```

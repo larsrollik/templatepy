@@ -3,12 +3,11 @@
 ## Branch topology
 
 ```
-prod  ←── squash merge on each release (automated by release.yml)
 main  ←── PR merges from feature/bug/hotfix branches
-feature/*, bug/*, hotfix/*  ←── created from main
+feature/*, fix/*, chore/*  ←── created from main, deleted after merge
 ```
 
-`prod` always reflects the latest released state. `main` is the integration branch.
+Tags on `main` are the release record. There is no `prod` branch — `git checkout v1.2.3` gives you any released state.
 
 ## Step-by-step
 
@@ -20,30 +19,30 @@ git checkout -b feature/my-feature
 # 2. Do your work, committing with cz
 cz commit        # interactive prompt enforcing Conventional Commits
 
-# 3. Bump version before merging
-cz bump          # reads commits since last tag, determines patch/minor/major
-                 # creates a version tag (e.g. v1.3.0)
-
-# 4. Push branch + tag
-git push --follow-tags
-
-# 5. Open PR to main
+# 3. Push branch and open PR
+git push -u origin feature/my-feature
 gh pr create --base main --title "feat: my feature"
 
-# 6. CI runs: lint on push, tests on PR
-# 7. Merge PR
-gh pr merge --squash --delete-branch
+# 4. CI runs: lint on push, tests on PR to main — merge is blocked until green
 
-# 8. Tag push triggers release.yml automatically:
-#    - squash-merges main → prod
-#    - generates changelog from commits since previous tag
-#    - creates GitHub release with those notes
-#    - publishes to PyPI if UV_PUBLISH_TOKEN is configured
+# 5. Merge PR (rebase or squash)
+gh pr merge --rebase --delete-branch
+
+# 6. bump.yml fires automatically on push to main:
+#    → reads commits since last tag
+#    → runs cz bump --yes to determine patch/minor/major
+#    → creates version tag (e.g. v1.3.0) and pushes it
+
+# 7. release.yml fires on the new tag:
+#    → builds wheel + sdist
+#    → creates GitHub release with dist files attached
+#    → publishes to PyPI via OIDC trusted publishing (no stored token)
+#    → Zenodo webhook archives the release (if enabled)
 ```
 
-## How `cz bump` determines the version increment
+## How version bumps are determined
 
-Commitizen reads all commits since the previous tag and applies these rules:
+Commitizen reads all commits since the previous tag:
 
 | Commits contain | Bump |
 |---|---|
@@ -51,18 +50,20 @@ Commitizen reads all commits since the previous tag and applies these rules:
 | at least one `feat:` | **minor** `0.x.0` |
 | `BREAKING CHANGE:` footer or `feat!:`/`fix!:` | **major** `x.0.0` |
 
-Override manually if needed:
+If there are no bumpable commits since the last tag, `bump.yml` exits silently — no error, no tag.
+
+## Manual bump (override)
+
+Automated bumping covers most cases. Override when needed:
 
 ```sh
 cz bump --increment PATCH
 cz bump --increment MINOR
 cz bump --increment MAJOR
-cz bump --yes               # skip confirmation prompt
+git push --follow-tags
 ```
 
 ## Conventional Commits format
-
-The `commitizen` pre-commit hook rejects messages that don't conform:
 
 ```
 <type>[optional scope]: <short description>
@@ -76,15 +77,16 @@ Common types: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `ci`, `build`.
 
 ## Common issues
 
-**`cz bump` fails with exit status 128**
+**`bump.yml` pushed a tag but `release.yml` didn't trigger**
+
+GitHub prevents downstream `push` triggers when `GITHUB_TOKEN` is the actor. If this happens, store a PAT as `BUMP_TOKEN` and set `token: ${{ secrets.BUMP_TOKEN }}` in the checkout step of `bump.yml`.
+
+**`cz bump` fails with exit code 128**
 
 - Detached HEAD → `git checkout main` first
-- Uncommitted changes → `git commit` or `git stash`
-- Tag already exists → `git tag` to list, `git tag -d <tag>` to remove
-- GPG signing failure → see [GPG signing](gpg-signing.md)
+- Uncommitted changes → commit or stash first
+- Tag already exists → `git tag` to list, `git tag -d <tag>` to remove locally
 
-**Tag pushed but `release.yml` didn't trigger**
+**GPG signing failure**
 
-- Verify the tag matches `v[0-9]*` pattern
-- Check Actions tab on GitHub for workflow runs
-- If CI pushed the tag using `GITHUB_TOKEN`, downstream `push` triggers won't fire (GitHub loop prevention). Use a PAT stored as `BUMP_TOKEN` instead, and configure the checkout step: `token: ${{ secrets.BUMP_TOKEN }}`
+See [GPG signing](gpg-signing.md).

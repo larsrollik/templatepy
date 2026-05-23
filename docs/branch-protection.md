@@ -1,6 +1,6 @@
 # Branch protection
 
-Configure branch protection rules on GitHub to enforce the gitflow.
+Configure branch protection rules on GitHub to enforce the CI gate and allow automated version bumping.
 
 ## Recommended rules for `main`
 
@@ -14,24 +14,22 @@ Configure branch protection rules on GitHub to enforce the gitflow.
 | Require status checks to pass | ✓ | Blocks merge on CI failure |
 | Required status checks | `CI` | The aggregate job in `ci.yml` |
 | Require branches to be up to date | ✓ | No stale merges |
-| Restrict who can push | maintainers only | Prevents accidental direct pushes |
+| Require linear history | ✓ | Keeps git log readable |
 
-## Recommended rules for `prod`
+## Allow `bump.yml` to push back to `main`
 
-Branch name pattern: `prod`
+`bump.yml` creates a version tag and pushes it after merging. GitHub's default branch protection blocks this. Fix:
 
-| Setting | Value | Reason |
-|---|---|---|
-| Restrict who can push | nobody / automation only | Only `release.yml` (via GITHUB_TOKEN) should write here |
-| Require a pull request | optional | `release.yml` pushes directly; a PR rule would block it unless the token has admin bypass |
+**Repository → Settings → Branches → main rule → Allow specified actors to bypass required pull requests**
 
-!!! note
-    `release.yml` pushes to `prod` using `GITHUB_TOKEN` with `permissions: contents: write`. If you enable "Require PR" on `prod`, you'll need to add a bypass rule for the `github-actions[bot]` actor (GitHub's branch protection UI supports this).
+Add: `github-actions[bot]`
+
+Without this, the bump workflow will fail with a 403 when trying to push the tag.
 
 ## Required status check name
 
-The aggregate job in `ci.yml` is named `CI`. This is what to enter in the required status checks field. It only passes when both `lint` and `secrets-scan` succeed, and only runs when both have completed.
+The aggregate job in `ci.yml` is named `CI`. This is what to enter in the required status checks field. It passes only when `lint` and `secrets-scan` both succeed.
 
 ## Rulesets (modern alternative)
 
-GitHub now offers **Rulesets** (Repository → Settings → Rules → Rulesets) as a more flexible replacement for classic branch protection. Rulesets support bypass lists, actor-based rules, and can be applied to tag patterns too (useful for protecting `v*` tags from deletion).
+GitHub now offers **Rulesets** (Repository → Settings → Rules → Rulesets) as a more flexible replacement for classic branch protection. Rulesets support bypass lists, actor-based rules, and can be applied to tag patterns (useful for protecting `v*` tags from deletion or force-push).

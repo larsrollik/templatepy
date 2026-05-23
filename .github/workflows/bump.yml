@@ -27,7 +27,7 @@ jobs:
 
       - name: Bump version
         run: |
-          uvx commitizen bump --yes || EXIT=$?
+          uvx --from commitizen cz bump --yes || EXIT=$?
           if [ "${EXIT:-0}" -eq 21 ]; then
             echo "No bumpable commits since last tag — skipping."
             exit 0
