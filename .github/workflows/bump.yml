@@ -33,4 +33,6 @@ jobs:
             exit 0
           fi
           [ "${EXIT:-0}" -eq 0 ] || exit $EXIT
-          git push --follow-tags
+          VERSION=$(cat VERSION)
+          git push origin HEAD:main
+          git push origin "v${VERSION}"
