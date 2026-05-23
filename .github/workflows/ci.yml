@@ -37,6 +37,9 @@ jobs:
             --data github_username="testuser" \
             --data github_repo="test-project"
 
+      - name: List generated output
+        run: find /tmp/test-output -type f | sort
+
       - name: Check generated structure
         run: |
           test -f /tmp/test-output/pyproject.toml
