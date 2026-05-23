@@ -16,15 +16,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: astral-sh/setup-uv@v5
 
       - name: Install copier
         run: uv tool install copier
 
-      - name: Validate copier.yaml
-        run: copier copy . /tmp/test-output --defaults --overwrite --trust
-        # --defaults uses question defaults; --trust allows template execution
+      - name: Validate copier.yaml — generate test project
+        run: |
+          copier copy . /tmp/test-output \
+            --defaults \
+            --overwrite \
+            --trust \
+            --data project_name="Test Project" \
+            --data project_description="A test project" \
+            --data author_name="Test Author" \
+            --data author_email="test@example.com" \
+            --data github_username="testuser" \
+            --data github_repo="test-project"
 
       - name: Check generated structure
         run: |
