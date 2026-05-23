@@ -21,5 +21,8 @@ jobs:
 
       - uses: astral-sh/setup-uv@v5
 
+      - name: Install mkdocs
+        run: uv tool install mkdocs --with mkdocs-material
+
       - name: Deploy
-        run: uvx --with mkdocs-material mkdocs gh-deploy --force
+        run: mkdocs gh-deploy --force
