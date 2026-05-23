@@ -26,7 +26,7 @@ Repository = "https://github.com/larsrollik/templatepy"
 
 [tool.hatch.version]
 source = "vcs"
-fallback-version = "0.2.7"
+fallback-version = "0.3.0"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/templatepy"]
@@ -36,9 +36,10 @@ packages = ["src/templatepy"]
 "template" = "templatepy/template"
 
 [tool.hatch.build.targets.sdist]
-include = ["src", "copier.yaml", "template", "CITATION.cff", "README.md", "LICENSE"]
+include = ["src", "copier.yaml", "template", "CITATION.cff", "README.md", "VERSION"]
 
 [tool.commitizen]
-version_provider = "scm"
+version_provider = "commitizen"
+version_files = ["VERSION"]
 tag_format = "v$version"
 update_changelog_on_bump = false
