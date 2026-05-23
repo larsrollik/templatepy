@@ -373,63 +373,24 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#setup" class="md-nav__link">
+  <a href="#one-time-setup-on-pypi" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setup
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Setup">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-create-a-pypi-account" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Create a PyPI account
+        One-time setup on PyPI
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#2-generate-an-api-token" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#trigger-a-release" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Generate an API token
+        Trigger a release
       
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-add-the-token-to-github" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Add the token to GitHub
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-trigger-a-release" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Trigger a release
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -445,10 +406,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#manual-publish" class="md-nav__link">
+  <a href="#manual-publish-local" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Manual publish
+        Manual publish (local)
       
     </span>
   </a>
@@ -456,10 +417,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#trusted-publishing-recommended-alternative" class="md-nav__link">
+  <a href="#zenodo-archiving" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Trusted publishing (recommended alternative)
+        Zenodo archiving
       
     </span>
   </a>
@@ -582,63 +543,24 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#setup" class="md-nav__link">
+  <a href="#one-time-setup-on-pypi" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setup
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Setup">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-create-a-pypi-account" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Create a PyPI account
+        One-time setup on PyPI
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#2-generate-an-api-token" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#trigger-a-release" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Generate an API token
+        Trigger a release
       
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-add-the-token-to-github" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Add the token to GitHub
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-trigger-a-release" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Trigger a release
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -654,10 +576,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#manual-publish" class="md-nav__link">
+  <a href="#manual-publish-local" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Manual publish
+        Manual publish (local)
       
     </span>
   </a>
@@ -665,10 +587,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#trusted-publishing-recommended-alternative" class="md-nav__link">
+  <a href="#zenodo-archiving" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Trusted publishing (recommended alternative)
+        Zenodo archiving
       
     </span>
   </a>
@@ -696,67 +618,43 @@
 
 
 <h1 id="pypi-publishing">PyPI publishing<a class="headerlink" href="#pypi-publishing" title="Permanent link">&para;</a></h1>
-<p>The <code>release.yml</code> workflow builds and publishes to PyPI automatically when a <code>v*</code> tag is pushed. It exits cleanly (green) if no token is configured, so the step is safe to leave in even for private packages.</p>
-<h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
-<h3 id="1-create-a-pypi-account">1. Create a PyPI account<a class="headerlink" href="#1-create-a-pypi-account" title="Permanent link">&para;</a></h3>
-<p>Register at <a href="https://pypi.org">pypi.org</a>. Enable 2FA (required for publishing since 2024).</p>
-<h3 id="2-generate-an-api-token">2. Generate an API token<a class="headerlink" href="#2-generate-an-api-token" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Go to <strong>PyPI → Account settings → API tokens → Add API token</strong></li>
-<li>Scope: <strong>Entire account</strong> for a new project (switch to per-project once the package exists)</li>
-<li>Copy the token — it is only shown once</li>
-</ul>
-<h3 id="3-add-the-token-to-github">3. Add the token to GitHub<a class="headerlink" href="#3-add-the-token-to-github" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Repository → Settings → Secrets and variables → Actions → New repository secret</strong></li>
-<li>Name: <code>UV_PUBLISH_TOKEN</code></li>
-<li>Value: paste the PyPI token</li>
-</ul>
-<h3 id="4-trigger-a-release">4. Trigger a release<a class="headerlink" href="#4-trigger-a-release" title="Permanent link">&para;</a></h3>
-<p>Push a version tag from your feature branch:</p>
+<p>The <code>release.yml</code> workflow publishes to PyPI automatically when a <code>v*</code> tag is pushed. Authentication uses <strong>OIDC trusted publishing</strong> — no API token stored in GitHub secrets.</p>
+<h2 id="one-time-setup-on-pypi">One-time setup on PyPI<a class="headerlink" href="#one-time-setup-on-pypi" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Register at <a href="https://pypi.org">pypi.org</a> and enable 2FA (required since 2024)</li>
+<li>Go to <strong>Account → Publishing → Add a new pending publisher</strong></li>
+<li>Fill in:</li>
+<li>PyPI project name: your package name</li>
+<li>GitHub owner: your GitHub username or org</li>
+<li>Repository name: your repo name</li>
+<li>Workflow filename: <code>release.yml</code></li>
+<li>Environment name: <em>(leave blank)</em></li>
+<li>Click <strong>Add</strong></li>
+</ol>
+<p>That's it. The workflow handles authentication automatically — no token, no secret.</p>
+<h2 id="trigger-a-release">Trigger a release<a class="headerlink" href="#trigger-a-release" title="Permanent link">&para;</a></h2>
+<p>Releases are triggered automatically by <code>bump.yml</code> on every merge to <code>main</code>. To trigger manually:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>cz<span class="w"> </span>bump
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>git<span class="w"> </span>push<span class="w"> </span>--follow-tags
 </code></pre></div>
 <p>The <code>release.yml</code> workflow will:</p>
 <ol>
-<li>Squash-merge <code>main</code> → <code>prod</code></li>
-<li>Generate changelog</li>
-<li>Create a GitHub release</li>
-<li>Run <code>uv build</code> + <code>uv publish</code> using the token</li>
+<li>Build wheel + sdist with <code>uv build</code></li>
+<li>Create a GitHub release with the dist files attached</li>
+<li>Publish to PyPI with <code>uv publish --trusted-publishing auto</code></li>
 </ol>
 <h2 id="test-pypi">Test PyPI<a class="headerlink" href="#test-pypi" title="Permanent link">&para;</a></h2>
-<p>To publish to <a href="https://test.pypi.org">test.pypi.org</a> first:</p>
-<ol>
-<li>Register separately at test.pypi.org and generate a token there</li>
-<li>Edit <code>release.yml</code> — replace the publish step with:</li>
-</ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build and publish to Test PyPI</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">env</span><span class="p">:</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">UV_PUBLISH_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.TEST_PYPI_TOKEN }}</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="no">if [ -z &quot;$UV_PUBLISH_TOKEN&quot; ]; then</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="no">echo &quot;TEST_PYPI_TOKEN not configured — skipping.&quot;</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="no">exit 0</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="no">fi</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="no">uv build</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="no">uv publish --publish-url https://test.pypi.org/legacy/</span>
+<p>To publish to <a href="https://test.pypi.org">test.pypi.org</a> first, add a pending publisher there (same steps). Then temporarily edit <code>release.yml</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Publish to Test PyPI</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv publish --trusted-publishing auto --publish-url https://test.pypi.org/legacy/</span>
 </code></pre></div>
-<h2 id="manual-publish">Manual publish<a class="headerlink" href="#manual-publish" title="Permanent link">&para;</a></h2>
+<h2 id="manual-publish-local">Manual publish (local)<a class="headerlink" href="#manual-publish-local" title="Permanent link">&para;</a></h2>
+<p>Requires a PyPI API token:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uv<span class="w"> </span>build
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nv">UV_PUBLISH_TOKEN</span><span class="o">=</span>&lt;token&gt;<span class="w"> </span>uv<span class="w"> </span>publish
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nv">UV_PUBLISH_TOKEN</span><span class="o">=</span>pypi-...<span class="w"> </span>uv<span class="w"> </span>publish
 </code></pre></div>
-<h2 id="trusted-publishing-recommended-alternative">Trusted publishing (recommended alternative)<a class="headerlink" href="#trusted-publishing-recommended-alternative" title="Permanent link">&para;</a></h2>
-<p>PyPI supports <a href="https://docs.pypi.org/trusted-publishers/">Trusted Publishing</a> via OIDC — no long-lived token needed. Configure in <code>release.yml</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">permissions</span><span class="p">:</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">id-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">   </span><span class="c1"># required for trusted publishing</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Publish to PyPI</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pypa/gh-action-pypi-publish@release/v1</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="nt">skip-existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</code></pre></div>
-<p>And on PyPI: <strong>Manage project → Publishing → Add a new publisher</strong> with your GitHub org/repo/workflow details.</p>
+<h2 id="zenodo-archiving">Zenodo archiving<a class="headerlink" href="#zenodo-archiving" title="Permanent link">&para;</a></h2>
+<p>If the Zenodo webhook is enabled, every GitHub release automatically creates a Zenodo record. See <code>CITATION.cff</code> for the metadata format. After the first release, copy the concept DOI from Zenodo and add it to <code>CITATION.cff</code>.</p>
 
 
 

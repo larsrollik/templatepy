@@ -463,10 +463,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#recommended-rules-for-prod" class="md-nav__link">
+  <a href="#allow-bumpyml-to-push-back-to-main" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Recommended rules for prod
+        Allow bump.yml to push back to main
       
     </span>
   </a>
@@ -541,10 +541,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#recommended-rules-for-prod" class="md-nav__link">
+  <a href="#allow-bumpyml-to-push-back-to-main" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Recommended rules for prod
+        Allow bump.yml to push back to main
       
     </span>
   </a>
@@ -594,7 +594,7 @@
 
 
 <h1 id="branch-protection">Branch protection<a class="headerlink" href="#branch-protection" title="Permanent link">&para;</a></h1>
-<p>Configure branch protection rules on GitHub to enforce the gitflow.</p>
+<p>Configure branch protection rules on GitHub to enforce the CI gate and allow automated version bumping.</p>
 <h2 id="recommended-rules-for-main">Recommended rules for <code>main</code><a class="headerlink" href="#recommended-rules-for-main" title="Permanent link">&para;</a></h2>
 <p><strong>Repository → Settings → Branches → Add rule</strong>, branch name pattern: <code>main</code></p>
 <table>
@@ -637,43 +637,21 @@
 <td>No stale merges</td>
 </tr>
 <tr>
-<td>Restrict who can push</td>
-<td>maintainers only</td>
-<td>Prevents accidental direct pushes</td>
+<td>Require linear history</td>
+<td>✓</td>
+<td>Keeps git log readable</td>
 </tr>
 </tbody>
 </table>
-<h2 id="recommended-rules-for-prod">Recommended rules for <code>prod</code><a class="headerlink" href="#recommended-rules-for-prod" title="Permanent link">&para;</a></h2>
-<p>Branch name pattern: <code>prod</code></p>
-<table>
-<thead>
-<tr>
-<th>Setting</th>
-<th>Value</th>
-<th>Reason</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Restrict who can push</td>
-<td>nobody / automation only</td>
-<td>Only <code>release.yml</code> (via GITHUB_TOKEN) should write here</td>
-</tr>
-<tr>
-<td>Require a pull request</td>
-<td>optional</td>
-<td><code>release.yml</code> pushes directly; a PR rule would block it unless the token has admin bypass</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><code>release.yml</code> pushes to <code>prod</code> using <code>GITHUB_TOKEN</code> with <code>permissions: contents: write</code>. If you enable "Require PR" on <code>prod</code>, you'll need to add a bypass rule for the <code>github-actions[bot]</code> actor (GitHub's branch protection UI supports this).</p>
-</div>
+<h2 id="allow-bumpyml-to-push-back-to-main">Allow <code>bump.yml</code> to push back to <code>main</code><a class="headerlink" href="#allow-bumpyml-to-push-back-to-main" title="Permanent link">&para;</a></h2>
+<p><code>bump.yml</code> creates a version tag and pushes it after merging. GitHub's default branch protection blocks this. Fix:</p>
+<p><strong>Repository → Settings → Branches → main rule → Allow specified actors to bypass required pull requests</strong></p>
+<p>Add: <code>github-actions[bot]</code></p>
+<p>Without this, the bump workflow will fail with a 403 when trying to push the tag.</p>
 <h2 id="required-status-check-name">Required status check name<a class="headerlink" href="#required-status-check-name" title="Permanent link">&para;</a></h2>
-<p>The aggregate job in <code>ci.yml</code> is named <code>CI</code>. This is what to enter in the required status checks field. It only passes when both <code>lint</code> and <code>secrets-scan</code> succeed, and only runs when both have completed.</p>
+<p>The aggregate job in <code>ci.yml</code> is named <code>CI</code>. This is what to enter in the required status checks field. It passes only when <code>lint</code> and <code>secrets-scan</code> both succeed.</p>
 <h2 id="rulesets-modern-alternative">Rulesets (modern alternative)<a class="headerlink" href="#rulesets-modern-alternative" title="Permanent link">&para;</a></h2>
-<p>GitHub now offers <strong>Rulesets</strong> (Repository → Settings → Rules → Rulesets) as a more flexible replacement for classic branch protection. Rulesets support bypass lists, actor-based rules, and can be applied to tag patterns too (useful for protecting <code>v*</code> tags from deletion).</p>
+<p>GitHub now offers <strong>Rulesets</strong> (Repository → Settings → Rules → Rulesets) as a more flexible replacement for classic branch protection. Rulesets support bypass lists, actor-based rules, and can be applied to tag patterns (useful for protecting <code>v*</code> tags from deletion or force-push).</p>
 
 
 

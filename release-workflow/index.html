@@ -341,10 +341,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-cz-bump-determines-the-version-increment" class="md-nav__link">
+  <a href="#how-version-bumps-are-determined" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How cz bump determines the version increment
+        How version bumps are determined
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual-bump-override" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual bump (override)
       
     </span>
   </a>
@@ -565,10 +576,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-cz-bump-determines-the-version-increment" class="md-nav__link">
+  <a href="#how-version-bumps-are-determined" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How cz bump determines the version increment
+        How version bumps are determined
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual-bump-override" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual bump (override)
       
     </span>
   </a>
@@ -619,11 +641,10 @@
 
 <h1 id="release-workflow">Release workflow<a class="headerlink" href="#release-workflow" title="Permanent link">&para;</a></h1>
 <h2 id="branch-topology">Branch topology<a class="headerlink" href="#branch-topology" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>prod  ←── squash merge on each release (automated by release.yml)
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>main  ←── PR merges from feature/bug/hotfix branches
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>feature/*, bug/*, hotfix/*  ←── created from main
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>main  ←── PR merges from feature/bug/hotfix branches
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>feature/*, fix/*, chore/*  ←── created from main, deleted after merge
 </code></pre></div>
-<p><code>prod</code> always reflects the latest released state. <code>main</code> is the integration branch.</p>
+<p>Tags on <code>main</code> are the release record. There is no <code>prod</code> branch — <code>git checkout v1.2.3</code> gives you any released state.</p>
 <h2 id="step-by-step">Step-by-step<a class="headerlink" href="#step-by-step" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># 1. Create a branch</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>git<span class="w"> </span>checkout<span class="w"> </span>main<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>pull
@@ -632,28 +653,28 @@
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># 2. Do your work, committing with cz</span>
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>cz<span class="w"> </span>commit<span class="w">        </span><span class="c1"># interactive prompt enforcing Conventional Commits</span>
 <a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1"># 3. Bump version before merging</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>cz<span class="w"> </span>bump<span class="w">          </span><span class="c1"># reads commits since last tag, determines patch/minor/major</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">                 </span><span class="c1"># creates a version tag (e.g. v1.3.0)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1"># 3. Push branch and open PR</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>feature/my-feature
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>gh<span class="w"> </span>pr<span class="w"> </span>create<span class="w"> </span>--base<span class="w"> </span>main<span class="w"> </span>--title<span class="w"> </span><span class="s2">&quot;feat: my feature&quot;</span>
 <a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="c1"># 4. Push branch + tag</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>git<span class="w"> </span>push<span class="w"> </span>--follow-tags
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="c1"># 5. Open PR to main</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>gh<span class="w"> </span>pr<span class="w"> </span>create<span class="w"> </span>--base<span class="w"> </span>main<span class="w"> </span>--title<span class="w"> </span><span class="s2">&quot;feat: my feature&quot;</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="c1"># 6. CI runs: lint on push, tests on PR</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="c1"># 7. Merge PR</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>gh<span class="w"> </span>pr<span class="w"> </span>merge<span class="w"> </span>--squash<span class="w"> </span>--delete-branch
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="c1"># 4. CI runs: lint on push, tests on PR to main — merge is blocked until green</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="c1"># 5. Merge PR (rebase or squash)</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>gh<span class="w"> </span>pr<span class="w"> </span>merge<span class="w"> </span>--rebase<span class="w"> </span>--delete-branch
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="c1"># 6. bump.yml fires automatically on push to main:</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="c1">#    → reads commits since last tag</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="c1">#    → runs cz bump --yes to determine patch/minor/major</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="c1">#    → creates version tag (e.g. v1.3.0) and pushes it</span>
 <a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="c1"># 8. Tag push triggers release.yml automatically:</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="c1">#    - squash-merges main → prod</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="c1">#    - generates changelog from commits since previous tag</span>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="c1">#    - creates GitHub release with those notes</span>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="c1">#    - publishes to PyPI if UV_PUBLISH_TOKEN is configured</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="c1"># 7. release.yml fires on the new tag:</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="c1">#    → builds wheel + sdist</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="c1">#    → creates GitHub release with dist files attached</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="c1">#    → publishes to PyPI via OIDC trusted publishing (no stored token)</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="c1">#    → Zenodo webhook archives the release (if enabled)</span>
 </code></pre></div>
-<h2 id="how-cz-bump-determines-the-version-increment">How <code>cz bump</code> determines the version increment<a class="headerlink" href="#how-cz-bump-determines-the-version-increment" title="Permanent link">&para;</a></h2>
-<p>Commitizen reads all commits since the previous tag and applies these rules:</p>
+<h2 id="how-version-bumps-are-determined">How version bumps are determined<a class="headerlink" href="#how-version-bumps-are-determined" title="Permanent link">&para;</a></h2>
+<p>Commitizen reads all commits since the previous tag:</p>
 <table>
 <thead>
 <tr>
@@ -676,14 +697,15 @@
 </tr>
 </tbody>
 </table>
-<p>Override manually if needed:</p>
+<p>If there are no bumpable commits since the last tag, <code>bump.yml</code> exits silently — no error, no tag.</p>
+<h2 id="manual-bump-override">Manual bump (override)<a class="headerlink" href="#manual-bump-override" title="Permanent link">&para;</a></h2>
+<p>Automated bumping covers most cases. Override when needed:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cz<span class="w"> </span>bump<span class="w"> </span>--increment<span class="w"> </span>PATCH
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>cz<span class="w"> </span>bump<span class="w"> </span>--increment<span class="w"> </span>MINOR
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>cz<span class="w"> </span>bump<span class="w"> </span>--increment<span class="w"> </span>MAJOR
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>cz<span class="w"> </span>bump<span class="w"> </span>--yes<span class="w">               </span><span class="c1"># skip confirmation prompt</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>git<span class="w"> </span>push<span class="w"> </span>--follow-tags
 </code></pre></div>
 <h2 id="conventional-commits-format">Conventional Commits format<a class="headerlink" href="#conventional-commits-format" title="Permanent link">&para;</a></h2>
-<p>The <code>commitizen</code> pre-commit hook rejects messages that don't conform:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>&lt;type&gt;[optional scope]: &lt;short description&gt;
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>[optional body]
@@ -692,19 +714,16 @@
 </code></pre></div>
 <p>Common types: <code>feat</code>, <code>fix</code>, <code>docs</code>, <code>chore</code>, <code>refactor</code>, <code>test</code>, <code>ci</code>, <code>build</code>.</p>
 <h2 id="common-issues">Common issues<a class="headerlink" href="#common-issues" title="Permanent link">&para;</a></h2>
-<p><strong><code>cz bump</code> fails with exit status 128</strong></p>
+<p><strong><code>bump.yml</code> pushed a tag but <code>release.yml</code> didn't trigger</strong></p>
+<p>GitHub prevents downstream <code>push</code> triggers when <code>GITHUB_TOKEN</code> is the actor. If this happens, store a PAT as <code>BUMP_TOKEN</code> and set <code>token: ${{ secrets.BUMP_TOKEN }}</code> in the checkout step of <code>bump.yml</code>.</p>
+<p><strong><code>cz bump</code> fails with exit code 128</strong></p>
 <ul>
 <li>Detached HEAD → <code>git checkout main</code> first</li>
-<li>Uncommitted changes → <code>git commit</code> or <code>git stash</code></li>
-<li>Tag already exists → <code>git tag</code> to list, <code>git tag -d &lt;tag&gt;</code> to remove</li>
-<li>GPG signing failure → see <a href="../gpg-signing/">GPG signing</a></li>
+<li>Uncommitted changes → commit or stash first</li>
+<li>Tag already exists → <code>git tag</code> to list, <code>git tag -d &lt;tag&gt;</code> to remove locally</li>
 </ul>
-<p><strong>Tag pushed but <code>release.yml</code> didn't trigger</strong></p>
-<ul>
-<li>Verify the tag matches <code>v[0-9]*</code> pattern</li>
-<li>Check Actions tab on GitHub for workflow runs</li>
-<li>If CI pushed the tag using <code>GITHUB_TOKEN</code>, downstream <code>push</code> triggers won't fire (GitHub loop prevention). Use a PAT stored as <code>BUMP_TOKEN</code> instead, and configure the checkout step: <code>token: ${{ secrets.BUMP_TOKEN }}</code></li>
-</ul>
+<p><strong>GPG signing failure</strong></p>
+<p>See <a href="../gpg-signing/">GPG signing</a>.</p>
 
 
 

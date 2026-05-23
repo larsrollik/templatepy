@@ -658,11 +658,11 @@
 </tr>
 <tr>
 <td><strong>commitizen</strong></td>
-<td>Conventional Commits enforcement; version bumping via <code>cz bump</code></td>
+<td>Conventional Commits enforcement; auto version bump on merge</td>
 </tr>
 <tr>
 <td><strong>ruff</strong></td>
-<td>Linting and formatting (replaces flake8 + black)</td>
+<td>Linting and formatting</td>
 </tr>
 <tr>
 <td><strong>mypy</strong></td>
@@ -699,31 +699,33 @@
 </code></pre></div>
 <p>Copier reads <code>.copier-answers.yml</code> (committed in the generated repo) to know what answers were given and which template version was used.</p>
 <h2 id="day-to-day-commands">Day-to-day commands<a class="headerlink" href="#day-to-day-commands" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cz<span class="w"> </span>commit<span class="w">                        </span><span class="c1"># structured commit (enforces Conventional Commits)</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w">                    </span><span class="c1"># run tests</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cz<span class="w"> </span>commit<span class="w">                          </span><span class="c1"># structured commit (enforces Conventional Commits)</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w">                      </span><span class="c1"># run tests</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files<span class="w">  </span><span class="c1"># run all lint checks manually</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>cz<span class="w"> </span>bump<span class="w">                          </span><span class="c1"># bump version, create tag</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>git<span class="w"> </span>push<span class="w"> </span>--follow-tags<span class="w">           </span><span class="c1"># push commits + tag → triggers release workflow</span>
+</code></pre></div>
+<p>Version bumping and releasing are handled automatically by <code>bump.yml</code> and <code>release.yml</code> on every merge to <code>main</code>. Manual override:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>cz<span class="w"> </span>bump<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>push<span class="w"> </span>--follow-tags
 </code></pre></div>
 <h2 id="project-structure-generated">Project structure (generated)<a class="headerlink" href="#project-structure-generated" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>my-project/
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>├── src/
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>│   └── my_project/
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>│       ├── __init__.py          # version via importlib.metadata
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>│       └── py.typed             # PEP 561 typed marker
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>├── tests/
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>│   ├── conftest.py
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>│   ├── unit/
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>│   └── integration/
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>├── .github/
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>│   └── workflows/
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>│       ├── ci.yml               # lint on push; tests on PR to main
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>│       ├── bump.yml             # auto cz bump on merge to main
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>│       ├── release.yml          # on v* tag: GitHub release + PyPI (OIDC)
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>│       └── docs.yml             # deploy MkDocs to GitHub Pages on push to main
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>├── pyproject.toml
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>├── .pre-commit-config.yaml
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>└── LICENSE                      # copyright + all rights reserved (replace before publishing)
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>my-project/
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>├── src/
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>│   └── my_project/
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>│       ├── __init__.py          # version via importlib.metadata
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>│       └── py.typed             # PEP 561 typed marker
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>├── tests/
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>│   ├── conftest.py
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>│   ├── unit/
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>│   └── integration/
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>├── .github/
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>│   └── workflows/
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>│       ├── ci.yml               # lint on push; tests on PR to main
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>│       ├── bump.yml             # auto cz bump on merge to main
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>│       ├── release.yml          # on v* tag: GitHub release + PyPI (OIDC)
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>│       └── docs.yml             # deploy MkDocs to GitHub Pages on push to main
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>├── pyproject.toml
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>├── CITATION.cff                 # citation metadata for Zenodo + GitHub
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>├── .pre-commit-config.yaml
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>└── LICENSE
 </code></pre></div>
 
 

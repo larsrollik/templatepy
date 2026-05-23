@@ -433,17 +433,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#passing-secrets-locally" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Passing secrets locally
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#known-limitations" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -576,17 +565,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#passing-secrets-locally" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Passing secrets locally
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#known-limitations" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -654,20 +632,12 @@
 <li><strong>Large</strong> — full GitHub Actions environment, ~20 GB</li>
 </ul>
 <p>For this template's workflows, <strong>Medium</strong> is sufficient.</p>
-<h2 id="passing-secrets-locally">Passing secrets locally<a class="headerlink" href="#passing-secrets-locally" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>act<span class="w"> </span>push<span class="w"> </span>--secret<span class="w"> </span><span class="nv">UV_PUBLISH_TOKEN</span><span class="o">=</span>&lt;token&gt;
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1"># or using a secrets file:</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>act<span class="w"> </span>push<span class="w"> </span>--secret-file<span class="w"> </span>.env.act
-</code></pre></div>
-<p><code>.env.act</code> format (add to <code>.gitignore</code>):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>UV_PUBLISH_TOKEN=pypi-...
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>ANTHROPIC_API_KEY=sk-ant-...
-</code></pre></div>
 <h2 id="known-limitations">Known limitations<a class="headerlink" href="#known-limitations" title="Permanent link">&para;</a></h2>
 <ul>
 <li><code>act</code> doesn't support all GitHub Actions features (e.g. <code>workflow_run</code>, some contexts)</li>
 <li>Some actions that call back to GitHub APIs may behave differently</li>
-<li><code>secret-scanner/action</code> may not work locally — skip with <code>act push -j lint -j test</code></li>
+<li><code>gitleaks</code> uses the <code>golang</code> language in its pre-commit hook and requires Go to be installed locally — see <a href="../pre-commit/">Pre-commit hooks</a></li>
+<li>OIDC trusted publishing (<code>uv publish --trusted-publishing auto</code>) does not work locally; skip the publish step when testing <code>release.yml</code> with act</li>
 </ul>
 
 
