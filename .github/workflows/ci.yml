@@ -22,7 +22,9 @@ jobs:
       - uses: astral-sh/setup-uv@v5
 
       - name: Validate copier.yaml syntax
-        run: python3 -c "import yaml; yaml.safe_load(open('copier.yaml'))" && echo "copier.yaml: valid"
+        run: |
+          python3 -c "import yaml; yaml.safe_load(open('copier.yaml'))"
+          echo "copier.yaml: valid"
 
       - name: Check template structure
         run: |
