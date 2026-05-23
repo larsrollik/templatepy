@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+    tags-ignore: ["v*"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate template
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Install copier
+        run: uv tool install copier
+
+      - name: Validate copier.yaml
+        run: copier copy . /tmp/test-output --defaults --overwrite --trust
+        # --defaults uses question defaults; --trust allows template execution
+
+      - name: Check generated structure
+        run: |
+          test -f /tmp/test-output/pyproject.toml
+          test -f /tmp/test-output/CITATION.cff
+          test -f /tmp/test-output/.pre-commit-config.yaml
+          test -f /tmp/test-output/.github/workflows/ci.yml
+          test -f /tmp/test-output/.github/workflows/bump.yml
+          test -f /tmp/test-output/.github/workflows/release.yml
+          echo "All expected files present."
+
+  secrets-scan:
+    name: Secrets scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    needs: [validate, secrets-scan]
+    if: always()
+    steps:
+      - name: Check required jobs
+        run: |
+          if [[ "${{ needs.validate.result }}" != "success" ]]; then
+            echo "validate failed" && exit 1
+          fi
+          if [[ "${{ needs.secrets-scan.result }}" != "success" ]]; then
+            echo "secrets-scan failed" && exit 1
+          fi
+          echo "All required checks passed."
