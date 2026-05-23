@@ -27,10 +27,10 @@ uv tool install copier
 ## Create a new project
 
 ```sh
-copier copy gh:YOUR_ORG/templatepy my-new-project
+copier copy gh:larsrollik/templatepy my-new-project
 cd my-new-project
 git init && git add -A && git commit -m "chore: initial commit from templatepy"
-uv sync --group dev
+uv sync --extra dev
 uv run pre-commit install --hook-type pre-commit --hook-type commit-msg
 ```
 
@@ -68,8 +68,9 @@ my-project/
 ├── .github/
 │   └── workflows/
 │       ├── ci.yml               # lint on push; tests on PR to main
-│       ├── release.yml          # on v* tag: squash→prod, release notes, PyPI
-│       └── pr-review.yml        # optional LLM review (commented out)
+│       ├── bump.yml             # auto cz bump on merge to main
+│       ├── release.yml          # on v* tag: GitHub release + PyPI (OIDC)
+│       └── docs.yml             # deploy MkDocs to GitHub Pages on push to main
 ├── pyproject.toml
 ├── .pre-commit-config.yaml
 └── LICENSE                      # copyright + all rights reserved (replace before publishing)

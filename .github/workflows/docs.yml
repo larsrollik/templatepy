@@ -1,0 +1,28 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+
+permissions:
+  contents: write  # needed for gh-deploy to push to gh-pages branch
+
+jobs:
+  deploy:
+    name: Deploy docs to GitHub Pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Install MkDocs
+        run: uv tool install mkdocs-material
+
+      - name: Deploy
+        run: mkdocs gh-deploy --force

@@ -1,6 +1,6 @@
 site_name: templatepy
 site_description: Copier template for modern Python packages
-repo_url: https://github.com/YOUR_ORG/templatepy
+repo_url: https://github.com/larsrollik/templatepy
 repo_name: templatepy
 edit_uri: edit/main/docs/
 
