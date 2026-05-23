@@ -29,6 +29,7 @@ jobs:
       - name: Check template structure
         run: |
           test -f template/pyproject.toml
+          test -f template/VERSION
           test -f template/CITATION.cff
           test -f template/.pre-commit-config.yaml
           test -f "template/.github/workflows/ci.yml"

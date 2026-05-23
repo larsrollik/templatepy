@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Configure git identity
         run: |
@@ -38,10 +38,12 @@ jobs:
 
       - name: Bump version
         run: |
-          uvx commitizen bump --yes || EXIT=$?
+          uvx --from commitizen cz bump --yes || EXIT=$?
           if [ "${EXIT:-0}" -eq 21 ]; then
-            echo "No bumpable commits since last tag — skipping release."
+            echo "No bumpable commits since last tag — skipping."
             exit 0
           fi
           [ "${EXIT:-0}" -eq 0 ] || exit $EXIT
-          git push --follow-tags
+          VERSION=$(cat VERSION)
+          git push origin HEAD:main
+          git push origin "v${VERSION}"

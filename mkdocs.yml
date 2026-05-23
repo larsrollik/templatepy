@@ -9,8 +9,8 @@ theme:
   name: material
   palette:
     scheme: slate
-    primary: indigo
-    accent: indigo
+    primary: teal
+    accent: teal
   features:
     - navigation.sections
     - navigation.top

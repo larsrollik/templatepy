@@ -6,6 +6,10 @@ edit_uri: edit/main/docs/
 
 theme:
   name: material
+  palette:
+    scheme: slate
+    primary: teal
+    accent: teal
   features:
     - navigation.sections
     - navigation.top
@@ -16,6 +20,8 @@ markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
   - toc:
       permalink: true
 
