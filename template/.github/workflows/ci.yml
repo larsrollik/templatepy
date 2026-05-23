@@ -7,6 +7,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: Lint
@@ -21,9 +24,9 @@ jobs:
           python-version: "[[ python_requires ]]"
 
       - name: Install dependencies
-        run: uv sync --group dev
+        run: uv sync --extra dev
 
-      - name: Run pre-commit (ruff + mypy + commitizen)
+      - name: Run pre-commit (ruff + mypy + commitizen + gitleaks)
         run: uv run pre-commit run --all-files --show-diff-on-failure
 
   test:
@@ -33,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.12", "3.13"]   # extend as new stable releases land
+        python-version: ["3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,7 +47,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv sync --group dev
+        run: uv sync --extra dev
 
       - name: Run tests
         run: uv run pytest
@@ -54,19 +57,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: secret-scanner/action@0.2.1
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # Aggregate gate — branch protection can require this job
   ci:
     name: CI
     runs-on: ubuntu-latest
-    needs: [lint, secrets-scan]
+    needs: [lint, test, secrets-scan]
     if: always()
     steps:
       - name: Check required jobs
         run: |
           if [[ "${{ needs.lint.result }}" != "success" ]]; then
             echo "lint failed" && exit 1
+          fi
+          if [[ "${{ needs.test.result }}" != "success" && "${{ needs.test.result }}" != "skipped" ]]; then
+            echo "test failed" && exit 1
           fi
           if [[ "${{ needs.secrets-scan.result }}" != "success" ]]; then
             echo "secrets-scan failed" && exit 1
