@@ -1,0 +1,96 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Squash → prod, release notes, GitHub release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      # ── Squash-merge main into prod ────────────────────────────────────
+      - name: Squash merge main → prod
+        run: |
+          git fetch origin
+
+          # Create prod branch if it doesn't exist yet
+          if git ls-remote --exit-code --heads origin prod > /dev/null 2>&1; then
+            git checkout prod
+            git pull origin prod
+          else
+            git checkout -b prod
+          fi
+
+          # Squash all changes from main
+          git merge --squash origin/main || true
+
+          # Resolve any conflicts by taking main's version wholesale
+          git checkout -f origin/main -- .
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "Nothing new to squash-merge."
+          else
+            git commit -m "release: ${{ github.ref_name }}"
+            git push origin prod
+          fi
+
+      # ── Generate changelog since previous tag ─────────────────────────
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "[[ python_requires ]]"
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          CURRENT_TAG="${{ github.ref_name }}"
+          PREV_TAG=$(git tag --sort=-v:refname | grep -v "^${CURRENT_TAG}$" | head -1)
+
+          if [ -n "$PREV_TAG" ]; then
+            NOTES=$(uvx commitizen changelog --dry-run --start-rev "$PREV_TAG" 2>/dev/null \
+              || echo "Changes since ${PREV_TAG}")
+          else
+            NOTES=$(uvx commitizen changelog --dry-run 2>/dev/null \
+              || echo "Initial release")
+          fi
+
+          echo "content<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$NOTES"       >> "$GITHUB_OUTPUT"
+          echo "EOF"          >> "$GITHUB_OUTPUT"
+
+      # ── Create GitHub release ──────────────────────────────────────────
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --title "Release ${{ github.ref_name }}" \
+            --notes "${{ steps.notes.outputs.content }}"
+
+      # ── Publish to PyPI ────────────────────────────────────────────────
+      # Add UV_PUBLISH_TOKEN to repository secrets to enable.
+      # Skips gracefully (green) if the secret is not configured.
+      - name: Build and publish to PyPI
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.UV_PUBLISH_TOKEN }}
+        run: |
+          if [ -z "$UV_PUBLISH_TOKEN" ]; then
+            echo "UV_PUBLISH_TOKEN not configured — skipping PyPI publish."
+            exit 0
+          fi
+          uv build
+          uv publish
