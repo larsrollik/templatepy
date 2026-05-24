@@ -9,9 +9,7 @@ authors:
   - family-names: Rollik
     given-names: Lars B.
     orcid: https://orcid.org/0000-0003-0160-6971
-
-# After first Zenodo release, add:
-# identifiers:
-#   - type: doi
-#     value: 10.5281/zenodo.XXXXXXX
-#     description: Zenodo concept DOI
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.4784218
+    description: Zenodo concept DOI (resolves to latest version)

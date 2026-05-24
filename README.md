@@ -1,5 +1,7 @@
 # templatepy
 
+[![DOI](https://zenodo.org/badge/370470893.svg)](https://doi.org/10.5281/zenodo.4784218)
+
 Copier template for modern Python packages.
 
 **[→ Full documentation](https://larsrollik.github.io/templatepy)**
