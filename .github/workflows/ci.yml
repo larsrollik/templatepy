@@ -69,6 +69,35 @@ jobs:
           grep -q "startsWith.*bump:" template/.github/workflows/bump.yml
           echo "All content checks passed."
 
+      - name: Generate test project
+        run: |
+          uvx copier copy . /tmp/test-output --defaults \
+            --data "project_name=Test Project" \
+            --data "project_slug=test_project" \
+            --data "project_description=A test package" \
+            --data "author_name=Test Author" \
+            --data "author_email=test@example.com" \
+            --data "github_username=testuser" \
+            --data "github_repo=test-project" \
+            --data "year=2026"
+
+      - name: Check generated project structure
+        run: |
+          test -f /tmp/test-output/pyproject.toml
+          test -f /tmp/test-output/VERSION
+          test -f /tmp/test-output/CITATION.cff
+          test -f /tmp/test-output/.pre-commit-config.yaml
+          test -f /tmp/test-output/.github/workflows/ci.yml
+          test -f /tmp/test-output/.github/workflows/bump.yml
+          test -f /tmp/test-output/.github/workflows/release.yml
+          test -f /tmp/test-output/.github/workflows/docs.yml
+          grep -q "test_project" /tmp/test-output/pyproject.toml
+          grep -q "1.0.0" /tmp/test-output/VERSION
+          grep -q "teal" /tmp/test-output/mkdocs.yml
+          grep -q "trusted-publishing automatic" /tmp/test-output/.github/workflows/release.yml
+          grep -q "uvx --from commitizen cz" /tmp/test-output/.github/workflows/bump.yml
+          echo "Generated project structure valid."
+
   secrets-scan:
     name: Secrets scan
     runs-on: ubuntu-latest
