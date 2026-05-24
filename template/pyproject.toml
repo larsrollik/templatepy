@@ -1,0 +1,114 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "[[ project_slug ]]"
+dynamic = ["version"]
+description = "[[ project_description ]]"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { file = "LICENSE" }
+authors = [
+    { name = "[[ author_name ]]", email = "[[ author_email ]]" },
+]
+requires-python = ">=[[ python_requires ]]"
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/[[ github_username ]]/[[ github_repo ]]"
+"Issue Tracker" = "https://github.com/[[ github_username ]]/[[ github_repo ]]/issues"
+
+# ---------------------------------------------------------------------------
+# Build
+# ---------------------------------------------------------------------------
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "1.0.0"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/[[ project_slug ]]/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/[[ project_slug ]]"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/tests", "/README.md", "/LICENSE", "/pyproject.toml", "/VERSION"]
+
+# ---------------------------------------------------------------------------
+# Dependencies
+# ---------------------------------------------------------------------------
+
+[project.optional-dependencies]
+dev = [
+    "commitizen",
+    "pytest>=8",
+    "pytest-cov",
+    "pre-commit",
+    "mypy",
+    "mkdocs-material",
+]
+
+# ---------------------------------------------------------------------------
+# Commitizen
+# ---------------------------------------------------------------------------
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version_provider = "commitizen"
+version = "1.0.0"
+version_files = ["VERSION"]
+tag_format = "v$version"
+update_changelog_on_bump = false
+
+# ---------------------------------------------------------------------------
+# Pytest
+# ---------------------------------------------------------------------------
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=src/[[ project_slug ]] --cov-report=term-missing --maxfail=5"
+
+# ---------------------------------------------------------------------------
+# Ruff
+# ---------------------------------------------------------------------------
+
+[tool.ruff]
+line-length = 88
+indent-width = 4
+src = ["src"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",   # pycodestyle
+    "F",        # pyflakes
+    "I",        # isort
+    "UP",       # pyupgrade
+    "B",        # flake8-bugbear
+    "SIM",      # flake8-simplify
+    "PTH",      # flake8-pathlib
+    "TCH",      # flake8-type-checking
+    "PYI",      # flake8-pyi
+    "YTT",      # flake8-2020
+    "N",        # pep8-naming
+]
+ignore = []
+fixable = ["ALL"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+# ---------------------------------------------------------------------------
+# Mypy
+# ---------------------------------------------------------------------------
+
+[tool.mypy]
+python_version = "[[ python_requires ]]"
+warn_return_any = true
+warn_unused_ignores = true
+ignore_missing_imports = true

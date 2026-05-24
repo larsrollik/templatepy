@@ -1,0 +1,64 @@
+# templatepy — copier template configuration
+# Usage: copier copy gh:larsrollik/templatepy my-new-project
+# Update: copier update (inside an existing generated project)
+
+_subdirectory: template
+_min_copier_version: "9.0"
+_answers_file: .copier-answers.yml
+
+# Use [[ ]] delimiters in template files to avoid conflicts with
+# GitHub Actions ${{ }} expression syntax.
+_envops:
+  block_start_string: "[%"
+  block_end_string: "%]"
+  variable_start_string: "[["
+  variable_end_string: "]]"
+  comment_start_string: "[#"
+  comment_end_string: "#]"
+
+# ---------------------------------------------------------------------------
+# Questions
+# ---------------------------------------------------------------------------
+
+project_name:
+  type: str
+  help: "Human-readable project name (e.g. 'My Awesome Project')"
+
+project_slug:
+  type: str
+  help: "Python package name — lowercase, underscores (e.g. 'my_awesome_project')"
+  default: "{{ project_name | lower | replace(' ', '_') | replace('-', '_') }}"
+
+project_description:
+  type: str
+  help: "Short one-line description"
+
+author_name:
+  type: str
+  help: "Your full name"
+
+author_email:
+  type: str
+  help: "Your email address"
+
+github_username:
+  type: str
+  help: "GitHub username or organization"
+
+github_repo:
+  type: str
+  help: "GitHub repository name"
+  default: "{{ project_slug | replace('_', '-') }}"
+
+python_requires:
+  type: str
+  help: "Minimum Python version"
+  default: "3.12"
+  choices:
+    - "3.12"
+    - "3.13"
+
+year:
+  type: str
+  help: "Copyright year"
+  default: "{{ '%Y' | strftime }}"

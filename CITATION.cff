@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "templatepy: Copier template for modern Python packages"
+repository-code: https://github.com/larsrollik/templatepy
+url: https://larsrollik.github.io/templatepy
+license: BSD-3-Clause
+authors:
+  - family-names: Rollik
+    given-names: Lars B.
+    orcid: https://orcid.org/0000-0003-0160-6971
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.20360320
+    description: Zenodo concept DOI (resolves to latest version)

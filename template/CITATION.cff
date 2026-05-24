@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "[[ project_name ]]"
+repository-code: https://github.com/[[ github_username ]]/[[ github_repo ]]
+url: https://github.com/[[ github_username ]]/[[ github_repo ]]
+license: GPL-3.0
+authors:
+  - family-names: [[ author_name.split()[-1] ]]
+    given-names: [[ author_name.split()[0] ]]
+    orcid: https://orcid.org/0000-0000-0000-0000  # replace with your ORCID
+
+# Zenodo integration (optional):
+# 1. Enable the Zenodo webhook at zenodo.org/account/settings/github
+# 2. After first tag release, copy the concept DOI from Zenodo and add:
+#
+# identifiers:
+#   - type: doi
+#     value: 10.5281/zenodo.XXXXXXX
+#     description: Zenodo concept DOI
+#
+# preferred-citation:
+#   type: software
+#   title: "[[ project_name ]]"
+#   authors:
+#     - family-names: ...
+#       given-names: ...
+#       orcid: https://orcid.org/...
+#   year: [[ year ]]
+#   publisher:
+#     name: Zenodo
+#   doi: 10.5281/zenodo.XXXXXXX
+#   url: https://doi.org/10.5281/zenodo.XXXXXXX

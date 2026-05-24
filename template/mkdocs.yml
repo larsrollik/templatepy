@@ -1,0 +1,29 @@
+site_name: [[ project_name ]]
+site_description: [[ project_description ]]
+repo_url: https://github.com/[[ github_username ]]/[[ github_repo ]]
+repo_name: [[ github_username ]]/[[ github_repo ]]
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: teal
+    accent: teal
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md

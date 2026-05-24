@@ -1,0 +1,49 @@
+name: Auto bump
+
+# Runs after every push to main. If there are bumpable conventional commits
+# since the last tag, creates a version bump commit + tag and pushes both.
+# The tag push then triggers release.yml.
+#
+# Loop prevention: skips if the triggering commit message starts with "bump:"
+# (i.e. the bump commit itself just pushed back to main).
+#
+# Branch protection: the github-actions bot must be allowed to push to main.
+# Repo settings → Branches → edit main rule →
+#   "Allow specified actors to bypass required pull requests" → add github-actions[bot]
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    name: Version bump
+    runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Bump version
+        run: |
+          uvx --from commitizen cz bump --yes || EXIT=$?
+          if [ "${EXIT:-0}" -eq 21 ]; then
+            echo "No bumpable commits since last tag — skipping."
+            exit 0
+          fi
+          [ "${EXIT:-0}" -eq 0 ] || exit $EXIT
+          VERSION=$(cat VERSION)
+          git push origin HEAD:main
+          git push origin "v${VERSION}"

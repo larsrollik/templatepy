@@ -1,0 +1,46 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "templatepy"
+dynamic = ["version"]
+description = "Copier template for modern Python packages"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+    {name = "Lars B. Rollik", email = "l.b.rollik@protonmail.com"},
+]
+keywords = ["copier", "template", "packaging", "python"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Code Generators",
+]
+
+[project.urls]
+Homepage = "https://github.com/larsrollik/templatepy"
+Documentation = "https://larsrollik.github.io/templatepy"
+Repository = "https://github.com/larsrollik/templatepy"
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.3.0"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/templatepy"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"copier.yaml" = "templatepy/copier.yaml"
+"template" = "templatepy/template"
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "copier.yaml", "template", "CITATION.cff", "README.md", "VERSION"]
+
+[tool.commitizen]
+version_provider = "commitizen"
+version = "0.4.1"
+version_files = ["VERSION"]
+tag_format = "v$version"
+update_changelog_on_bump = false

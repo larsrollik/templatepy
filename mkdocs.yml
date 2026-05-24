@@ -1,0 +1,36 @@
+site_name: templatepy
+site_description: Copier template for modern Python packages
+site_url: https://larsrollik.github.io/templatepy/
+repo_url: https://github.com/larsrollik/templatepy
+repo_name: templatepy
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: teal
+    accent: teal
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Release workflow: release-workflow.md
+  - GPG signing: gpg-signing.md
+  - PyPI publishing: pypi-publishing.md
+  - Local CI with act: local-ci.md
+  - Pre-commit hooks: pre-commit.md
+  - Branch protection: branch-protection.md
