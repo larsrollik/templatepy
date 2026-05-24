@@ -2,32 +2,56 @@ name: Release
 
 on:
   push:
-    tags:
-      - "v[0-9]*"
+    branches: [main]
 
 permissions:
   contents: write
-  id-token: write  # required for PyPI OIDC trusted publishing
+  id-token: write
 
 jobs:
   release:
-    name: Build, release, publish
+    name: Bump, build, publish
     runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - uses: astral-sh/setup-uv@v5
 
+      - name: Bump version
+        id: bump
+        run: |
+          uvx --from commitizen cz bump --yes || EXIT=$?
+          if [ "${EXIT:-0}" -eq 21 ]; then
+            echo "No bumpable commits since last tag — skipping."
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          [ "${EXIT:-0}" -eq 0 ] || exit $EXIT
+          VERSION=$(cat VERSION)
+          git push origin HEAD:main
+          git push origin "v${VERSION}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
       - name: Build
+        if: steps.bump.outputs.skipped != 'true'
         run: uv build
 
       - name: Create GitHub release
+        if: steps.bump.outputs.skipped != 'true'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: "v${{ steps.bump.outputs.version }}"
           files: dist/*
           generate_release_notes: false
 
       - name: Publish to PyPI
+        if: steps.bump.outputs.skipped != 'true'
         run: uv publish --trusted-publishing automatic

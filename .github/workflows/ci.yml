@@ -33,7 +33,6 @@ jobs:
           test -f template/CITATION.cff
           test -f template/.pre-commit-config.yaml
           test -f "template/.github/workflows/ci.yml"
-          test -f "template/.github/workflows/bump.yml"
           test -f "template/.github/workflows/release.yml"
           echo "All expected template files present."
 
@@ -65,8 +64,8 @@ jobs:
           grep -q "id-token: write" template/.github/workflows/release.yml
           # no prod branch
           ! grep -q "prod" template/.github/workflows/release.yml
-          # auto bump present
-          grep -q "startsWith.*bump:" template/.github/workflows/bump.yml
+          # auto bump present in combined release workflow
+          grep -q "startsWith.*bump:" template/.github/workflows/release.yml
           echo "All content checks passed."
 
       - name: Generate test project
@@ -89,14 +88,13 @@ jobs:
           test -f /tmp/test-output/CITATION.cff          && echo "ok: CITATION.cff"
           test -f /tmp/test-output/.pre-commit-config.yaml && echo "ok: .pre-commit-config.yaml"
           test -f /tmp/test-output/.github/workflows/ci.yml      && echo "ok: ci.yml"
-          test -f /tmp/test-output/.github/workflows/bump.yml    && echo "ok: bump.yml"
           test -f /tmp/test-output/.github/workflows/release.yml && echo "ok: release.yml"
           test -f /tmp/test-output/.github/workflows/docs.yml    && echo "ok: docs.yml"
           grep -q "test_project" /tmp/test-output/pyproject.toml && echo "ok: slug in pyproject"
           grep -q "1.0.0" /tmp/test-output/VERSION               && echo "ok: version in VERSION"
           grep -q "teal" /tmp/test-output/mkdocs.yml             && echo "ok: theme in mkdocs"
           grep -q "trusted-publishing automatic" /tmp/test-output/.github/workflows/release.yml && echo "ok: oidc in release"
-          grep -q "uvx --from commitizen cz" /tmp/test-output/.github/workflows/bump.yml       && echo "ok: cz entrypoint in bump"
+          grep -q "uvx --from commitizen cz" /tmp/test-output/.github/workflows/release.yml     && echo "ok: cz entrypoint in release"
           echo "Generated project structure valid."
 
   secrets-scan:
