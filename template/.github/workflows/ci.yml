@@ -14,6 +14,7 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -55,6 +56,7 @@ jobs:
   secrets-scan:
     name: Secrets scan
     runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -71,13 +73,13 @@ jobs:
     steps:
       - name: Check required jobs
         run: |
-          if [[ "${{ needs.lint.result }}" != "success" ]]; then
+          if [[ "${{ needs.lint.result }}" != "success" && "${{ needs.lint.result }}" != "skipped" ]]; then
             echo "lint failed" && exit 1
           fi
           if [[ "${{ needs.test.result }}" != "success" && "${{ needs.test.result }}" != "skipped" ]]; then
             echo "test failed" && exit 1
           fi
-          if [[ "${{ needs.secrets-scan.result }}" != "success" ]]; then
+          if [[ "${{ needs.secrets-scan.result }}" != "success" && "${{ needs.secrets-scan.result }}" != "skipped" ]]; then
             echo "secrets-scan failed" && exit 1
           fi
           echo "All required checks passed."

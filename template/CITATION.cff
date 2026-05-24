@@ -2,6 +2,7 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
 title: "[[ project_name ]]"
+version: "1.0.0"
 repository-code: https://github.com/[[ github_username ]]/[[ github_repo ]]
 url: https://github.com/[[ github_username ]]/[[ github_repo ]]
 license: GPL-3.0
