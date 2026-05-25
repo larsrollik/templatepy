@@ -4,14 +4,3 @@
 [extend]
 # Extend the default gitleaks ruleset
 useDefault = true
-
-# Allowlist specific paths, commits, or patterns that produce false positives.
-# See https://github.com/gitleaks/gitleaks#allowlisting for full options.
-[allowlist]
-description = "Global allowlist"
-paths = [
-  # '''tests/fixtures/''',  # example: allow test fixture files
-]
-# regexes = [
-#   '''EXAMPLE_[A-Z0-9]{20}''',  # example: allow placeholder keys
-# ]
