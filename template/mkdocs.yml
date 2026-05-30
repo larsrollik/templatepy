@@ -16,6 +16,18 @@ theme:
     - navigation.top
     - content.code.copy
 
+# Uncomment to enable auto-generated API reference from docstrings.
+# Requires: mkdocstrings[python] in the docs optional-dependencies group.
+# plugins:
+#   - search
+#   - mkdocstrings:
+#       handlers:
+#         python:
+#           options:
+#             show_source: false
+#             show_root_heading: true
+#             heading_level: 3
+
 markdown_extensions:
   - admonition
   - pymdownx.highlight:
