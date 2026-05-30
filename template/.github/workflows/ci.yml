@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0   # needed for hatch-vcs version derivation
 
-      - uses: astral-sh/setup-uv@v8
+      - uses: astral-sh/setup-uv@v7
         with:
           python-version: "[[ python_requires ]]"
 
@@ -43,7 +43,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: astral-sh/setup-uv@v8
+      - uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python-version }}
 

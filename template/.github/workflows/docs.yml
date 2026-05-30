@@ -21,7 +21,7 @@ jobs:
         with:
           fetch-depth: 0   # full history for git-revision-date plugin (if added later)
 
-      - uses: astral-sh/setup-uv@v8
+      - uses: astral-sh/setup-uv@v7
         with:
           python-version: "[[ python_requires ]]"
 
