@@ -2,8 +2,8 @@ name: CI
 
 on:
   push:
-    branches: ["**"]
-    tags-ignore: ["v*"]   # tag pushes are handled by release.yml
+    branches: [main]
+    tags-ignore: ["v*"]
   pull_request:
     branches: [main]
 
@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # needed for hatch-vcs version derivation
+          fetch-depth: 0
 
       - uses: astral-sh/setup-uv@v5
         with:
