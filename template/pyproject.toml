@@ -58,6 +58,8 @@ dev = [
 ]
 docs = [
     "mkdocs-material",
+    # Uncomment to enable auto-generated API reference from docstrings:
+    # "mkdocstrings[python]",
 ]
 
 # ---------------------------------------------------------------------------
