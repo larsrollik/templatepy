@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: ["**"]
+    branches: [main]
     tags-ignore: ["v*"]
   pull_request:
     branches: [main]
@@ -15,11 +15,11 @@ jobs:
     name: Validate template
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v7
 
       - name: Validate copier.yaml syntax
         run: |
@@ -62,7 +62,7 @@ jobs:
           # commit-msg hooks present
           grep -q "fix-commit-msg" template/.pre-commit-config.yaml
           grep -q "gitlint" template/.pre-commit-config.yaml
-          test -f template/scripts/fix_commit_msg.py
+          test -f template/.githooks/fix_commit_msg.py
           test -f template/.gitlint
           # OIDC publish, not token
           grep -q "trusted-publishing" template/.github/workflows/release.yml
@@ -100,7 +100,7 @@ jobs:
           grep -q "teal" /tmp/test-output/mkdocs.yml             && echo "ok: theme in mkdocs"
           grep -q "trusted-publishing automatic" /tmp/test-output/.github/workflows/release.yml && echo "ok: oidc in release"
           grep -q "uvx --from commitizen cz" /tmp/test-output/.github/workflows/release.yml     && echo "ok: cz entrypoint in release"
-          test -f /tmp/test-output/scripts/fix_commit_msg.py && echo "ok: fix_commit_msg.py"
+          test -f /tmp/test-output/.githooks/fix_commit_msg.py && echo "ok: fix_commit_msg.py"
           test -f /tmp/test-output/.gitlint                  && echo "ok: .gitlint"
           grep -q "gitlint" /tmp/test-output/.pre-commit-config.yaml && echo "ok: gitlint in pre-commit"
           echo "Generated project structure valid."
@@ -109,7 +109,7 @@ jobs:
     name: Secrets scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@v2

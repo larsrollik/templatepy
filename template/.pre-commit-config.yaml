@@ -33,7 +33,7 @@ repos:
       - id: fix-commit-msg
         name: Auto-fix commit message formatting
         language: system
-        entry: python3 scripts/fix_commit_msg.py
+        entry: python3 .githooks/fix_commit_msg.py
         stages: [commit-msg]
 
   - repo: https://github.com/jorisroovers/gitlint

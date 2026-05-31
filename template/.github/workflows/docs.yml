@@ -7,10 +7,11 @@ on:
       - "docs/**"
       - "mkdocs.yml"
       - ".github/workflows/docs.yml"
-      - "src/**/*.py"   # rebuild on source changes if using mkdocstrings
+      - "src/**/*.py"
+  workflow_dispatch:
 
 permissions:
-  contents: write   # needed for gh-deploy to push to gh-pages branch
+  contents: write
 
 jobs:
   deploy:
@@ -19,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 0   # full history for git-revision-date plugin (if added later)
+          fetch-depth: 0
 
       - uses: astral-sh/setup-uv@v7
         with:
