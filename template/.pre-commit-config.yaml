@@ -28,6 +28,20 @@ repos:
       - id: commitizen
         stages: [commit-msg]
 
+  - repo: local
+    hooks:
+      - id: fix-commit-msg
+        name: Auto-fix commit message formatting
+        language: system
+        entry: python3 scripts/fix_commit_msg.py
+        stages: [commit-msg]
+
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.19.1
+    hooks:
+      - id: gitlint
+        stages: [commit-msg]
+
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.30.0
     hooks:

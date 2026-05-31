@@ -59,6 +59,11 @@ jobs:
         run: |
           # gitleaks in CI, not secret-scanner
           grep -q "gitleaks/gitleaks-action" template/.github/workflows/ci.yml
+          # commit-msg hooks present
+          grep -q "fix-commit-msg" template/.pre-commit-config.yaml
+          grep -q "gitlint" template/.pre-commit-config.yaml
+          test -f template/scripts/fix_commit_msg.py
+          test -f template/.gitlint
           # OIDC publish, not token
           grep -q "trusted-publishing" template/.github/workflows/release.yml
           grep -q "id-token: write" template/.github/workflows/release.yml
@@ -95,6 +100,9 @@ jobs:
           grep -q "teal" /tmp/test-output/mkdocs.yml             && echo "ok: theme in mkdocs"
           grep -q "trusted-publishing automatic" /tmp/test-output/.github/workflows/release.yml && echo "ok: oidc in release"
           grep -q "uvx --from commitizen cz" /tmp/test-output/.github/workflows/release.yml     && echo "ok: cz entrypoint in release"
+          test -f /tmp/test-output/scripts/fix_commit_msg.py && echo "ok: fix_commit_msg.py"
+          test -f /tmp/test-output/.gitlint                  && echo "ok: .gitlint"
+          grep -q "gitlint" /tmp/test-output/.pre-commit-config.yaml && echo "ok: gitlint in pre-commit"
           echo "Generated project structure valid."
 
   secrets-scan:
