@@ -36,10 +36,12 @@ project_description:
 author_name:
   type: str
   help: "Your full name"
+  default: "Lars B. Rollik"
 
 author_email:
   type: str
   help: "Your email address"
+  default: "lars@rollik.me"
 
 github_username:
   type: str
@@ -62,3 +64,8 @@ year:
   type: str
   help: "Copyright year"
   default: "{{ '%Y' | strftime }}"
+
+private_repo_deps:
+  type: bool
+  help: "Does this project depend on private GitHub repos (git+ deps)? Adds PRIVATE_REPO_ACCESS_TOKEN auth step to CI."
+  default: false

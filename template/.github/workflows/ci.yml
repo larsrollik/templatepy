@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches: [main]
-    tags-ignore: ["v*"]
+    tags-ignore: ["v*"]   # tag pushes are handled by release.yml
   pull_request:
     branches: [main]
 
@@ -24,6 +24,16 @@ jobs:
         with:
           python-version: "[[ python_requires ]]"
 
+[% if private_repo_deps %]
+      - name: Configure git for private repos
+        env:
+          PRIVATE_REPO_ACCESS_TOKEN: ${{ secrets.PRIVATE_REPO_ACCESS_TOKEN }}
+        run: |
+          if [ -n "$PRIVATE_REPO_ACCESS_TOKEN" ]; then
+            git config --global url."https://${PRIVATE_REPO_ACCESS_TOKEN}@github.com/".insteadOf "https://github.com/"
+          fi
+
+[% endif %]
       - name: Install dependencies
         run: uv sync --extra dev
 
@@ -47,6 +57,16 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+[% if private_repo_deps %]
+      - name: Configure git for private repos
+        env:
+          PRIVATE_REPO_ACCESS_TOKEN: ${{ secrets.PRIVATE_REPO_ACCESS_TOKEN }}
+        run: |
+          if [ -n "$PRIVATE_REPO_ACCESS_TOKEN" ]; then
+            git config --global url."https://${PRIVATE_REPO_ACCESS_TOKEN}@github.com/".insteadOf "https://github.com/"
+          fi
+
+[% endif %]
       - name: Install dependencies
         run: uv sync --extra dev
 

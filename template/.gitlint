@@ -1,0 +1,4 @@
+[general]
+# B5: body-is-missing — body not required
+# B6: body-changed-file-mention — not useful
+ignore=B5,B6
