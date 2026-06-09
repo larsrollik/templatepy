@@ -65,6 +65,16 @@ year:
   help: "Copyright year"
   default: "{{ '%Y' | strftime }}"
 
+license_type:
+  type: str
+  help: "Licence for the generated project. noncommercial = custom MSW licence (research/academic only, no commercial use without agreement). bsd3 = BSD-3-Clause (hardware wrappers and utilities — allows commercial use)."
+  choices:
+    - value: noncommercial
+      name: "Custom noncommercial (MSW default)"
+    - value: bsd3
+      name: "BSD-3-Clause (hardware wrappers / utilities)"
+  default: noncommercial
+
 private_repo_deps:
   type: bool
   help: "Does this project depend on private GitHub repos (git+ deps)? Adds PRIVATE_REPO_ACCESS_TOKEN auth step to CI."
