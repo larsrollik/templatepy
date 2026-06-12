@@ -1,0 +1,3 @@
+# Lock file for the template repo's own dev environment (not shipped to
+# generated projects, which gitignore it via template/.gitignore).
+uv.lock
