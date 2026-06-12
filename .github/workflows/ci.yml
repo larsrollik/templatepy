@@ -75,7 +75,11 @@ jobs:
 
       - name: Generate test project
         run: |
-          uvx copier copy . /tmp/test-output --defaults \
+          # --vcs-ref HEAD: validate the pushed commit, not the latest git tag.
+          # copier resolves a git source to its newest tag by default, which
+          # would validate the last *released* version and never catch a new
+          # break before it is tagged.
+          uvx copier copy --vcs-ref HEAD . /tmp/test-output --defaults \
             --data "project_name=Test Project" \
             --data "project_slug=test_project" \
             --data "project_description=A test package" \
