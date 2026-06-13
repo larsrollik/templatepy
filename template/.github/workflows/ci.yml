@@ -82,6 +82,7 @@ jobs:
     steps:
       - name: Check required jobs
         run: |
+          [% raw %]
           if [[ "${{ needs.lint.result }}" != "success" && "${{ needs.lint.result }}" != "skipped" ]]; then
             echo "lint failed" && exit 1
           fi
@@ -89,3 +90,4 @@ jobs:
             echo "test failed" && exit 1
           fi
           echo "All required checks passed."
+          [% endraw %]

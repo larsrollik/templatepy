@@ -1,0 +1,21 @@
+# Pre-commit for the template repo itself (matches the ci.yml "lint" job:
+# `uvx pre-commit run --all-files`).
+#
+# Only whitespace-style fixers + secret scanning are used here. check-yaml /
+# check-toml are intentionally omitted: files under template/ are copier
+# templates containing Jinja ([% raw %], [[ ]]) and GitHub Actions ${{ }}, which
+# are not valid YAML/TOML on their own. The generated project's own
+# template/.pre-commit-config.yaml runs the full lint suite there.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: check-merge-conflict
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks

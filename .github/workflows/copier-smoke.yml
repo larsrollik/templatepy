@@ -1,0 +1,28 @@
+name: copier-smoke
+
+# Smoke-test the copier template: actually generate a project with dummy
+# answers and assert the output is valid and fully rendered. Catches template
+# breakage where `copier copy` fails or leaves unrendered Jinja tokens.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Generate + verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+
+      - name: Generate project from template
+        run: bash tests/test_generate.sh /tmp/generated

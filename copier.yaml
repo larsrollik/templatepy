@@ -3,6 +3,10 @@
 # Update: copier update (inside an existing generated project)
 
 _subdirectory: template
+# Render every file's content. Template files carry no `.jinja` suffix; copier
+# >=9.2 defaults `_templates_suffix` to ".jinja", which would copy files
+# verbatim and leak literal [[ ]] tokens into generated projects.
+_templates_suffix: ""
 _min_copier_version: "9.0"
 _answers_file: .copier-answers.yml
 
@@ -69,10 +73,8 @@ license_type:
   type: str
   help: "Licence for the generated project. noncommercial = custom MSW licence (research/academic only, no commercial use without agreement). bsd3 = BSD-3-Clause (hardware wrappers and utilities — allows commercial use)."
   choices:
-    - value: noncommercial
-      name: "Custom noncommercial (MSW default)"
-    - value: bsd3
-      name: "BSD-3-Clause (hardware wrappers / utilities)"
+    "Custom noncommercial (MSW default)": noncommercial
+    "BSD-3-Clause (hardware wrappers / utilities)": bsd3
   default: noncommercial
 
 private_repo_deps:
