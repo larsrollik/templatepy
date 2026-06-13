@@ -18,7 +18,7 @@ jobs:
 
       - uses: astral-sh/setup-uv@v7
         with:
-          python-version: "3.12"
+          python-version: "3.13"
 
       - name: Generate project from template
         run: bash tests/test_generate.sh /tmp/generated
