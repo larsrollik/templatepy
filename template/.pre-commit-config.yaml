@@ -22,18 +22,19 @@ repos:
       - id: mypy
         additional_dependencies: []
 
-  - repo: https://github.com/commitizen-tools/commitizen
-    rev: v4.16.2
-    hooks:
-      - id: commitizen
-        stages: [commit-msg]
-
+  # commit-msg stage: fix first, then validate
   - repo: local
     hooks:
       - id: fix-commit-msg
         name: Auto-fix commit message formatting
         language: system
         entry: python3 .githooks/fix_commit_msg.py
+        stages: [commit-msg]
+
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.16.2
+    hooks:
+      - id: commitizen
         stages: [commit-msg]
 
   - repo: https://github.com/jorisroovers/gitlint
