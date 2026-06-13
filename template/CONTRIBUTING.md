@@ -27,6 +27,22 @@ chore: update dependencies
 
 Breaking changes: add `!` after the type or a `BREAKING CHANGE:` footer.
 
+Multi-line messages with indented body text must use a heredoc to prevent
+the shell from stripping leading whitespace:
+
+```bash
+git commit -m "$(cat <<'EOF'
+feat: add new feature
+
+- first change
+- second change
+EOF
+)"
+```
+
+Passing the message directly with `-m "..."` and newlines works for single-line
+subjects but can strip indentation in the body on some shells.
+
 ## Commit message hooks
 
 The `commit-msg` hooks run automatically on every commit:
