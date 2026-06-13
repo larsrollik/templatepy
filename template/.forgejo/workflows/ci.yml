@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags-ignore: ["v*"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "[[ python_requires ]]"
+
+[% if private_repo_deps %]
+      - name: Configure git for private repos
+        env:
+          PRIVATE_REPO_ACCESS_TOKEN: ${{ secrets.PRIVATE_REPO_ACCESS_TOKEN }}
+        run: |
+          if [ -n "$PRIVATE_REPO_ACCESS_TOKEN" ]; then
+            git config --global url."https://${PRIVATE_REPO_ACCESS_TOKEN}@${GITHUB_SERVER_URL#https://}/".insteadOf "${GITHUB_SERVER_URL}/"
+          fi
+
+[% endif %]
+      - name: Install dependencies
+        run: uv sync --extra dev
+
+      - name: Run pre-commit (ruff + mypy + commitizen + gitleaks)
+        run: uv run pre-commit run --all-files --show-diff-on-failure
+
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+
+[% if private_repo_deps %]
+      - name: Configure git for private repos
+        env:
+          PRIVATE_REPO_ACCESS_TOKEN: ${{ secrets.PRIVATE_REPO_ACCESS_TOKEN }}
+        run: |
+          if [ -n "$PRIVATE_REPO_ACCESS_TOKEN" ]; then
+            git config --global url."https://${PRIVATE_REPO_ACCESS_TOKEN}@${GITHUB_SERVER_URL#https://}/".insteadOf "${GITHUB_SERVER_URL}/"
+          fi
+
+[% endif %]
+      - name: Install dependencies
+        run: uv sync --extra dev
+
+      - name: Run tests
+        run: uv run pytest
+
+  # Aggregate gate — add as required status check in branch protection
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    if: always()
+    steps:
+      - name: Check required jobs
+        run: |
+          [% raw %]
+          if [[ "${{ needs.lint.result }}" != "success" && "${{ needs.lint.result }}" != "skipped" ]]; then
+            echo "lint failed" && exit 1
+          fi
+          if [[ "${{ needs.test.result }}" != "success" && "${{ needs.test.result }}" != "skipped" ]]; then
+            echo "test failed" && exit 1
+          fi
+          echo "All required checks passed."
+          [% endraw %]

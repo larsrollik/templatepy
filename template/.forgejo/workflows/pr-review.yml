@@ -1,0 +1,105 @@
+name: PR Review (optional LLM)
+
+# Optional AI-assisted pull request review.
+# Uncomment ONE of the sections below and configure the required secret.
+#
+# Option A: Claude API requires ANTHROPIC_API_KEY secret.
+# Option B: Ollama requires a self-hosted runner with Ollama on localhost:11434.
+#
+# This workflow has a no-op placeholder job so it stays valid while
+# both options remain commented out.
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+
+jobs:
+
+  # ── Option A: Claude API (Anthropic) ─────────────────────────────────────
+  # Requires secret: ANTHROPIC_API_KEY
+  #
+  # llm-review-claude:
+  #   name: Claude PR review
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #
+  #     - name: Generate diff
+  #       id: diff
+  #       run: |
+  #         DIFF=$(git diff origin/main...HEAD -- '*.py' | head -c 8000)
+  #         echo "content<<EOF" >> "$GITHUB_OUTPUT"
+  #         echo "$DIFF"        >> "$GITHUB_OUTPUT"
+  #         echo "EOF"          >> "$GITHUB_OUTPUT"
+  #
+  #     - name: Review with Claude
+  #       env:
+  #         ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         PR_NUMBER: ${{ github.event.pull_request.number }}
+  #       run: |
+  #         if [ -z "$ANTHROPIC_API_KEY" ]; then
+  #           echo "ANTHROPIC_API_KEY not set — skipping."
+  #           exit 0
+  #         fi
+  #         REVIEW=$(curl -s https://api.anthropic.com/v1/messages \
+  #           -H "x-api-key: $ANTHROPIC_API_KEY" \
+  #           -H "anthropic-version: 2023-06-01" \
+  #           -H "content-type: application/json" \
+  #           -d "{
+  #             \"model\": \"claude-sonnet-4-6\",
+  #             \"max_tokens\": 1024,
+  #             \"messages\": [{
+  #               \"role\": \"user\",
+  #               \"content\": \"Review this Python PR diff for bugs, style issues, and improvements. Be concise.\n\n${{ steps.diff.outputs.content }}\"
+  #             }]
+  #           }" | python3 -c "import sys,json; print(json.load(sys.stdin)['content'][0]['text'])")
+  #         curl -s -X POST \
+  #           "${GITHUB_SERVER_URL}/api/v1/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+  #           -H "Authorization: token ${GITHUB_TOKEN}" \
+  #           -H "Content-Type: application/json" \
+  #           -d "{\"body\": \"## Claude PR Review\n\n${REVIEW}\"}"
+
+  # ── Option B: Local Ollama (self-hosted runner) ───────────────────────────
+  # Requires: a self-hosted runner with Ollama running on localhost:11434
+  #
+  # llm-review-ollama:
+  #   name: Ollama PR review
+  #   runs-on: self-hosted
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #
+  #     - name: Generate diff
+  #       id: diff
+  #       run: |
+  #         DIFF=$(git diff origin/main...HEAD -- '*.py' | head -c 4000)
+  #         echo "content<<EOF" >> "$GITHUB_OUTPUT"
+  #         echo "$DIFF"        >> "$GITHUB_OUTPUT"
+  #         echo "EOF"          >> "$GITHUB_OUTPUT"
+  #
+  #     - name: Review with Ollama
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         PR_NUMBER: ${{ github.event.pull_request.number }}
+  #         OLLAMA_MODEL: "llama3.2"
+  #       run: |
+  #         PROMPT="Review this Python PR diff for bugs, style issues, and improvements. Be concise.\n\n${{ steps.diff.outputs.content }}"
+  #         REVIEW=$(curl -s http://localhost:11434/api/generate \
+  #           -d "{\"model\": \"${OLLAMA_MODEL}\", \"prompt\": \"${PROMPT}\", \"stream\": false}" \
+  #           | python3 -c "import sys,json; print(json.load(sys.stdin)['response'])")
+  #         curl -s -X POST \
+  #           "${GITHUB_SERVER_URL}/api/v1/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+  #           -H "Authorization: token ${GITHUB_TOKEN}" \
+  #           -H "Content-Type: application/json" \
+  #           -d "{\"body\": \"## Ollama PR Review (${OLLAMA_MODEL})\n\n${REVIEW}\"}"
+
+  # Placeholder — remove once an option above is uncommented
+  no-op:
+    name: LLM review (not configured)
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "LLM PR review not configured. See .forgejo/workflows/pr-review.yml."

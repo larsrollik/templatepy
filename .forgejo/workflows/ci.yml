@@ -1,0 +1,133 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags-ignore: ["v*"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate template
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Validate copier.yaml syntax
+        run: |
+          python3 -c "import yaml; yaml.safe_load(open('copier.yaml'))"
+          echo "copier.yaml: valid"
+
+      - name: Check template structure
+        run: |
+          test -f template/pyproject.toml
+          test -f template/VERSION
+          test -f template/CITATION.cff
+          test -f template/.pre-commit-config.yaml
+          test -f "template/.github/workflows/ci.yml"
+          test -f "template/.github/workflows/release.yml"
+          test -f "template/.forgejo/workflows/ci.yml"
+          test -f "template/.forgejo/workflows/release.yml"
+          echo "All expected template files present."
+
+      - name: Validate template YAML files
+        run: |
+          python3 -c "
+          import yaml, pathlib, sys
+          errors = []
+          for p in pathlib.Path('template').rglob('*.yml'):
+              text = p.read_text()
+              if '[[' in text or '{%' in text:
+                  continue
+              try:
+                  yaml.safe_load(text)
+              except yaml.YAMLError as e:
+                  errors.append(f'{p}: {e}')
+          if errors:
+              print('\n'.join(errors)); sys.exit(1)
+          print('All non-template YAML files valid.')
+          "
+
+      - name: Check key template content
+        run: |
+          grep -q "gitleaks" template/.pre-commit-config.yaml
+          grep -q "fix-commit-msg" template/.pre-commit-config.yaml
+          grep -q "gitlint" template/.pre-commit-config.yaml
+          test -f template/.githooks/fix_commit_msg.py
+          test -f template/.gitlint
+          grep -q "trusted-publishing" template/.github/workflows/release.yml
+          grep -q "id-token: write" template/.github/workflows/release.yml
+          grep -q "UV_PUBLISH_TOKEN" template/.forgejo/workflows/release.yml
+          ! grep -q "prod" template/.github/workflows/release.yml
+          grep -q "startsWith.*bump:" template/.github/workflows/release.yml
+          echo "All content checks passed."
+
+      - name: Generate test project
+        run: |
+          uvx copier copy --vcs-ref HEAD . /tmp/test-output --defaults \
+            --data "project_name=Test Project" \
+            --data "project_slug=test_project" \
+            --data "project_description=A test package" \
+            --data "author_name=Test Author" \
+            --data "author_email=test@example.com" \
+            --data "github_username=testuser" \
+            --data "github_repo=test-project" \
+            --data "year=2026"
+
+      - name: Check generated project structure
+        run: |
+          echo "=== generated files ===" && find /tmp/test-output -not -path '*/.git/*' | sort
+          test -f /tmp/test-output/pyproject.toml
+          test -f /tmp/test-output/VERSION
+          test -f /tmp/test-output/CITATION.cff
+          test -f /tmp/test-output/.pre-commit-config.yaml
+          test -f /tmp/test-output/.github/workflows/ci.yml
+          test -f /tmp/test-output/.github/workflows/release.yml
+          test -f /tmp/test-output/.github/workflows/docs.yml
+          test -f /tmp/test-output/.forgejo/workflows/ci.yml
+          test -f /tmp/test-output/.forgejo/workflows/release.yml
+          test -f /tmp/test-output/.forgejo/workflows/docs.yml
+          grep -q "test_project" /tmp/test-output/pyproject.toml
+          grep -q "1.0.0" /tmp/test-output/VERSION
+          grep -q "teal" /tmp/test-output/mkdocs.yml
+          test -f /tmp/test-output/.githooks/fix_commit_msg.py
+          test -f /tmp/test-output/.gitlint
+          grep -q "gitlint" /tmp/test-output/.pre-commit-config.yaml
+          echo "Generated project structure valid."
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Run pre-commit (whitespace + gitleaks)
+        run: uvx pre-commit run --all-files --show-diff-on-failure
+
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    needs: [validate, lint]
+    if: always()
+    steps:
+      - name: Check required jobs
+        run: |
+          if [[ "${{ needs.validate.result }}" != "success" ]]; then
+            echo "validate failed" && exit 1
+          fi
+          if [[ "${{ needs.lint.result }}" != "success" ]]; then
+            echo "lint failed" && exit 1
+          fi
+          echo "All required checks passed."

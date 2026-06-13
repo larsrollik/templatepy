@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Bump, build, publish
+    runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config user.name "forgejo-actions[bot]"
+          git config user.email "forgejo-actions[bot]@noreply"
+
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Bump version
+        id: bump
+        run: |
+          uvx --from commitizen cz bump --yes || EXIT=$?
+          if [ "${EXIT:-0}" -eq 21 ]; then
+            echo "No bumpable commits since last tag — skipping."
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          [ "${EXIT:-0}" -eq 0 ] || exit $EXIT
+          VERSION=$(cat VERSION)
+          git push origin HEAD:main
+          git push origin "v${VERSION}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        if: steps.bump.outputs.skipped != 'true'
+        run: uv build
+
+      - name: Create Forgejo release
+        if: steps.bump.outputs.skipped != 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.bump.outputs.version }}
+        run: |
+          curl -s -X POST "${GITHUB_SERVER_URL}/api/v1/repos/${GITHUB_REPOSITORY}/releases" \
+            -H "Authorization: token ${GITHUB_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "{\"tag_name\": \"v${VERSION}\", \"name\": \"v${VERSION}\", \"body\": \"Release v${VERSION}\"}"
+
+      - name: Publish to PyPI
+        if: steps.bump.outputs.skipped != 'true'
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.UV_PUBLISH_TOKEN }}
+        run: uv publish

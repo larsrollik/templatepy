@@ -1,0 +1,33 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - ".forgejo/workflows/docs.yml"
+      - "src/**/*.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    name: Deploy docs to Pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "[[ python_requires ]]"
+
+      - name: Install dependencies
+        run: uv sync --extra docs
+
+      - name: Deploy
+        run: uv run mkdocs gh-deploy --force
