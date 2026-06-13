@@ -55,7 +55,8 @@ echo "==> Asserting no unrendered Jinja tokens leaked into generated project..."
 # [[ or [% tokens.
 if grep -RInE '\[\[|\[%' "$OUT" \
       --exclude-dir=.git \
-      | grep -v '/.github/workflows/ci.yml:' ; then
+      | grep -v '/.github/workflows/ci.yml:' \
+      | grep -v '/.forgejo/workflows/ci.yml:' ; then
   echo "FAIL: found unrendered Jinja tokens (above) in generated project"
   exit 1
 fi
