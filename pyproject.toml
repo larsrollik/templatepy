@@ -24,6 +24,17 @@ Homepage = "https://github.com/larsrollik/templatepy"
 Documentation = "https://larsrollik.github.io/templatepy"
 Repository = "https://github.com/larsrollik/templatepy"
 
+[project.optional-dependencies]
+dev = [
+    "commitizen",
+    "pre-commit",
+    "mypy",
+    "ruff",
+    "pytest>=8",
+    "pytest-cov",
+    "copier",
+]
+
 [tool.hatch.version]
 source = "vcs"
 fallback-version = "0.3.0"
