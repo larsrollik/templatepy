@@ -41,12 +41,15 @@ jobs:
         run: uv run pre-commit run --all-files --show-diff-on-failure
 
   test:
-    name: Test (Python ${{ matrix.python-version }})
-    runs-on: ubuntu-latest
+    name: Test (Python ${{ matrix.python-version }}[% if test_on_windows %] · ${{ matrix.os }}[% endif %])
+    runs-on: [% if test_on_windows %]${{ matrix.os }}[% else %]ubuntu-latest[% endif %]
     if: github.event_name == 'pull_request'
     strategy:
       fail-fast: false
       matrix:
+[% if test_on_windows %]
+        os: [ubuntu-latest, windows-latest]
+[% endif %]
 [% if python_requires == "3.13" %]
         python-version: ["3.13"]
 [% else %]

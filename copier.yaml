@@ -84,3 +84,8 @@ private_repo_deps:
   type: bool
   help: "Does this project depend on private GitHub repos (git+ deps)? Adds PRIVATE_REPO_ACCESS_TOKEN auth step to CI."
   default: false
+
+test_on_windows:
+  type: bool
+  help: "Add windows-latest to the CI test matrix? Enable for path-sensitive or Windows-targeted packages."
+  default: false
