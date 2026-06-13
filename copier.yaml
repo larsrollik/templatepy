@@ -59,10 +59,13 @@ github_repo:
 python_requires:
   type: str
   help: "Minimum Python version"
-  default: "3.12"
+  default: "3.13"
   choices:
+    - "3.10"
+    - "3.11"
     - "3.12"
     - "3.13"
+    - "3.14"
 
 year:
   type: str
