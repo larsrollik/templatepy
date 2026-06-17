@@ -31,7 +31,7 @@ project_name:
 project_slug:
   type: str
   help: "Python package name — lowercase, underscores (e.g. 'my_awesome_project')"
-  default: "{{ project_name | lower | replace(' ', '_') | replace('-', '_') }}"
+  default: "[[ project_name | lower | replace(' ', '_') | replace('-', '_') ]]"
 
 project_description:
   type: str
@@ -54,7 +54,7 @@ github_username:
 github_repo:
   type: str
   help: "GitHub repository name"
-  default: "{{ project_slug | replace('_', '-') }}"
+  default: "[[ project_slug | replace('_', '-') ]]"
 
 python_requires:
   type: str
@@ -70,7 +70,7 @@ python_requires:
 year:
   type: str
   help: "Copyright year"
-  default: "{{ '%Y' | strftime }}"
+  default: "[[ '%Y' | strftime ]]"
 
 license_type:
   type: str
