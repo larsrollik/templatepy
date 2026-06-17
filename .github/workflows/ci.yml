@@ -23,7 +23,7 @@ jobs:
 
       - name: Validate copier.yaml syntax
         run: |
-          python3 -c "import yaml; yaml.safe_load(open('copier.yaml'))"
+          uv run --with pyyaml python -c "import yaml; yaml.safe_load(open('copier.yaml'))"
           echo "copier.yaml: valid"
 
       - name: Check template structure
@@ -38,7 +38,7 @@ jobs:
 
       - name: Validate template YAML files
         run: |
-          python3 -c "
+          uv run --with pyyaml python -c "
           import yaml, pathlib, sys
           errors = []
           for p in pathlib.Path('template').rglob('*.yml'):

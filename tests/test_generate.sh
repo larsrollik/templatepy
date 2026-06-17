@@ -34,7 +34,6 @@ uvx copier copy --defaults --trust \
   --data author_name="Test Author" \
   --data author_email="test@example.com" \
   --data github_username="testuser" \
-  --data github_repo="dummy-project" \
   --data python_requires="3.12" \
   --data license_type="noncommercial" \
   --data private_repo_deps=false \
@@ -61,13 +60,38 @@ if grep -RInE '\[\[|\[%' "$OUT" \
   exit 1
 fi
 
+# Also catch STANDARD Jinja {{ }}/{% %} leaks. These arise when a copier.yaml
+# `default:` is written with {{ }} instead of [[ ]] — under this template's
+# _envops it passes through literally (e.g. a literal "{{ project_slug | ... }}"
+# in URLs, or "{{ '%Y' | strftime }}" in LICENSE). github_repo and year are
+# deliberately NOT passed above so their defaults are exercised here.
+# Exclude legitimate GitHub Actions ${{ }} and the workflow dirs.
+echo "==> Asserting no standard {{ }} Jinja leaks (broken copier.yaml defaults)..."
+if grep -RInE '\{\{|\{%' "$OUT" \
+      --exclude-dir=.git \
+      | grep -v '\${{' \
+      | grep -vE '/(\.github|\.forgejo)/workflows/' ; then
+  echo "FAIL: found unrendered {{ }} tokens (above) — likely a {{ }} default in copier.yaml"
+  exit 1
+fi
+
+echo "==> Asserting github_repo default rendered into pyproject URLs..."
+grep -q "github.com/testuser/dummy-project" "$OUT/pyproject.toml" \
+  || { echo "FAIL: github_repo default not rendered in pyproject.toml URLs"; exit 1; }
+
+echo "==> Asserting .copier-answers.yml was written (needed for 'copier update')..."
+test -f "$OUT/.copier-answers.yml" \
+  || { echo "FAIL: .copier-answers.yml missing — template needs 'template/[[ _copier_conf.answers_file ]]'"; exit 1; }
+
+# Use `uv run --with pyyaml` so the check works on runners without a system
+# pyyaml (e.g. act's container image) — bare `python` lacks it there.
 echo "==> Asserting generated ci.yml is valid YAML..."
-python -c "import yaml; yaml.safe_load(open('$OUT/.github/workflows/ci.yml'))" \
+uv run --with pyyaml python -c "import yaml; yaml.safe_load(open('$OUT/.github/workflows/ci.yml'))" \
   || { echo "FAIL: generated ci.yml is not valid YAML"; exit 1; }
 
 echo "==> Asserting all generated workflows are valid YAML..."
 for wf in "$OUT"/.github/workflows/*.yml; do
-  python -c "import yaml; yaml.safe_load(open('$wf'))" \
+  uv run --with pyyaml python -c "import yaml; yaml.safe_load(open('$wf'))" \
     || { echo "FAIL: $wf is not valid YAML"; exit 1; }
 done
 
