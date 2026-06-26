@@ -1,0 +1,46 @@
+name: Versioning
+
+# Bump + tag only. Publishing is decoupled into release.yml (so OIDC stays bound
+# to the release.yml filename, and a hand-pushed tag publishes too).
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  actions: write  # to dispatch release.yml
+
+jobs:
+  version:
+    name: Bump and tag
+    runs-on: ubuntu-latest
+    # Skip the bump the bot itself just pushed (avoids a loop).
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Bump, tag, trigger release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          uvx --from commitizen cz bump --yes || EXIT=$?
+          if [ "${EXIT:-0}" -eq 21 ]; then
+            echo "No bumpable commits since last tag — nothing to release."
+            exit 0
+          fi
+          [ "${EXIT:-0}" -eq 0 ] || exit $EXIT
+          VERSION="v$(cat VERSION)"
+          git push origin HEAD:main
+          git push origin "$VERSION"
+          # A GITHUB_TOKEN-pushed tag does NOT trigger release.yml's push:tags,
+          # so dispatch the publish explicitly for the automatic path.
+          gh workflow run release.yml -f tag="$VERSION"
