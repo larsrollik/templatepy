@@ -18,7 +18,7 @@ That's it. The workflow handles authentication automatically — no token, no se
 
 ## Trigger a release
 
-Releases are triggered automatically by `bump.yml` on every merge to `main`. To trigger manually:
+Releases are triggered automatically on every merge to `main` (`versioning.yml` bumps + tags, then dispatches `release.yml`). To trigger manually:
 
 ```sh
 cz bump

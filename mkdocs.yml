@@ -34,3 +34,4 @@ nav:
   - Local CI with act: local-ci.md
   - Pre-commit hooks: pre-commit.md
   - Branch protection: branch-protection.md
+  - Private repo auth: private-repo-auth.md

@@ -38,14 +38,15 @@ cd my-existing-project && copier update
 ## Release flow
 
 ```
-feature branch  →  PR  →  CI gate (lint + test + secrets) must pass
+feature branch  →  PR  →  CI gate (lint + test) must pass
                            merge blocked until green
                                ↓
                            merge to main (rebase)
                                ↓
-                           bump.yml fires: cz bump → tag vX.Y.Z
+                           versioning.yml fires on push to main:
+                           → cz bump → tag vX.Y.Z → dispatch release.yml
                                ↓
-                           release.yml fires on tag:
+                           release.yml (on tag / dispatch):
                            → GitHub release (wheel + sdist attached)
                            → PyPI via OIDC trusted publishing (no stored token)
                            → Zenodo webhook (if enabled)

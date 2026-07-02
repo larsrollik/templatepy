@@ -33,6 +33,7 @@ jobs:
           test -f template/CITATION.cff
           test -f template/.pre-commit-config.yaml
           test -f "template/.github/workflows/ci.yml"
+          test -f "template/.github/workflows/versioning.yml"
           test -f "template/.github/workflows/release.yml"
           echo "All expected template files present."
 
@@ -69,8 +70,9 @@ jobs:
           grep -q "id-token: write" template/.github/workflows/release.yml
           # no prod branch
           ! grep -q "prod" template/.github/workflows/release.yml
-          # auto bump present in combined release workflow
-          grep -q "startsWith.*bump:" template/.github/workflows/release.yml
+          # auto bump lives in versioning.yml (split from the publish-only release.yml)
+          grep -q "startsWith.*bump:" template/.github/workflows/versioning.yml
+          grep -q "cz bump" template/.github/workflows/versioning.yml
           echo "All content checks passed."
 
       - name: Generate test project
@@ -96,14 +98,15 @@ jobs:
           test -f /tmp/test-output/VERSION               && echo "ok: VERSION"
           test -f /tmp/test-output/CITATION.cff          && echo "ok: CITATION.cff"
           test -f /tmp/test-output/.pre-commit-config.yaml && echo "ok: .pre-commit-config.yaml"
-          test -f /tmp/test-output/.github/workflows/ci.yml      && echo "ok: ci.yml"
-          test -f /tmp/test-output/.github/workflows/release.yml && echo "ok: release.yml"
-          test -f /tmp/test-output/.github/workflows/docs.yml    && echo "ok: docs.yml"
+          test -f /tmp/test-output/.github/workflows/ci.yml         && echo "ok: ci.yml"
+          test -f /tmp/test-output/.github/workflows/versioning.yml && echo "ok: versioning.yml"
+          test -f /tmp/test-output/.github/workflows/release.yml    && echo "ok: release.yml"
+          test -f /tmp/test-output/.github/workflows/docs.yml       && echo "ok: docs.yml"
           grep -q "test_project" /tmp/test-output/pyproject.toml && echo "ok: slug in pyproject"
           grep -q "1.0.0" /tmp/test-output/VERSION               && echo "ok: version in VERSION"
           grep -q "teal" /tmp/test-output/mkdocs.yml             && echo "ok: theme in mkdocs"
-          grep -q "trusted-publishing automatic" /tmp/test-output/.github/workflows/release.yml && echo "ok: oidc in release"
-          grep -q "uvx --from commitizen cz" /tmp/test-output/.github/workflows/release.yml     && echo "ok: cz entrypoint in release"
+          grep -q "trusted-publishing automatic" /tmp/test-output/.github/workflows/release.yml     && echo "ok: oidc in release"
+          grep -q "uvx --from commitizen cz" /tmp/test-output/.github/workflows/versioning.yml      && echo "ok: cz entrypoint in versioning"
           test -f /tmp/test-output/.githooks/fix_commit_msg.py && echo "ok: fix_commit_msg.py"
           test -f /tmp/test-output/.gitlint                  && echo "ok: .gitlint"
           grep -q "gitlint" /tmp/test-output/.pre-commit-config.yaml && echo "ok: gitlint in pre-commit"

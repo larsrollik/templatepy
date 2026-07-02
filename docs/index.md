@@ -51,6 +51,8 @@ uv run pre-commit install --hook-type pre-commit --hook-type commit-msg
 | `python_requires` | `3.10`-`3.14`, default `3.13` | Minimum supported Python version; controls `requires-python` and test matrix |
 | `license_type` | `noncommercial` / `bsd3` | `noncommercial` for MSW-core packages; `bsd3` for standalone hardware drivers |
 | `private_repo_deps` | `false` / `true`, default `false` | Set `true` only if the repo has private GitHub dependencies; injects a git auth step in CI. All standard repos use `false` (PyPI deps only). |
+| `private_repo_auth` | `app` / `pat`, default `app` (asked only when `private_repo_deps=true`) | How CI authenticates to clone the private deps. **app** = org-owned GitHub App, per-run token via `actions/create-github-app-token@v3` (org secrets `CI_APP_ID` + `CI_APP_PRIVATE_KEY`; the App needs Contents:read on the private repos). **pat** = the `PRIVATE_REPO_ACCESS_TOKEN` secret. See [Private repo auth](private-repo-auth.md). |
+| `test_on_windows` | `false` / `true`, default `false` | Adds `windows-latest` to the CI test matrix (for path-sensitive or Windows-targeted packages). |
 
 ## Apply template updates to an existing project
 
@@ -97,7 +99,7 @@ uv run pytest                      # run tests
 uv run pre-commit run --all-files  # run all lint checks manually
 ```
 
-Version bumping and releasing are handled automatically by `bump.yml` and `release.yml` on every merge to `main`. Manual override:
+Version bumping and releasing are handled automatically on every merge to `main`: `versioning.yml` runs `cz bump`, pushes the tag, and dispatches `release.yml`, which builds and publishes. Manual override:
 
 ```sh
 cz bump && git push --follow-tags
@@ -118,8 +120,9 @@ my-project/
 ├── .github/
 │   └── workflows/
 │       ├── ci.yml               # lint on push; tests on PR to main
-│       ├── bump.yml             # auto cz bump on merge to main
-│       ├── release.yml          # on v* tag: GitHub release + PyPI (OIDC)
+│       ├── versioning.yml       # on merge to main: cz bump + tag, dispatches release.yml
+│       ├── release.yml          # on tag/dispatch: build → GitHub release + PyPI (OIDC)
+│       ├── pr-review.yml        # automated PR review
 │       └── docs.yml             # deploy MkDocs to GitHub Pages on push to main
 ├── pyproject.toml
 ├── CITATION.cff                 # citation metadata for Zenodo + GitHub
