@@ -43,8 +43,10 @@ feature branch  →  PR  →  CI gate (lint + test) must pass
                                ↓
                            merge to main (rebase)
                                ↓
-                           release.yml fires on push to main (one job):
-                           → cz bump → tag vX.Y.Z
+                           versioning.yml fires on push to main:
+                           → cz bump → tag vX.Y.Z → dispatch release.yml
+                               ↓
+                           release.yml (on tag / dispatch):
                            → GitHub release (wheel + sdist attached)
                            → PyPI via OIDC trusted publishing (no stored token)
                            → Zenodo webhook (if enabled)

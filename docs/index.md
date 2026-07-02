@@ -99,7 +99,7 @@ uv run pytest                      # run tests
 uv run pre-commit run --all-files  # run all lint checks manually
 ```
 
-Version bumping and releasing are handled automatically by `release.yml` on every merge to `main` (it runs `cz bump`, tags, builds, and publishes in one job). Manual override:
+Version bumping and releasing are handled automatically on every merge to `main`: `versioning.yml` runs `cz bump`, pushes the tag, and dispatches `release.yml`, which builds and publishes. Manual override:
 
 ```sh
 cz bump && git push --follow-tags
@@ -120,7 +120,8 @@ my-project/
 ├── .github/
 │   └── workflows/
 │       ├── ci.yml               # lint on push; tests on PR to main
-│       ├── release.yml          # on merge to main: cz bump → build → GitHub release + PyPI (OIDC)
+│       ├── versioning.yml       # on merge to main: cz bump + tag, dispatches release.yml
+│       ├── release.yml          # on tag/dispatch: build → GitHub release + PyPI (OIDC)
 │       ├── pr-review.yml        # automated PR review
 │       └── docs.yml             # deploy MkDocs to GitHub Pages on push to main
 ├── pyproject.toml

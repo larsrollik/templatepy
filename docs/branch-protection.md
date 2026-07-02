@@ -16,15 +16,15 @@ Configure branch protection rules on GitHub to enforce the CI gate and allow aut
 | Require branches to be up to date | ✓ | No stale merges |
 | Require linear history | ✓ | Keeps git log readable |
 
-## Allow `release.yml` to push back to `main`
+## Allow `versioning.yml` to push back to `main`
 
-`release.yml` creates a version tag and pushes it after merging. GitHub's default branch protection blocks this. Fix:
+`versioning.yml` creates a version tag and pushes it after merging. GitHub's default branch protection blocks this. Fix:
 
 **Repository → Settings → Branches → main rule → Allow specified actors to bypass required pull requests**
 
 Add: `github-actions[bot]`
 
-Without this, the release workflow will fail with a 403 when trying to push the tag.
+Without this, the versioning workflow will fail with a 403 when trying to push the tag.
 
 ## Required status check name
 

@@ -28,9 +28,12 @@ gh pr create --base main --title "feat: my feature"
 # 5. Merge PR (rebase or squash)
 gh pr merge --rebase --delete-branch
 
-# 6. release.yml fires automatically on push to main (one job):
+# 6. versioning.yml fires automatically on push to main:
 #    → reads commits since last tag, runs cz bump --yes (patch/minor/major)
 #    → creates + pushes version tag (e.g. v1.3.0)
+#    → dispatches release.yml
+
+# 7. release.yml (on the tag / dispatch):
 #    → builds wheel + sdist
 #    → creates GitHub release with dist files attached
 #    → publishes to PyPI via OIDC trusted publishing (no stored token)
@@ -47,7 +50,7 @@ Commitizen reads all commits since the previous tag:
 | at least one `feat:` | **minor** `0.x.0` |
 | `BREAKING CHANGE:` footer or `feat!:`/`fix!:` | **major** `x.0.0` |
 
-If there are no bumpable commits since the last tag, `release.yml` exits silently — no error, no tag.
+If there are no bumpable commits since the last tag, `versioning.yml` exits silently — no error, no tag.
 
 ## Manual bump (override)
 

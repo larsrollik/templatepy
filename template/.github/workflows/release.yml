@@ -1,9 +1,17 @@
 name: Release
 
+# Publish only. Triggered by a tag (hand-pushed tags publish directly) or by a
+# workflow_dispatch from versioning.yml (a GITHUB_TOKEN-pushed tag cannot trigger
+# push:tags). Stays named release.yml so the PyPI trusted-publisher (OIDC) binding
+# is unchanged.
 on:
   push:
-    branches: [main]
+    tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to publish (e.g. v0.1.2)"
+        required: true
 
 permissions:
   contents: write
@@ -11,50 +19,27 @@ permissions:
 
 jobs:
   release:
-    name: Bump, build, publish
+    name: Build and publish
     runs-on: ubuntu-latest
-    if: "!startsWith(github.event.head_commit.message, 'bump:')"
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: "${{ github.event.inputs.tag || github.ref }}"
           fetch-depth: 0
-
-      - name: Configure git identity
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - uses: astral-sh/setup-uv@v7
         with:
           python-version: "[[ python_requires ]]"
 
-      - name: Bump version
-        id: bump
-        run: |
-          uvx --from commitizen cz bump --yes || EXIT=$?
-          if [ "${EXIT:-0}" -eq 21 ] || [ "${EXIT:-0}" -eq 6 ]; then
-            echo "No bumpable commits since last tag — skipping."
-            echo "skipped=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          [ "${EXIT:-0}" -eq 0 ] || exit $EXIT
-          VERSION=$(cat VERSION)
-          git push origin HEAD:main
-          git push origin "v${VERSION}"
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-
       - name: Build
-        if: steps.bump.outputs.skipped != 'true'
         run: uv build
 
       - name: Create GitHub release
-        if: steps.bump.outputs.skipped != 'true'
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: "v${{ steps.bump.outputs.version }}"
+          tag_name: "${{ github.event.inputs.tag || github.ref_name }}"
           files: dist/*
           generate_release_notes: false
 
       - name: Publish to PyPI
-        if: steps.bump.outputs.skipped != 'true'
         run: uv publish --trusted-publishing automatic
