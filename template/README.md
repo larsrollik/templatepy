@@ -5,13 +5,13 @@
 ## Installation
 
 ```sh
-pip install [[ project_slug ]]
+uv add [[ project_slug ]]
 ```
 
-Or with uv:
+Or with pip:
 
 ```sh
-uv add [[ project_slug ]]
+pip install [[ project_slug ]]
 ```
 
 ## Development setup

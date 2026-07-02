@@ -16,19 +16,19 @@ Configure branch protection rules on GitHub to enforce the CI gate and allow aut
 | Require branches to be up to date | ✓ | No stale merges |
 | Require linear history | ✓ | Keeps git log readable |
 
-## Allow `bump.yml` to push back to `main`
+## Allow `release.yml` to push back to `main`
 
-`bump.yml` creates a version tag and pushes it after merging. GitHub's default branch protection blocks this. Fix:
+`release.yml` creates a version tag and pushes it after merging. GitHub's default branch protection blocks this. Fix:
 
 **Repository → Settings → Branches → main rule → Allow specified actors to bypass required pull requests**
 
 Add: `github-actions[bot]`
 
-Without this, the bump workflow will fail with a 403 when trying to push the tag.
+Without this, the release workflow will fail with a 403 when trying to push the tag.
 
 ## Required status check name
 
-The aggregate job in `ci.yml` is named `CI`. This is what to enter in the required status checks field. It passes only when `lint` and `secrets-scan` both succeed.
+The aggregate job in `ci.yml` is named `CI`. This is what to enter in the required status checks field. It passes only when `lint` and `test` both succeed (gitleaks runs inside pre-commit, not a separate job).
 
 ## Rulesets (modern alternative)
 
