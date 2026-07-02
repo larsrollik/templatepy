@@ -82,8 +82,21 @@ license_type:
 
 private_repo_deps:
   type: bool
-  help: "Does this project depend on private GitHub repos (git+ deps)? Adds PRIVATE_REPO_ACCESS_TOKEN auth step to CI."
+  help: "Does this project depend on private GitHub repos (git+ deps)? Adds a git-auth step to CI so it can clone them."
   default: false
+
+private_repo_auth:
+  type: str
+  help: "How should CI authenticate to clone the private repos?"
+  when: "[[ private_repo_deps ]]"
+  default: app
+  choices:
+    # Org-owned GitHub App: per-run installation token, no user PAT. CI reads
+    # secrets CI_APP_ID + CI_APP_PRIVATE_KEY (create the App with Contents:read
+    # on the repos and set the secrets at org level). Recommended.
+    "GitHub App (org-owned, per-run token)": app
+    # Personal access token stored as the PRIVATE_REPO_ACCESS_TOKEN secret.
+    "Personal access token (PRIVATE_REPO_ACCESS_TOKEN)": pat
 
 test_on_windows:
   type: bool
