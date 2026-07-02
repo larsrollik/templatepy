@@ -527,6 +527,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../private-repo-auth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Private repo auth
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -662,12 +689,12 @@
 <a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="c1"># 5. Merge PR (rebase or squash)</span>
 <a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>gh<span class="w"> </span>pr<span class="w"> </span>merge<span class="w"> </span>--rebase<span class="w"> </span>--delete-branch
 <a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="c1"># 6. bump.yml fires automatically on push to main:</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="c1">#    → reads commits since last tag</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="c1">#    → runs cz bump --yes to determine patch/minor/major</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="c1">#    → creates version tag (e.g. v1.3.0) and pushes it</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="c1"># 6. versioning.yml fires automatically on push to main:</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="c1">#    → reads commits since last tag, runs cz bump --yes (patch/minor/major)</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="c1">#    → creates + pushes version tag (e.g. v1.3.0)</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="c1">#    → dispatches release.yml</span>
 <a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="c1"># 7. release.yml fires on the new tag:</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="c1"># 7. release.yml (on the tag / dispatch):</span>
 <a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="c1">#    → builds wheel + sdist</span>
 <a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="c1">#    → creates GitHub release with dist files attached</span>
 <a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="c1">#    → publishes to PyPI via OIDC trusted publishing (no stored token)</span>
@@ -697,7 +724,7 @@
 </tr>
 </tbody>
 </table>
-<p>If there are no bumpable commits since the last tag, <code>bump.yml</code> exits silently — no error, no tag.</p>
+<p>If there are no bumpable commits since the last tag, <code>versioning.yml</code> exits silently — no error, no tag.</p>
 <h2 id="manual-bump-override">Manual bump (override)<a class="headerlink" href="#manual-bump-override" title="Permanent link">&para;</a></h2>
 <p>Automated bumping covers most cases. Override when needed:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cz<span class="w"> </span>bump<span class="w"> </span>--increment<span class="w"> </span>PATCH
@@ -714,8 +741,6 @@
 </code></pre></div>
 <p>Common types: <code>feat</code>, <code>fix</code>, <code>docs</code>, <code>chore</code>, <code>refactor</code>, <code>test</code>, <code>ci</code>, <code>build</code>.</p>
 <h2 id="common-issues">Common issues<a class="headerlink" href="#common-issues" title="Permanent link">&para;</a></h2>
-<p><strong><code>bump.yml</code> pushed a tag but <code>release.yml</code> didn't trigger</strong></p>
-<p>GitHub prevents downstream <code>push</code> triggers when <code>GITHUB_TOKEN</code> is the actor. If this happens, store a PAT as <code>BUMP_TOKEN</code> and set <code>token: ${{ secrets.BUMP_TOKEN }}</code> in the checkout step of <code>bump.yml</code>.</p>
 <p><strong><code>cz bump</code> fails with exit code 128</strong></p>
 <ul>
 <li>Detached HEAD → <code>git checkout main</code> first</li>

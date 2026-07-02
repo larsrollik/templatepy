@@ -10,13 +10,11 @@
       
       
       
-        <link rel="canonical" href="https://larsrollik.github.io/templatepy/gpg-signing/">
+        <link rel="canonical" href="https://larsrollik.github.io/templatepy/private-repo-auth/">
       
       
-        <link rel="prev" href="../release-workflow/">
+        <link rel="prev" href="../branch-protection/">
       
-      
-        <link rel="next" href="../pypi-publishing/">
       
       
         
@@ -27,7 +25,7 @@
     
     
       
-        <title>GPG signing - templatepy</title>
+        <title>Private repo auth - templatepy</title>
       
     
     
@@ -76,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#gpg-signing" class="md-skip">
+        <a href="#private-repo-dependencies-ci-auth" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              GPG signing
+              Private repo auth
             
           </span>
         </div>
@@ -283,37 +281,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    GPG signing
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../gpg-signing/" class="md-nav__link">
         
   
   
@@ -329,92 +300,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#generate-a-key" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Generate a key
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#find-your-key-id" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Find your key ID
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-git-to-use-the-key" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configure git to use the key
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#add-the-public-key-to-github" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Add the public key to GitHub
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#common-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Common issues
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disabling-signing-temporarily" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Disabling signing temporarily
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -531,10 +416,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../private-repo-auth/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Private repo auth
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -550,6 +462,48 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#app-org-owned-github-app-default-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        app — org-owned GitHub App (default, recommended)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pat-personal-access-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pat — personal access token
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -581,10 +535,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#generate-a-key" class="md-nav__link">
+  <a href="#app-org-owned-github-app-default-recommended" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Generate a key
+        app — org-owned GitHub App (default, recommended)
       
     </span>
   </a>
@@ -592,54 +546,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#find-your-key-id" class="md-nav__link">
+  <a href="#pat-personal-access-token" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Find your key ID
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-git-to-use-the-key" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configure git to use the key
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#add-the-public-key-to-github" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Add the public key to GitHub
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#common-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Common issues
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disabling-signing-temporarily" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Disabling signing temporarily
+        pat — personal access token
       
     </span>
   </a>
@@ -666,71 +576,45 @@
   
 
 
-<h1 id="gpg-signing">GPG signing<a class="headerlink" href="#gpg-signing" title="Permanent link">&para;</a></h1>
-<p>Signing commits and tags is optional but recommended for open-source projects. GitHub shows a "Verified" badge on signed commits.</p>
-<h2 id="generate-a-key">Generate a key<a class="headerlink" href="#generate-a-key" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>gpg<span class="w"> </span>--full-generate-key
+<h1 id="private-repo-dependencies-ci-auth">Private repo dependencies (CI auth)<a class="headerlink" href="#private-repo-dependencies-ci-auth" title="Permanent link">&para;</a></h1>
+<p>If your package depends on <strong>private</strong> GitHub repos (e.g. <code>git+</code>/workspace deps that
+aren't on PyPI), CI needs credentials to clone them. Set <code>private_repo_deps=true</code> at
+generation time and pick how CI authenticates via <code>private_repo_auth</code>.</p>
+<p>Only <strong>private</strong> dependency repos need this — public deps clone anonymously.</p>
+<h2 id="app-org-owned-github-app-default-recommended"><code>app</code> — org-owned GitHub App (default, recommended)<a class="headerlink" href="#app-org-owned-github-app-default-recommended" title="Permanent link">&para;</a></h2>
+<p>CI mints a short-lived, per-run installation token via
+<code>actions/create-github-app-token@v3</code>, then rewrites git to use it:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/create-github-app-token@v3</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app-token</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">app-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.CI_APP_ID }}</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">private-key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.CI_APP_PRIVATE_KEY }}</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.repository_owner }}</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git config --global url.&quot;https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/&quot;.insteadOf &quot;https://github.com/&quot;</span>
 </code></pre></div>
-<p>Recommended options:</p>
-<ul>
-<li>Key type: <code>(9) ECC (sign and encrypt)</code> → Curve 25519</li>
-<li>Expiry: <code>2y</code> (rotate every two years)</li>
-<li>Name and email matching your GitHub account</li>
-</ul>
-<h2 id="find-your-key-id">Find your key ID<a class="headerlink" href="#find-your-key-id" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>gpg<span class="w"> </span>--list-secret-keys<span class="w"> </span>--keyid-format<span class="w"> </span>LONG
+<p>Setup (once per org):</p>
+<ol>
+<li>Create an <strong>org-owned</strong> GitHub App: <code>https://github.com/organizations/&lt;ORG&gt;/settings/apps/new</code> — <strong>Contents: Read-only</strong>, webhook off.</li>
+<li>Generate a private key (<code>.pem</code>) and note the <strong>App ID</strong>.</li>
+<li><strong>Install</strong> the App on the <strong>private</strong> repos that CI clones (Contents:read). The
+   repo running the workflow does <em>not</em> need to be installed (it mints via <code>owner:</code>
+   and checks itself out with the default <code>GITHUB_TOKEN</code>).</li>
+<li>Add two <strong>org</strong> secrets: <code>CI_APP_ID</code> (the App ID) and <code>CI_APP_PRIVATE_KEY</code> (the <code>.pem</code>).</li>
+</ol>
+<p>Why this over a PAT: not tied to any user, tokens are short-lived and auto-expire
+(nothing to rotate), and access is scoped to the installed repos.</p>
+<h2 id="pat-personal-access-token"><code>pat</code> — personal access token<a class="headerlink" href="#pat-personal-access-token" title="Permanent link">&para;</a></h2>
+<p>CI uses a <code>PRIVATE_REPO_ACCESS_TOKEN</code> secret:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">env</span><span class="p">:</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">PRIVATE_REPO_ACCESS_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PRIVATE_REPO_ACCESS_TOKEN }}</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="no">if [ -n &quot;$PRIVATE_REPO_ACCESS_TOKEN&quot; ]; then</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="no">git config --global url.&quot;https://${PRIVATE_REPO_ACCESS_TOKEN}@github.com/&quot;.insteadOf &quot;https://github.com/&quot;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="no">fi</span>
 </code></pre></div>
-<p>Output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>sec   ed25519/&lt;KEY_ID&gt; 2024-01-01 [SC] [expires: 2026-01-01]
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>      ABCDEF1234567890ABCDEF1234567890ABCDEF12
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>uid   [ultimate] Your Name &lt;you@example.com&gt;
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>ssb   cv25519/&lt;SUBKEY_ID&gt; 2024-01-01 [E]
-</code></pre></div>
-<p>The <code>&lt;KEY_ID&gt;</code> is the 16-character hex string after <code>ed25519/</code>.</p>
-<h2 id="configure-git-to-use-the-key">Configure git to use the key<a class="headerlink" href="#configure-git-to-use-the-key" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.signingkey<span class="w"> </span>&lt;KEY_ID&gt;
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>commit.gpgsign<span class="w"> </span><span class="nb">true</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>tag.gpgSign<span class="w"> </span><span class="nb">true</span>
-</code></pre></div>
-<h2 id="add-the-public-key-to-github">Add the public key to GitHub<a class="headerlink" href="#add-the-public-key-to-github" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>gpg<span class="w"> </span>--armor<span class="w"> </span>--export<span class="w"> </span>&lt;KEY_ID&gt;
-</code></pre></div>
-<p>Copy the output (including <code>-----BEGIN PGP PUBLIC KEY BLOCK-----</code>).</p>
-<p>Go to <strong>GitHub → Settings → SSH and GPG keys → New GPG key</strong> and paste it.</p>
-<h2 id="common-issues">Common issues<a class="headerlink" href="#common-issues" title="Permanent link">&para;</a></h2>
-<p><strong>GPG hangs and never asks for passphrase</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GPG_TTY</span><span class="o">=</span><span class="k">$(</span>tty<span class="k">)</span>
-</code></pre></div>
-<p>Add this to your shell profile (<code>~/.zshrc</code> or <code>~/.bashrc</code>) to make it permanent.</p>
-<p><strong><code>error: gpg failed to sign the data</code></strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>gpgconf<span class="w"> </span>--kill<span class="w"> </span>gpg-agent
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>gpg-agent<span class="w"> </span>--daemon
-</code></pre></div>
-<p><strong>Wrong key used / multiple keys</strong></p>
-<p>Check which key git is using:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.signingkey
-</code></pre></div>
-<p>List all available secret keys:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>gpg<span class="w"> </span>--list-secret-keys
-</code></pre></div>
-<p><strong>Key expired</strong></p>
-<p>Extend expiry without creating a new key:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>gpg<span class="w"> </span>--edit-key<span class="w"> </span>&lt;KEY_ID&gt;
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="c1"># at the gpg&gt; prompt:</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>expire
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># follow prompts, then:</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>save
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="c1"># re-export and update the key on GitHub</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>gpg<span class="w"> </span>--armor<span class="w"> </span>--export<span class="w"> </span>&lt;KEY_ID&gt;
-</code></pre></div>
-<h2 id="disabling-signing-temporarily">Disabling signing temporarily<a class="headerlink" href="#disabling-signing-temporarily" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>git<span class="w"> </span>commit<span class="w"> </span>--no-gpg-sign<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;message&quot;</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>git<span class="w"> </span>tag<span class="w"> </span>--no-sign<span class="w"> </span>v1.0.0
-</code></pre></div>
-<p>Or disable globally:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>commit.gpgsign<span class="w"> </span><span class="nb">false</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>tag.gpgSign<span class="w"> </span><span class="nb">false</span>
-</code></pre></div>
+<p>Setup: create a fine-grained PAT with <strong>Contents: Read-only</strong> on the private dep repos
+and store it as the <code>PRIVATE_REPO_ACCESS_TOKEN</code> secret (repo or org level). Simpler, but
+tied to a user account and expires (≤1 year) — prefer <code>app</code> for shared/long-lived infra.</p>
 
 
 

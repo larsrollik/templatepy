@@ -516,6 +516,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../private-repo-auth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Private repo auth
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -633,7 +660,7 @@
 </ol>
 <p>That's it. The workflow handles authentication automatically — no token, no secret.</p>
 <h2 id="trigger-a-release">Trigger a release<a class="headerlink" href="#trigger-a-release" title="Permanent link">&para;</a></h2>
-<p>Releases are triggered automatically by <code>bump.yml</code> on every merge to <code>main</code>. To trigger manually:</p>
+<p>Releases are triggered automatically on every merge to <code>main</code> (<code>versioning.yml</code> bumps + tags, then dispatches <code>release.yml</code>). To trigger manually:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>cz<span class="w"> </span>bump
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>git<span class="w"> </span>push<span class="w"> </span>--follow-tags
 </code></pre></div>

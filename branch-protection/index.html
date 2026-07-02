@@ -16,6 +16,8 @@
         <link rel="prev" href="../pre-commit/">
       
       
+        <link rel="next" href="../private-repo-auth/">
+      
       
         
       
@@ -463,10 +465,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#allow-bumpyml-to-push-back-to-main" class="md-nav__link">
+  <a href="#allow-versioningyml-to-push-back-to-main" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Allow bump.yml to push back to main
+        Allow versioning.yml to push back to main
       
     </span>
   </a>
@@ -499,6 +501,33 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../private-repo-auth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Private repo auth
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -541,10 +570,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#allow-bumpyml-to-push-back-to-main" class="md-nav__link">
+  <a href="#allow-versioningyml-to-push-back-to-main" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Allow bump.yml to push back to main
+        Allow versioning.yml to push back to main
       
     </span>
   </a>
@@ -643,13 +672,13 @@
 </tr>
 </tbody>
 </table>
-<h2 id="allow-bumpyml-to-push-back-to-main">Allow <code>bump.yml</code> to push back to <code>main</code><a class="headerlink" href="#allow-bumpyml-to-push-back-to-main" title="Permanent link">&para;</a></h2>
-<p><code>bump.yml</code> creates a version tag and pushes it after merging. GitHub's default branch protection blocks this. Fix:</p>
+<h2 id="allow-versioningyml-to-push-back-to-main">Allow <code>versioning.yml</code> to push back to <code>main</code><a class="headerlink" href="#allow-versioningyml-to-push-back-to-main" title="Permanent link">&para;</a></h2>
+<p><code>versioning.yml</code> creates a version tag and pushes it after merging. GitHub's default branch protection blocks this. Fix:</p>
 <p><strong>Repository → Settings → Branches → main rule → Allow specified actors to bypass required pull requests</strong></p>
 <p>Add: <code>github-actions[bot]</code></p>
-<p>Without this, the bump workflow will fail with a 403 when trying to push the tag.</p>
+<p>Without this, the versioning workflow will fail with a 403 when trying to push the tag.</p>
 <h2 id="required-status-check-name">Required status check name<a class="headerlink" href="#required-status-check-name" title="Permanent link">&para;</a></h2>
-<p>The aggregate job in <code>ci.yml</code> is named <code>CI</code>. This is what to enter in the required status checks field. It passes only when <code>lint</code> and <code>secrets-scan</code> both succeed.</p>
+<p>The aggregate job in <code>ci.yml</code> is named <code>CI</code>. This is what to enter in the required status checks field. It passes only when <code>lint</code> and <code>test</code> both succeed (gitleaks runs inside pre-commit, not a separate job).</p>
 <h2 id="rulesets-modern-alternative">Rulesets (modern alternative)<a class="headerlink" href="#rulesets-modern-alternative" title="Permanent link">&para;</a></h2>
 <p>GitHub now offers <strong>Rulesets</strong> (Repository → Settings → Rules → Rulesets) as a more flexible replacement for classic branch protection. Rulesets support bypass lists, actor-based rules, and can be applied to tag patterns (useful for protecting <code>v*</code> tags from deletion or force-push).</p>
 

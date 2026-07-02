@@ -2,30 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://larsrollik.github.io/templatepy/</loc>
-         <lastmod>2026-06-13</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://larsrollik.github.io/templatepy/branch-protection/</loc>
-         <lastmod>2026-06-13</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://larsrollik.github.io/templatepy/gpg-signing/</loc>
-         <lastmod>2026-06-13</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://larsrollik.github.io/templatepy/local-ci/</loc>
-         <lastmod>2026-06-13</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://larsrollik.github.io/templatepy/pre-commit/</loc>
-         <lastmod>2026-06-13</lastmod>
+         <lastmod>2026-07-02</lastmod>
+    </url>
+    <url>
+         <loc>https://larsrollik.github.io/templatepy/private-repo-auth/</loc>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://larsrollik.github.io/templatepy/pypi-publishing/</loc>
-         <lastmod>2026-06-13</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://larsrollik.github.io/templatepy/release-workflow/</loc>
-         <lastmod>2026-06-13</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
 </urlset>
