@@ -25,6 +25,20 @@ jobs:
           python-version: "[[ python_requires ]]"
 
 [% if private_repo_deps %]
+[% if private_repo_auth == "app" %]
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          app-id: ${{ secrets.CI_APP_ID }}
+          private-key: ${{ secrets.CI_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Configure git for private repos
+        env:
+          GH_APP_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          git config --global url."https://x-access-token:${GH_APP_TOKEN}@github.com/".insteadOf "https://github.com/"
+[% else %]
       - name: Configure git for private repos
         env:
           PRIVATE_REPO_ACCESS_TOKEN: ${{ secrets.PRIVATE_REPO_ACCESS_TOKEN }}
@@ -32,6 +46,7 @@ jobs:
           if [ -n "$PRIVATE_REPO_ACCESS_TOKEN" ]; then
             git config --global url."https://${PRIVATE_REPO_ACCESS_TOKEN}@github.com/".insteadOf "https://github.com/"
           fi
+[% endif %]
 
 [% endif %]
       - name: Install dependencies
@@ -65,6 +80,20 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
 [% if private_repo_deps %]
+[% if private_repo_auth == "app" %]
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          app-id: ${{ secrets.CI_APP_ID }}
+          private-key: ${{ secrets.CI_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Configure git for private repos
+        env:
+          GH_APP_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          git config --global url."https://x-access-token:${GH_APP_TOKEN}@github.com/".insteadOf "https://github.com/"
+[% else %]
       - name: Configure git for private repos
         env:
           PRIVATE_REPO_ACCESS_TOKEN: ${{ secrets.PRIVATE_REPO_ACCESS_TOKEN }}
@@ -72,6 +101,7 @@ jobs:
           if [ -n "$PRIVATE_REPO_ACCESS_TOKEN" ]; then
             git config --global url."https://${PRIVATE_REPO_ACCESS_TOKEN}@github.com/".insteadOf "https://github.com/"
           fi
+[% endif %]
 
 [% endif %]
       - name: Install dependencies
