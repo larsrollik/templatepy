@@ -61,4 +61,4 @@ DAMAGES, OR OTHER LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR DEALINGS IN THE SOFTWARE.
 
 For commercial or patent licensing enquiries contact: [[ author_email ]]
-[% endif %]
+[% endif -%]

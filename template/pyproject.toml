@@ -122,6 +122,9 @@ convention = "numpy"
 
 [tool.mypy]
 python_version = "[[ python_requires ]]"
-warn_return_any = true
+# warn_return_any is off by design: with ignore_missing_imports the isolated
+# pre-commit mypy hook sees typed third-party deps (e.g. pydantic) as Any, so it
+# would false-positive on every value returned from them (model_validate, etc.).
+warn_return_any = false
 warn_unused_ignores = true
 ignore_missing_imports = true

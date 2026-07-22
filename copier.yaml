@@ -19,6 +19,10 @@ _envops:
   variable_end_string: "]]"
   comment_start_string: "[#"
   comment_end_string: "#]"
+  # Keep each file's single trailing newline (Jinja strips it by default) so normal
+  # files pass the end-of-file-fixer hook. Files that END with a block tag additionally
+  # use `-%]` on that tag to swallow the extra newline (see LICENSE, the ci.yml files).
+  keep_trailing_newline: true
 
 # ---------------------------------------------------------------------------
 # Questions
