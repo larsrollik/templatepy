@@ -104,9 +104,16 @@ select = [
     "PYI",      # flake8-pyi
     "YTT",      # flake8-2020
     "N",        # pep8-naming
+    "S",        # flake8-bandit (security)
+    "DTZ",      # flake8-datetimez (no naive datetimes)
+    "RUF",      # ruff-specific rules
 ]
 ignore = []
 fixable = ["ALL"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests legitimately use bare asserts, dummy "secrets", and random.
+"tests/**" = ["S101", "S105", "S106", "S107", "S311"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -128,3 +135,4 @@ python_version = "[[ python_requires ]]"
 warn_return_any = false
 warn_unused_ignores = true
 ignore_missing_imports = true
+check_untyped_defs = true
