@@ -107,6 +107,7 @@ select = [
     "S",        # flake8-bandit (security)
     "DTZ",      # flake8-datetimez (no naive datetimes)
     "RUF",      # ruff-specific rules
+    "ASYNC",    # flake8-async
 ]
 ignore = []
 fixable = ["ALL"]
@@ -136,3 +137,6 @@ warn_return_any = false
 warn_unused_ignores = true
 ignore_missing_imports = true
 check_untyped_defs = true
+# Require a type annotation on every function; new code must be fully typed.
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
