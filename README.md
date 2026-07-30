@@ -41,7 +41,7 @@ cd my-existing-project && copier update
 feature branch  →  PR  →  CI gate (lint + test) must pass
                            merge blocked until green
                                ↓
-                           merge to main (rebase)
+                           merge to main (merge commit)
                                ↓
                            versioning.yml fires on push to main:
                            → cz bump → tag vX.Y.Z → dispatch release.yml
