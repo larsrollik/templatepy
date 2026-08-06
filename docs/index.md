@@ -51,7 +51,7 @@ uv run pre-commit install --hook-type pre-commit --hook-type commit-msg
 | `python_requires` | `3.10`-`3.14`, default `3.13` | Minimum supported Python version; controls `requires-python` and test matrix |
 | `license_type` | `noncommercial` / `bsd3` | `noncommercial` for MSW-core packages; `bsd3` for standalone hardware drivers |
 | `private_repo_deps` | `false` / `true`, default `false` | Set `true` only if the repo has private GitHub dependencies; injects a git auth step in CI. All standard repos use `false` (PyPI deps only). |
-| `private_repo_auth` | `app` / `pat`, default `app` (asked only when `private_repo_deps=true`) | How CI authenticates to clone the private deps. **app** = org-owned GitHub App, per-run token via `actions/create-github-app-token@v3` (org secrets `CI_APP_ID` + `CI_APP_PRIVATE_KEY`; the App needs Contents:read on the private repos). **pat** = the `PRIVATE_REPO_ACCESS_TOKEN` secret. See [Private repo auth](private-repo-auth.md). |
+| `private_repo_auth` | `app` / `pat`, default `app` (asked only when `private_repo_deps=true`) | How CI authenticates to clone the private deps. **app** = org-owned GitHub App, per-run token via `actions/create-github-app-token@v3` using `client-id` (org secrets `CI_APP_CLIENT_ID` + `CI_APP_PRIVATE_KEY`, names configurable; the App needs Contents:read on the private repos). **pat** = the `PRIVATE_REPO_ACCESS_TOKEN` secret. See [Private repo auth](private-repo-auth.md). |
 | `test_on_windows` | `false` / `true`, default `false` | Adds `windows-latest` to the CI test matrix (for path-sensitive or Windows-targeted packages). |
 
 ## Apply template updates to an existing project

@@ -15,20 +15,27 @@ CI mints a short-lived, per-run installation token via
 - uses: actions/create-github-app-token@v3
   id: app-token
   with:
-    app-id: ${{ secrets.CI_APP_ID }}
+    client-id: ${{ secrets.CI_APP_CLIENT_ID }}
     private-key: ${{ secrets.CI_APP_PRIVATE_KEY }}
     owner: ${{ github.repository_owner }}
 - run: git config --global url."https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/".insteadOf "https://github.com/"
 ```
 
+The token step uses `client-id` (the App's **Client ID**), not the deprecated `app-id`
+input. The secret names are copier variables — `ci_app_client_id_secret` (default
+`CI_APP_CLIENT_ID`) and `ci_app_private_key_secret` (default `CI_APP_PRIVATE_KEY`) — so
+an org with several Apps can scope them (e.g. `MYORG_CI_CLIENT_ID`). The Client ID and
+the private key **must belong to the same App**, or the token mint fails with
+`A JSON web token could not be decoded`.
+
 Setup (once per org):
 
 1. Create an **org-owned** GitHub App: `https://github.com/organizations/<ORG>/settings/apps/new` — **Contents: Read-only**, webhook off.
-2. Generate a private key (`.pem`) and note the **App ID**.
+2. Generate a private key (`.pem`) and note the **Client ID** (`Iv23li…`, on the App's General page).
 3. **Install** the App on the **private** repos that CI clones (Contents:read). The
    repo running the workflow does *not* need to be installed (it mints via `owner:`
    and checks itself out with the default `GITHUB_TOKEN`).
-4. Add two **org** secrets: `CI_APP_ID` (the App ID) and `CI_APP_PRIVATE_KEY` (the `.pem`).
+4. Add two **org** secrets: `CI_APP_CLIENT_ID` (the App's Client ID) and `CI_APP_PRIVATE_KEY` (the `.pem`).
 
 Why this over a PAT: not tied to any user, tokens are short-lived and auto-expire
 (nothing to rotate), and access is scoped to the installed repos.

@@ -78,9 +78,9 @@ year:
 
 license_type:
   type: str
-  help: "Licence for the generated project. noncommercial = custom MSW licence (research/academic only, no commercial use without agreement). bsd3 = BSD-3-Clause (hardware wrappers and utilities — allows commercial use)."
+  help: "Licence for the generated project. noncommercial = BSD-3-Clause-NonCommercial (BSD-3 terms plus a non-commercial clause; research/academic/education only, commercial use needs a separate agreement). bsd3 = BSD-3-Clause (hardware wrappers and utilities — allows commercial use)."
   choices:
-    "Custom noncommercial (MSW default)": noncommercial
+    "BSD-3 + non-commercial clause (default)": noncommercial
     "BSD-3-Clause (hardware wrappers / utilities)": bsd3
   default: noncommercial
 
@@ -95,12 +95,25 @@ private_repo_auth:
   when: "[[ private_repo_deps ]]"
   default: app
   choices:
-    # Org-owned GitHub App: per-run installation token, no user PAT. CI reads
-    # secrets CI_APP_ID + CI_APP_PRIVATE_KEY (create the App with Contents:read
-    # on the repos and set the secrets at org level). Recommended.
+    # Org-owned GitHub App: per-run installation token, no user PAT. CI mints via
+    # `client-id` (the App's Client ID, Iv23li…) + its private key, read from the
+    # secrets named below (create the App with Contents:read on the repos and set
+    # the secrets at org level). Recommended.
     "GitHub App (org-owned, per-run token)": app
     # Personal access token stored as the PRIVATE_REPO_ACCESS_TOKEN secret.
     "Personal access token (PRIVATE_REPO_ACCESS_TOKEN)": pat
+
+ci_app_client_id_secret:
+  type: str
+  help: "Actions secret holding the GitHub App Client ID (Iv23li…) CI mints tokens with. Rename per org (e.g. MURINESHIFTWORK_CI_CLIENT_ID) or keep the generic default."
+  when: "[[ private_repo_deps and private_repo_auth == 'app' ]]"
+  default: CI_APP_CLIENT_ID
+
+ci_app_private_key_secret:
+  type: str
+  help: "Actions secret holding the GitHub App private key (.pem) paired with that Client ID."
+  when: "[[ private_repo_deps and private_repo_auth == 'app' ]]"
+  default: CI_APP_PRIVATE_KEY
 
 test_on_windows:
   type: bool
