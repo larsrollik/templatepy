@@ -29,8 +29,8 @@ jobs:
       - uses: actions/create-github-app-token@v3
         id: app-token
         with:
-          app-id: ${{ secrets.CI_APP_ID }}
-          private-key: ${{ secrets.CI_APP_PRIVATE_KEY }}
+          client-id: ${{ secrets.[[ ci_app_client_id_secret ]] }}
+          private-key: ${{ secrets.[[ ci_app_private_key_secret ]] }}
           owner: ${{ github.repository_owner }}
 
       - name: Configure git for private repos
@@ -84,8 +84,8 @@ jobs:
       - uses: actions/create-github-app-token@v3
         id: app-token
         with:
-          app-id: ${{ secrets.CI_APP_ID }}
-          private-key: ${{ secrets.CI_APP_PRIVATE_KEY }}
+          client-id: ${{ secrets.[[ ci_app_client_id_secret ]] }}
+          private-key: ${{ secrets.[[ ci_app_private_key_secret ]] }}
           owner: ${{ github.repository_owner }}
 
       - name: Configure git for private repos
