@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -587,19 +587,25 @@ generation time and pick how CI authenticates via <code>private_repo_auth</code>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/create-github-app-token@v3</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app-token</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">app-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.CI_APP_ID }}</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">client-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.CI_APP_CLIENT_ID }}</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">private-key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.CI_APP_PRIVATE_KEY }}</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.repository_owner }}</span>
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git config --global url.&quot;https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/&quot;.insteadOf &quot;https://github.com/&quot;</span>
 </code></pre></div>
+<p>The token step uses <code>client-id</code> (the App's <strong>Client ID</strong>), not the deprecated <code>app-id</code>
+input. The secret names are copier variables — <code>ci_app_client_id_secret</code> (default
+<code>CI_APP_CLIENT_ID</code>) and <code>ci_app_private_key_secret</code> (default <code>CI_APP_PRIVATE_KEY</code>) — so
+an org with several Apps can scope them (e.g. <code>MYORG_CI_CLIENT_ID</code>). The Client ID and
+the private key <strong>must belong to the same App</strong>, or the token mint fails with
+<code>A JSON web token could not be decoded</code>.</p>
 <p>Setup (once per org):</p>
 <ol>
 <li>Create an <strong>org-owned</strong> GitHub App: <code>https://github.com/organizations/&lt;ORG&gt;/settings/apps/new</code> — <strong>Contents: Read-only</strong>, webhook off.</li>
-<li>Generate a private key (<code>.pem</code>) and note the <strong>App ID</strong>.</li>
+<li>Generate a private key (<code>.pem</code>) and note the <strong>Client ID</strong> (<code>Iv23li…</code>, on the App's General page).</li>
 <li><strong>Install</strong> the App on the <strong>private</strong> repos that CI clones (Contents:read). The
    repo running the workflow does <em>not</em> need to be installed (it mints via <code>owner:</code>
    and checks itself out with the default <code>GITHUB_TOKEN</code>).</li>
-<li>Add two <strong>org</strong> secrets: <code>CI_APP_ID</code> (the App ID) and <code>CI_APP_PRIVATE_KEY</code> (the <code>.pem</code>).</li>
+<li>Add two <strong>org</strong> secrets: <code>CI_APP_CLIENT_ID</code> (the App's Client ID) and <code>CI_APP_PRIVATE_KEY</code> (the <code>.pem</code>).</li>
 </ol>
 <p>Why this over a PAT: not tied to any user, tokens are short-lived and auto-expire
 (nothing to rotate), and access is scoped to the installed repos.</p>
@@ -673,7 +679,7 @@ tied to a user account and expires (≤1 year) — prefer <code>app</code> for s
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
