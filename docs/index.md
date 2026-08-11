@@ -53,6 +53,9 @@ uv run pre-commit install --hook-type pre-commit --hook-type commit-msg
 | `private_repo_deps` | `false` / `true`, default `false` | Set `true` only if the repo has private GitHub dependencies; injects a git auth step in CI. All standard repos use `false` (PyPI deps only). |
 | `private_repo_auth` | `app` / `pat`, default `app` (asked only when `private_repo_deps=true`) | How CI authenticates to clone the private deps. **app** = org-owned GitHub App, per-run token via `actions/create-github-app-token@v3` using `client-id` (org secrets `CI_APP_CLIENT_ID` + `CI_APP_PRIVATE_KEY`, names configurable; the App needs Contents:read on the private repos). **pat** = the `PRIVATE_REPO_ACCESS_TOKEN` secret. See [Private repo auth](private-repo-auth.md). |
 | `test_on_windows` | `false` / `true`, default `false` | Adds `windows-latest` to the CI test matrix (for path-sensitive or Windows-targeted packages). |
+| `enable_pypi_publishing` | `false` / `true`, default `false` | Adds the PyPI publish step (+ OIDC `id-token`) to `release.yml`. Off still makes GitHub/Forgejo releases. See [PyPI publishing](pypi-publishing.md). |
+| `enable_docs_publishing` | `false` / `true`, default `false` | Adds the `docs.yml` GitHub Pages / Forgejo deploy workflow. `mkdocs.yml` + docs deps are always generated regardless. |
+| `enable_llm_pr_review` | `false` / `true`, default `false` | Adds the optional `pr-review.yml` LLM-review workflow. Off omits it (and its placeholder check). |
 
 ## Apply template updates to an existing project
 
@@ -99,7 +102,7 @@ uv run pytest                      # run tests
 uv run pre-commit run --all-files  # run all lint checks manually
 ```
 
-Version bumping and releasing are handled automatically on every merge to `main`: `versioning.yml` runs `cz bump`, pushes the tag, and dispatches `release.yml`, which builds and publishes. Manual override:
+Version bumping and releasing are handled automatically on every merge to `main`: `versioning.yml` runs `cz bump`, pushes the tag (as the release-bot App when configured, else `github-actions[bot]`), and `release.yml` builds the GitHub release — and publishes to PyPI if `enable_pypi_publishing`. Manual override:
 
 ```sh
 cz bump && git push --follow-tags
@@ -120,10 +123,16 @@ my-project/
 ├── .github/
 │   └── workflows/
 │       ├── ci.yml               # lint on push; tests on PR to main
-│       ├── versioning.yml       # on merge to main: cz bump + tag, dispatches release.yml
-│       ├── release.yml          # on tag/dispatch: build → GitHub release + PyPI (OIDC)
-│       ├── pr-review.yml        # automated PR review
-│       └── docs.yml             # deploy MkDocs to GitHub Pages on push to main
+│       ├── versioning.yml       # on merge to main: cz bump + tag (App bot or GITHUB_TOKEN)
+│       ├── release.yml          # on tag/dispatch: build → GitHub release (+ PyPI if enabled)
+│       ├── pr-review.yml        # optional — only if enable_llm_pr_review
+│       └── docs.yml             # optional — only if enable_docs_publishing
+├── scripts/
+│   ├── setup_repo.sh            # guided: create repo → install App → protect main
+│   └── setup_branch_protection.sh  # install the main-protected ruleset
+├── docs/
+│   ├── index.md
+│   └── repository-setup.md      # App, permissions, secrets, protection
 ├── pyproject.toml
 ├── CITATION.cff                 # citation metadata for Zenodo + GitHub
 ├── .pre-commit-config.yaml

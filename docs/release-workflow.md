@@ -36,7 +36,7 @@ gh pr merge --rebase --delete-branch
 # 7. release.yml (on the tag / dispatch):
 #    → builds wheel + sdist
 #    → creates GitHub release with dist files attached
-#    → publishes to PyPI via OIDC trusted publishing (no stored token)
+#    → publishes to PyPI via OIDC trusted publishing (only if enable_pypi_publishing)
 #    → Zenodo webhook archives the release (if enabled)
 ```
 

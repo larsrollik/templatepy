@@ -62,15 +62,23 @@ publishing — no API token stored in GitHub secrets.
 2. Owner: `<github-user>`, Repository: `<repo>`, Workflow: `release.yml`
 3. Done — the workflow handles authentication automatically.
 
-## Branch protection (required for CI gate)
+## Branch protection (optional)
 
-Repo settings → Branches → Add rule for `main`:
-- ✅ Require status checks: `CI` job
-- ✅ Require branches to be up to date
-- ✅ Require linear history
+Generated projects ship a stepper that creates the repo, points you through
+installing the release-bot App, and installs a `main-protected` ruleset
+(require PR + review + the `CI` check, block force-push/deletion):
 
-For the auto-bump workflow to push the bump commit back to main:
-- ✅ Allow specified actors to bypass → add `github-actions[bot]`
+```sh
+bash scripts/setup_repo.sh          # guided: create → App → protect
+# or just the ruleset on an existing repo:
+bash scripts/setup_branch_protection.sh
+```
+
+`versioning.yml` is **adaptive**: with the App configured (`CI_BOT_APP_ID`
+variable + `CI_BOT_PRIVATE_KEY` secret) it pushes the bump as that App — a
+ruleset bypass actor — so protection and auto-release coexist; without it, it
+falls back to `github-actions[bot]` on an unprotected `main`. The generated
+`docs/repository-setup.md` covers the App, its permissions, and the secrets.
 
 ## Docs
 
