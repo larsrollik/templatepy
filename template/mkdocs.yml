@@ -40,3 +40,4 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Repository setup: repository-setup.md

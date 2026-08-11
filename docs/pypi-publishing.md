@@ -1,6 +1,10 @@
 # PyPI publishing
 
-The `release.yml` workflow publishes to PyPI automatically when a `v*` tag is pushed. Authentication uses **OIDC trusted publishing** — no API token stored in GitHub secrets.
+Applies only when the project was generated with `enable_pypi_publishing: true`
+(otherwise `release.yml` still makes the GitHub release but omits the publish
+step). When enabled, `release.yml` publishes to PyPI automatically on a `v*` tag.
+Authentication uses **OIDC trusted publishing** — no API token stored in GitHub
+secrets.
 
 ## One-time setup on PyPI
 
