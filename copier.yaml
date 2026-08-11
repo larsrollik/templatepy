@@ -119,3 +119,18 @@ test_on_windows:
   type: bool
   help: "Add windows-latest to the CI test matrix? Enable for path-sensitive or Windows-targeted packages."
   default: false
+
+enable_pypi_publishing:
+  type: bool
+  help: "Publish the package to PyPI from the release workflow? Off keeps GitHub/Forgejo releases but drops the PyPI publish step (and the OIDC id-token permission)."
+  default: false
+
+enable_docs_publishing:
+  type: bool
+  help: "Add the Docs workflow that deploys the MkDocs site to GitHub Pages on push? Off still ships mkdocs.yml + the docs deps (build locally with `mkdocs serve`); it only omits the publish workflow."
+  default: false
+
+enable_llm_pr_review:
+  type: bool
+  help: "Add the optional LLM PR-review workflow (Claude/Ollama, commented templates)? Off omits the workflow and its 'LLM review (not configured)' placeholder check."
+  default: false

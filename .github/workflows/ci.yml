@@ -75,12 +75,14 @@ jobs:
           grep -q "cz bump" template/.github/workflows/versioning.yml
           echo "All content checks passed."
 
-      - name: Generate test project
+      - name: Generate test project (all optional features on)
         run: |
           # --vcs-ref HEAD: validate the pushed commit, not the latest git tag.
           # copier resolves a git source to its newest tag by default, which
           # would validate the last *released* version and never catch a new
           # break before it is tagged.
+          # Enable the optional publish/review workflows so their files render
+          # and get structure/YAML-checked below (the off path is checked after).
           uvx copier copy --vcs-ref HEAD . /tmp/test-output --defaults \
             --data "project_name=Test Project" \
             --data "project_slug=test_project" \
@@ -89,7 +91,10 @@ jobs:
             --data "author_email=test@example.com" \
             --data "github_username=testuser" \
             --data "github_repo=test-project" \
-            --data "year=2026"
+            --data "year=2026" \
+            --data "enable_pypi_publishing=true" \
+            --data "enable_docs_publishing=true" \
+            --data "enable_llm_pr_review=true"
 
       - name: Check generated project structure
         run: |
@@ -101,7 +106,8 @@ jobs:
           test -f /tmp/test-output/.github/workflows/ci.yml         && echo "ok: ci.yml"
           test -f /tmp/test-output/.github/workflows/versioning.yml && echo "ok: versioning.yml"
           test -f /tmp/test-output/.github/workflows/release.yml    && echo "ok: release.yml"
-          test -f /tmp/test-output/.github/workflows/docs.yml       && echo "ok: docs.yml"
+          test -f /tmp/test-output/.github/workflows/docs.yml       && echo "ok: docs.yml (enabled)"
+          test -f /tmp/test-output/.github/workflows/pr-review.yml  && echo "ok: pr-review.yml (enabled)"
           grep -q "test_project" /tmp/test-output/pyproject.toml && echo "ok: slug in pyproject"
           grep -q "1.0.0" /tmp/test-output/VERSION               && echo "ok: version in VERSION"
           grep -q "teal" /tmp/test-output/mkdocs.yml             && echo "ok: theme in mkdocs"
@@ -111,6 +117,26 @@ jobs:
           test -f /tmp/test-output/.gitlint                  && echo "ok: .gitlint"
           grep -q "gitlint" /tmp/test-output/.pre-commit-config.yaml && echo "ok: gitlint in pre-commit"
           echo "Generated project structure valid."
+
+      - name: Check optional features gate off by default
+        run: |
+          # Same answers minus the enable_* flags → defaults (all off). The
+          # optional workflow files must NOT be generated and release.yml must
+          # not carry the PyPI publish step or its id-token permission.
+          uvx copier copy --vcs-ref HEAD . /tmp/test-output-off --defaults \
+            --data "project_name=Test Project" \
+            --data "project_slug=test_project" \
+            --data "project_description=A test package" \
+            --data "author_name=Test Author" \
+            --data "author_email=test@example.com" \
+            --data "github_username=testuser" \
+            --data "github_repo=test-project" \
+            --data "year=2026"
+          ! test -e /tmp/test-output-off/.github/workflows/docs.yml      && echo "ok: no docs.yml"
+          ! test -e /tmp/test-output-off/.github/workflows/pr-review.yml && echo "ok: no pr-review.yml"
+          ! grep -q "Publish to PyPI" /tmp/test-output-off/.github/workflows/release.yml && echo "ok: no PyPI step"
+          ! grep -q "id-token: write" /tmp/test-output-off/.github/workflows/release.yml && echo "ok: no id-token"
+          echo "Optional-feature gating (off) valid."
 
   lint:
     name: Lint

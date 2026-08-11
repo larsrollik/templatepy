@@ -48,13 +48,15 @@ feature branch  →  PR  →  CI gate (lint + test) must pass
                                ↓
                            release.yml (on tag / dispatch):
                            → GitHub release (wheel + sdist attached)
-                           → PyPI via OIDC trusted publishing (no stored token)
+                           → PyPI via OIDC trusted publishing (if enable_pypi_publishing)
                            → Zenodo webhook (if enabled)
 ```
 
 ## PyPI setup (one-time per repo)
 
-Uses OIDC trusted publishing — no API token stored in GitHub secrets.
+Only if you answered `enable_pypi_publishing: true` (otherwise `release.yml`
+makes the GitHub/Forgejo release but skips the publish step). Uses OIDC trusted
+publishing — no API token stored in GitHub secrets.
 
 1. pypi.org → project → Settings → Publishing → Add trusted publisher
 2. Owner: `<github-user>`, Repository: `<repo>`, Workflow: `release.yml`
@@ -76,4 +78,17 @@ For the auto-bump workflow to push the bump commit back to main:
 uv run mkdocs serve
 ```
 
-Deploy to GitHub Pages on push to main via `docs.yml` (automatic).
+`mkdocs.yml` + the `docs` extra are always generated (build locally as above).
+Deploy to GitHub Pages on push to main via `docs.yml` is added only when
+`enable_docs_publishing: true`.
+
+## Optional workflows (copier answers)
+
+Three publish/automation extras are off by default; enable per project:
+
+- `enable_pypi_publishing` — PyPI publish step in `release.yml` (+ OIDC `id-token`).
+- `enable_docs_publishing` — the GitHub Pages / Forgejo `docs.yml` deploy workflow.
+- `enable_llm_pr_review` — the optional LLM PR-review workflow (`pr-review.yml`).
+
+When off, the corresponding workflow file is not generated at all (no
+"not configured" placeholder checks).
