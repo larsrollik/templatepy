@@ -56,9 +56,11 @@ jobs:
             -H "Authorization: token ${GITHUB_TOKEN}" \
             -H "Content-Type: application/json" \
             -d "{\"tag_name\": \"v${VERSION}\", \"name\": \"v${VERSION}\", \"body\": \"Release v${VERSION}\"}"
+[% if enable_pypi_publishing %]
 
       - name: Publish to PyPI
         if: steps.bump.outputs.skipped != 'true'
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.UV_PUBLISH_TOKEN }}
         run: uv publish
+[% endif %]

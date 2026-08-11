@@ -2,8 +2,10 @@ name: Release
 
 # Publish only. Triggered by a tag (hand-pushed tags publish directly) or by a
 # workflow_dispatch from versioning.yml (a GITHUB_TOKEN-pushed tag cannot trigger
-# push:tags). Stays named release.yml so the PyPI trusted-publisher (OIDC) binding
-# is unchanged.
+# push:tags).
+[% if enable_pypi_publishing %]
+# Named release.yml so the PyPI trusted-publisher (OIDC) binding is unchanged.
+[% endif %]
 on:
   push:
     tags: ["v*"]
@@ -15,7 +17,9 @@ on:
 
 permissions:
   contents: write
+[% if enable_pypi_publishing %]
   id-token: write
+[% endif %]
 
 jobs:
   release:
@@ -40,6 +44,8 @@ jobs:
           tag_name: "${{ github.event.inputs.tag || github.ref_name }}"
           files: dist/*
           generate_release_notes: false
+[% if enable_pypi_publishing %]
 
       - name: Publish to PyPI
         run: uv publish --trusted-publishing automatic
+[% endif %]
