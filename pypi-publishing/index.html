@@ -645,7 +645,11 @@
 
 
 <h1 id="pypi-publishing">PyPI publishing<a class="headerlink" href="#pypi-publishing" title="Permanent link">&para;</a></h1>
-<p>The <code>release.yml</code> workflow publishes to PyPI automatically when a <code>v*</code> tag is pushed. Authentication uses <strong>OIDC trusted publishing</strong> — no API token stored in GitHub secrets.</p>
+<p>Applies only when the project was generated with <code>enable_pypi_publishing: true</code>
+(otherwise <code>release.yml</code> still makes the GitHub release but omits the publish
+step). When enabled, <code>release.yml</code> publishes to PyPI automatically on a <code>v*</code> tag.
+Authentication uses <strong>OIDC trusted publishing</strong> — no API token stored in GitHub
+secrets.</p>
 <h2 id="one-time-setup-on-pypi">One-time setup on PyPI<a class="headerlink" href="#one-time-setup-on-pypi" title="Permanent link">&para;</a></h2>
 <ol>
 <li>Register at <a href="https://pypi.org">pypi.org</a> and enable 2FA (required since 2024)</li>

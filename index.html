@@ -919,6 +919,21 @@
 <td><code>false</code> / <code>true</code>, default <code>false</code></td>
 <td>Adds <code>windows-latest</code> to the CI test matrix (for path-sensitive or Windows-targeted packages).</td>
 </tr>
+<tr>
+<td><code>enable_pypi_publishing</code></td>
+<td><code>false</code> / <code>true</code>, default <code>false</code></td>
+<td>Adds the PyPI publish step (+ OIDC <code>id-token</code>) to <code>release.yml</code>. Off still makes GitHub/Forgejo releases. See <a href="pypi-publishing/">PyPI publishing</a>.</td>
+</tr>
+<tr>
+<td><code>enable_docs_publishing</code></td>
+<td><code>false</code> / <code>true</code>, default <code>false</code></td>
+<td>Adds the <code>docs.yml</code> GitHub Pages / Forgejo deploy workflow. <code>mkdocs.yml</code> + docs deps are always generated regardless.</td>
+</tr>
+<tr>
+<td><code>enable_llm_pr_review</code></td>
+<td><code>false</code> / <code>true</code>, default <code>false</code></td>
+<td>Adds the optional <code>pr-review.yml</code> LLM-review workflow. Off omits it (and its placeholder check).</td>
+</tr>
 </tbody>
 </table>
 <h2 id="apply-template-updates-to-an-existing-project">Apply template updates to an existing project<a class="headerlink" href="#apply-template-updates-to-an-existing-project" title="Permanent link">&para;</a></h2>
@@ -945,7 +960,7 @@
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w">                      </span><span class="c1"># run tests</span>
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files<span class="w">  </span><span class="c1"># run all lint checks manually</span>
 </code></pre></div>
-<p>Version bumping and releasing are handled automatically on every merge to <code>main</code>: <code>versioning.yml</code> runs <code>cz bump</code>, pushes the tag, and dispatches <code>release.yml</code>, which builds and publishes. Manual override:</p>
+<p>Version bumping and releasing are handled automatically on every merge to <code>main</code>: <code>versioning.yml</code> runs <code>cz bump</code>, pushes the tag (as the release-bot App when configured, else <code>github-actions[bot]</code>), and <code>release.yml</code> builds the GitHub release — and publishes to PyPI if <code>enable_pypi_publishing</code>. Manual override:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>cz<span class="w"> </span>bump<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>push<span class="w"> </span>--follow-tags
 </code></pre></div>
 <h2 id="project-structure-generated">Project structure (generated)<a class="headerlink" href="#project-structure-generated" title="Permanent link">&para;</a></h2>
@@ -961,14 +976,20 @@
 <a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>├── .github/
 <a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>│   └── workflows/
 <a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>│       ├── ci.yml               # lint on push; tests on PR to main
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>│       ├── versioning.yml       # on merge to main: cz bump + tag, dispatches release.yml
-<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>│       ├── release.yml          # on tag/dispatch: build → GitHub release + PyPI (OIDC)
-<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>│       ├── pr-review.yml        # automated PR review
-<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>│       └── docs.yml             # deploy MkDocs to GitHub Pages on push to main
-<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>├── pyproject.toml
-<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>├── CITATION.cff                 # citation metadata for Zenodo + GitHub
-<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>├── .pre-commit-config.yaml
-<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>└── LICENSE
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>│       ├── versioning.yml       # on merge to main: cz bump + tag (App bot or GITHUB_TOKEN)
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>│       ├── release.yml          # on tag/dispatch: build → GitHub release (+ PyPI if enabled)
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>│       ├── pr-review.yml        # optional — only if enable_llm_pr_review
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>│       └── docs.yml             # optional — only if enable_docs_publishing
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>├── scripts/
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>│   ├── setup_repo.sh            # guided: create repo → install App → protect main
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>│   └── setup_branch_protection.sh  # install the main-protected ruleset
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>├── docs/
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>│   ├── index.md
+<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>│   └── repository-setup.md      # App, permissions, secrets, protection
+<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>├── pyproject.toml
+<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>├── CITATION.cff                 # citation metadata for Zenodo + GitHub
+<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>├── .pre-commit-config.yaml
+<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>└── LICENSE
 </code></pre></div>
 
 

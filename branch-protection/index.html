@@ -454,10 +454,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#recommended-rules-for-main" class="md-nav__link">
+  <a href="#automated-setup-recommended" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Recommended rules for main
+        Automated setup (recommended)
       
     </span>
   </a>
@@ -465,10 +465,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#allow-versioningyml-to-push-back-to-main" class="md-nav__link">
+  <a href="#why-an-app-not-github-actionsbot" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Allow versioning.yml to push back to main
+        Why an App (not github-actions[bot])
       
     </span>
   </a>
@@ -487,10 +487,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#rulesets-modern-alternative" class="md-nav__link">
+  <a href="#manual-alternative" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Rulesets (modern alternative)
+        Manual alternative
       
     </span>
   </a>
@@ -559,10 +559,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#recommended-rules-for-main" class="md-nav__link">
+  <a href="#automated-setup-recommended" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Recommended rules for main
+        Automated setup (recommended)
       
     </span>
   </a>
@@ -570,10 +570,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#allow-versioningyml-to-push-back-to-main" class="md-nav__link">
+  <a href="#why-an-app-not-github-actionsbot" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Allow versioning.yml to push back to main
+        Why an App (not github-actions[bot])
       
     </span>
   </a>
@@ -592,10 +592,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#rulesets-modern-alternative" class="md-nav__link">
+  <a href="#manual-alternative" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Rulesets (modern alternative)
+        Manual alternative
       
     </span>
   </a>
@@ -623,64 +623,38 @@
 
 
 <h1 id="branch-protection">Branch protection<a class="headerlink" href="#branch-protection" title="Permanent link">&para;</a></h1>
-<p>Configure branch protection rules on GitHub to enforce the CI gate and allow automated version bumping.</p>
-<h2 id="recommended-rules-for-main">Recommended rules for <code>main</code><a class="headerlink" href="#recommended-rules-for-main" title="Permanent link">&para;</a></h2>
-<p><strong>Repository → Settings → Branches → Add rule</strong>, branch name pattern: <code>main</code></p>
-<table>
-<thead>
-<tr>
-<th>Setting</th>
-<th>Value</th>
-<th>Reason</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Require a pull request before merging</td>
-<td>✓</td>
-<td>No direct pushes to main</td>
-</tr>
-<tr>
-<td>Required approvals</td>
-<td>1+</td>
-<td>At least one review</td>
-</tr>
-<tr>
-<td>Dismiss stale reviews on new commits</td>
-<td>✓</td>
-<td>Re-review after force-push</td>
-</tr>
-<tr>
-<td>Require status checks to pass</td>
-<td>✓</td>
-<td>Blocks merge on CI failure</td>
-</tr>
-<tr>
-<td>Required status checks</td>
-<td><code>CI</code></td>
-<td>The aggregate job in <code>ci.yml</code></td>
-</tr>
-<tr>
-<td>Require branches to be up to date</td>
-<td>✓</td>
-<td>No stale merges</td>
-</tr>
-<tr>
-<td>Require linear history</td>
-<td>✓</td>
-<td>Keeps git log readable</td>
-</tr>
-</tbody>
-</table>
-<h2 id="allow-versioningyml-to-push-back-to-main">Allow <code>versioning.yml</code> to push back to <code>main</code><a class="headerlink" href="#allow-versioningyml-to-push-back-to-main" title="Permanent link">&para;</a></h2>
-<p><code>versioning.yml</code> creates a version tag and pushes it after merging. GitHub's default branch protection blocks this. Fix:</p>
-<p><strong>Repository → Settings → Branches → main rule → Allow specified actors to bypass required pull requests</strong></p>
-<p>Add: <code>github-actions[bot]</code></p>
-<p>Without this, the versioning workflow will fail with a 403 when trying to push the tag.</p>
+<p>Protect <code>main</code> so changes go through a reviewed PR and a green CI gate, while the
+auto-bump workflow can still push the version tag. Protection is optional — a
+fresh project works unprotected out of the box.</p>
+<h2 id="automated-setup-recommended">Automated setup (recommended)<a class="headerlink" href="#automated-setup-recommended" title="Permanent link">&para;</a></h2>
+<p>Generated projects ship scripts for this. From the project root:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bash<span class="w"> </span>scripts/setup_repo.sh<span class="w">          </span><span class="c1"># guided: create repo → install App → protect</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1"># or, on a repo that already exists:</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>bash<span class="w"> </span>scripts/setup_branch_protection.sh
+</code></pre></div>
+<p><code>setup_branch_protection.sh</code> installs a <code>main-protected</code> ruleset via the GitHub
+API: require a PR + approving review + the <code>CI</code> status check on the default
+branch, block force-pushes and deletion, and bypass <strong>repository admins</strong> and the
+<strong>release-bot App</strong>. It is idempotent; tune with <code>--reviews N</code> / <code>--check &lt;job&gt;</code>.</p>
+<p>The full setup — including the App, the exact permissions it needs, and the
+<code>CI_BOT_APP_ID</code> / <code>CI_BOT_PRIVATE_KEY</code> credentials — is documented in the
+generated project's own <code>docs/repository-setup.md</code>.</p>
+<h2 id="why-an-app-not-github-actionsbot">Why an App (not <code>github-actions[bot]</code>)<a class="headerlink" href="#why-an-app-not-github-actionsbot" title="Permanent link">&para;</a></h2>
+<p>A protected <code>main</code> blocks direct pushes, including <code>versioning.yml</code>'s bump. A
+GitHub App is an identifiable actor the ruleset can add to its bypass list, and
+(unlike <code>github-actions[bot]</code>) an App-pushed tag triggers <code>release.yml</code>.
+<code>versioning.yml</code> is adaptive: it uses the App when <code>CI_BOT_APP_ID</code> is set, else
+falls back to <code>github-actions[bot]</code> on an unprotected repo. So the same repo
+works before and after you protect it — no file changes.</p>
 <h2 id="required-status-check-name">Required status check name<a class="headerlink" href="#required-status-check-name" title="Permanent link">&para;</a></h2>
-<p>The aggregate job in <code>ci.yml</code> is named <code>CI</code>. This is what to enter in the required status checks field. It passes only when <code>lint</code> and <code>test</code> both succeed (gitleaks runs inside pre-commit, not a separate job).</p>
-<h2 id="rulesets-modern-alternative">Rulesets (modern alternative)<a class="headerlink" href="#rulesets-modern-alternative" title="Permanent link">&para;</a></h2>
-<p>GitHub now offers <strong>Rulesets</strong> (Repository → Settings → Rules → Rulesets) as a more flexible replacement for classic branch protection. Rulesets support bypass lists, actor-based rules, and can be applied to tag patterns (useful for protecting <code>v*</code> tags from deletion or force-push).</p>
+<p>The aggregate job in <code>ci.yml</code> is named <code>CI</code>; that is the context the ruleset
+requires. It passes only when <code>lint</code> and <code>test</code> both succeed (gitleaks runs
+inside pre-commit, not as a separate job).</p>
+<h2 id="manual-alternative">Manual alternative<a class="headerlink" href="#manual-alternative" title="Permanent link">&para;</a></h2>
+<p>If you prefer to click through it, <strong>Settings → Rules → Rulesets → New branch
+ruleset</strong> targeting the default branch, with the same rules and bypass actors as
+above. Classic <strong>Settings → Branches</strong> protection also works, but Rulesets are
+the modern path and are what the script uses.</p>
 
 
 

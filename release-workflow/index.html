@@ -697,7 +697,7 @@
 <a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="c1"># 7. release.yml (on the tag / dispatch):</span>
 <a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="c1">#    → builds wheel + sdist</span>
 <a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="c1">#    → creates GitHub release with dist files attached</span>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="c1">#    → publishes to PyPI via OIDC trusted publishing (no stored token)</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="c1">#    → publishes to PyPI via OIDC trusted publishing (only if enable_pypi_publishing)</span>
 <a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="c1">#    → Zenodo webhook archives the release (if enabled)</span>
 </code></pre></div>
 <h2 id="how-version-bumps-are-determined">How version bumps are determined<a class="headerlink" href="#how-version-bumps-are-determined" title="Permanent link">&para;</a></h2>
