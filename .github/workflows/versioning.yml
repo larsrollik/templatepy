@@ -13,7 +13,7 @@ permissions:
 jobs:
   version:
     name: Bump and tag
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     # Skip the bump the bot itself just pushed (avoids a loop).
     if: "!startsWith(github.event.head_commit.message, 'bump:')"
     steps:

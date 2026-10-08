@@ -15,7 +15,7 @@ permissions:
 jobs:
   deploy:
     name: Deploy docs to GitHub Pages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v6
         with:
