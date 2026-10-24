@@ -1,3 +1,22 @@
+# Forgejo Actions.
+#
+# THIRD-PARTY ACTIONS ARE REFERENCED BY ABSOLUTE URL, and that is not a style
+# choice. On Forgejo a bare `uses: owner/action@ref` is fetched from the
+# INSTANCE's actions mirror (`DEFAULT_ACTIONS_URL`), not from GitHub - and the
+# mirrors carry different subsets. Measured 2026-10-24 with `git ls-remote`:
+#
+#                                   code.forgejo.org   data.forgejo.org
+#   actions/checkout                 resolves           resolves
+#   astral-sh/setup-uv               MISSING            resolves
+#   softprops/action-gh-release      MISSING            MISSING
+#
+# So a bare third-party reference works on one instance and fails on another,
+# and the failure is a `git ls-remote` error naming the actions host - which
+# reads as a network fault rather than as a missing mirror entry. An absolute
+# URL depends on nothing an instance happens to mirror this month.
+#
+# `actions/*` stays BARE on purpose: Forgejo mirrors that family deliberately,
+# so a bare reference there also works on an instance with no route to GitHub.
 name: CI
 
 on:
@@ -20,7 +39,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: astral-sh/setup-uv@v7
+      - uses: https://github.com/astral-sh/setup-uv@v7
         with:
           python-version: "[[ python_requires ]]"
 
@@ -60,7 +79,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: astral-sh/setup-uv@v7
+      - uses: https://github.com/astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python-version }}
 

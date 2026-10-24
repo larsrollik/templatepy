@@ -115,6 +115,15 @@ ci_app_private_key_secret:
   when: "[[ private_repo_deps and private_repo_auth == 'app' ]]"
   default: CI_APP_PRIVATE_KEY
 
+ci_platform:
+  type: str
+  help: "Which CI to ship. Both is the safe default; pick one to avoid carrying a definition you never run."
+  default: both
+  choices:
+    "Both GitHub Actions and Forgejo Actions": both
+    "GitHub Actions only (.github/workflows)": github
+    "Forgejo Actions only (.forgejo/workflows)": forgejo
+
 test_on_windows:
   type: bool
   help: "Add windows-latest to the CI test matrix? Enable for path-sensitive or Windows-targeted packages."
