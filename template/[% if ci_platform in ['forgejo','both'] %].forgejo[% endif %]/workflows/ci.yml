@@ -106,9 +106,20 @@ jobs:
     needs: [lint, test]
     if: always()
     steps:
-      - name: Check required jobs
-        run: |
-[% raw %]
+[#
+  `[% raw %]` sits ON the `run: |` line, not under it, and that is load-bearing.
+  On its own line it renders as a blank FIRST line inside the block scalar, and
+  Forgejo's workflow parser then rejects the whole file:
+    jobparser.Parse: invalid workflow ... SetJob: yaml: line 6: did not find expected key
+  The file is valid YAML to PyYAML and runs fine on GitHub Actions, so the
+  breakage is invisible locally. Worse, the failed run shows the COMMIT MESSAGE
+  as its job name and lists no jobs, which reads as a push problem rather than a
+  workflow one. Measured 2026-10-24 by bisecting on a throwaway repo against
+  Forgejo 12; removing that one blank line was the whole fix.
+  The `raw` block itself must stay: the bash `[[ ... ]]` tests below collide with
+  this template's `[[ ]]` variable delimiters.
+#]      - name: Check required jobs
+        run: |[% raw %]
           if [[ "${{ needs.lint.result }}" != "success" && "${{ needs.lint.result }}" != "skipped" ]]; then
             echo "lint failed" && exit 1
           fi
