@@ -45,7 +45,8 @@ if [ -z "$SKIP_PROTECT" ]; then
 Step 2/3 — install the release-bot GitHub App on $REPO (manual).
 See docs/repository-setup.md for the exact permissions and secret setup:
   - install the App on this repo (same account/org as the remote),
-  - set the repo/org variable CI_BOT_APP_ID = the App's id,
+  - set the repo/org variable CI_BOT_CLIENT_ID = the App's client ID (token mint),
+  - set the repo/org variable CI_BOT_APP_ID = the App's id (ruleset bypass actor),
   - set the repo/org secret   CI_BOT_PRIVATE_KEY = the App's private key.
 Skip this (and step 3) with --skip-protect if you don't want a protected main.
 EOF

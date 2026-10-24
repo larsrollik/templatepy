@@ -4,7 +4,7 @@ name: Versioning
 # trusted-publisher stays bound to release.yml, and a hand-pushed tag publishes too).
 #
 # Adaptive push identity (so the same file works before and after you protect main):
-#   - If the repo (or its org) defines the CI_BOT_APP_ID variable and the
+#   - If the repo (or its org) defines the CI_BOT_CLIENT_ID variable and the
 #     CI_BOT_PRIVATE_KEY secret, the bump is pushed by that GitHub App. Required
 #     when main is protected and the App is a ruleset bypass actor — see
 #     docs/repository-setup.md. The App-token tag push triggers release.yml directly.
@@ -28,9 +28,9 @@ jobs:
     steps:
       - uses: actions/create-github-app-token@v3
         id: app-token
-        if: ${{ vars.CI_BOT_APP_ID != '' }}
+        if: ${{ vars.CI_BOT_CLIENT_ID != '' }}
         with:
-          app-id: ${{ vars.CI_BOT_APP_ID }}
+          client-id: ${{ vars.CI_BOT_CLIENT_ID }}
           private-key: ${{ secrets.CI_BOT_PRIVATE_KEY }}
           permission-contents: write
 

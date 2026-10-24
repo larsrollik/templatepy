@@ -74,8 +74,8 @@ bash scripts/setup_repo.sh          # guided: create → App → protect
 bash scripts/setup_branch_protection.sh
 ```
 
-`versioning.yml` is **adaptive**: with the App configured (`CI_BOT_APP_ID`
-variable + `CI_BOT_PRIVATE_KEY` secret) it pushes the bump as that App — a
+`versioning.yml` is **adaptive**: with the App configured (`CI_BOT_CLIENT_ID`
+variable + `CI_BOT_PRIVATE_KEY` secret; `CI_BOT_APP_ID` names the App as the ruleset bypass actor) it pushes the bump as that App — a
 ruleset bypass actor — so protection and auto-release coexist; without it, it
 falls back to `github-actions[bot]` on an unprotected `main`. The generated
 `docs/repository-setup.md` covers the App, its permissions, and the secrets.

@@ -37,7 +37,7 @@ install it on every repo that needs it — do not create one App per repo.
      - **Metadata: Read-only** (mandatory, auto-selected).
      - **Contents: Read-only on dependency repos** — only if `private_repo_deps`.
    - Create, then **Generate a private key** (downloads a `.pem`).
-   - Note the **App ID** (shown on the App's page).
+   - Note the **App ID** and the **Client ID** (both shown on the App's page).
 
 2. **Install it** on this repo: the App page → *Install App* → pick the
    account/org → select this repository (or *All repositories*).
@@ -45,12 +45,15 @@ install it on every repo that needs it — do not create one App per repo.
 3. **Set the credentials** on the repo (or at org level to share across repos):
 
    ```sh
+   gh variable set CI_BOT_CLIENT_ID --repo [[ github_username ]]/[[ github_repo ]] --body "<CLIENT_ID>"
    gh variable set CI_BOT_APP_ID    --repo [[ github_username ]]/[[ github_repo ]] --body "<APP_ID>"
    gh secret   set CI_BOT_PRIVATE_KEY --repo [[ github_username ]]/[[ github_repo ]] < path/to/app.private-key.pem
    ```
 
-   `versioning.yml` keys off the `CI_BOT_APP_ID` **variable**: present → push as
-   the App; absent → fall back to `github.token`.
+   `versioning.yml` keys off the `CI_BOT_CLIENT_ID` **variable**: present → push as
+   the App (the token is minted by client ID; `app-id` is deprecated); absent → fall
+   back to `github.token`. `CI_BOT_APP_ID` is still needed by
+   `scripts/setup_branch_protection.sh` to name the App as the ruleset bypass actor.
 
 ## 3. Install branch protection
 
