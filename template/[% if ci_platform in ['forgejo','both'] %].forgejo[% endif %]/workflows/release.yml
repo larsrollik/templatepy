@@ -27,6 +27,14 @@ on:
 permissions:
   contents: write
 
+# Serialise per branch so back-to-back merges cannot race on the bump. Two parallel
+# runs would both bump from the same tip and compute the same next version; the second
+# one's contents-API call then carries a stale blob sha and is refused. cancel-in-progress
+# is deliberately false: cancelling mid-run can leave main bumped with no tag.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   release:
     name: Bump, build, publish
