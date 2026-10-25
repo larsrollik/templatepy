@@ -27,6 +27,14 @@ on:
 permissions:
   contents: write
 
+# Serialise per branch so back-to-back merges cannot race on the bump. Two parallel
+# runs would both bump from the same tip and compute the same next version; the second
+# one's contents-API call then carries a stale blob sha and is refused. cancel-in-progress
+# is deliberately false: cancelling mid-run can leave main bumped with no tag.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   release:
     name: Bump, build, publish
@@ -66,8 +74,12 @@ jobs:
           # so it is refused before the push whitelist is consulted. Commit via the
           # contents API instead - it creates the commit server-side and resolves the
           # author from the token, so a whitelisted write token lands the bump. Set
-          # VERSION_PUSH_TOKEN (a repo:write token on main's push whitelist) when main is
-          # protected; otherwise the automatic token works. Tag the RETURNED commit sha.
+          # VERSION_PUSH_TOKEN (a repo:write token on main's push whitelist) is REQUIRED,
+          # not only when main is protected: measured on Forgejo 15.0.9, the AUTOMATIC
+          # Actions token cannot commit through the contents API at all - with
+          # permissions: contents: write declared, and on a branch whose rule permits
+          # ordinary pushes. There is no automatic-token fallback.
+          # Tag the RETURNED commit sha.
           CHANGED="$(git diff --name-only)"
           [ -n "$CHANGED" ] || { echo "cz bump changed no files"; exit 1; }
           python3 - "$TAG" $CHANGED <<'PY'
