@@ -32,9 +32,20 @@ jobs:
           test -f template/VERSION
           test -f template/CITATION.cff
           test -f template/.pre-commit-config.yaml
-          test -f "template/.github/workflows/ci.yml"
-          test -f "template/.github/workflows/versioning.yml"
-          test -f "template/.github/workflows/release.yml"
+          # The CI directories are conditionally NAMED, so their on-disk paths ARE the
+          # copier expressions - not ".github" / ".forgejo". Asserting the rendered names
+          # passed only while the directories were plain; it has failed on every commit
+          # since ci_platform was introduced, regardless of what the commit changed.
+          GH="template/[% if ci_platform in ['github','both'] %].github[% endif %]"
+          FJ="template/[% if ci_platform in ['forgejo','both'] %].forgejo[% endif %]"
+          test -f "$GH/workflows/ci.yml"
+          test -f "$GH/workflows/versioning.yml"
+          test -f "$GH/workflows/release.yml"
+          # Forgejo ships ci.yml + release.yml and deliberately no versioning.yml: a bump
+          # cannot be git-pushed from inside a job there, so versioning and release are
+          # one workflow that commits through the contents API.
+          test -f "$FJ/workflows/ci.yml"
+          test -f "$FJ/workflows/release.yml"
           echo "All expected template files present."
 
       - name: Validate template YAML files
@@ -65,14 +76,18 @@ jobs:
           grep -q "gitlint" template/.pre-commit-config.yaml
           test -f template/.githooks/fix_commit_msg.py
           test -f template/.gitlint
+          # Same conditionally-named directory as the structure check above. Each `run:`
+          # is its own shell, so it is redefined here. grep on a path that does not exist
+          # exits 2, which is why this step failed with code 2 rather than code 1.
+          GH="template/[% if ci_platform in ['github','both'] %].github[% endif %]"
           # OIDC publish, not token
-          grep -q "trusted-publishing" template/.github/workflows/release.yml
-          grep -q "id-token: write" template/.github/workflows/release.yml
+          grep -q "trusted-publishing" "$GH/workflows/release.yml"
+          grep -q "id-token: write" "$GH/workflows/release.yml"
           # no prod branch
-          ! grep -q "prod" template/.github/workflows/release.yml
+          ! grep -q "prod" "$GH/workflows/release.yml"
           # auto bump lives in versioning.yml (split from the publish-only release.yml)
-          grep -q "startsWith.*bump:" template/.github/workflows/versioning.yml
-          grep -q "cz bump" template/.github/workflows/versioning.yml
+          grep -q "startsWith.*bump:" "$GH/workflows/versioning.yml"
+          grep -q "cz bump" "$GH/workflows/versioning.yml"
           echo "All content checks passed."
 
       - name: Generate test project (all optional features on)
