@@ -78,10 +78,11 @@ year:
 
 license_type:
   type: str
-  help: "Licence for the generated project. noncommercial = BSD-3-Clause-NonCommercial (BSD-3 terms plus a non-commercial clause; research/academic/education only, commercial use needs a separate agreement). bsd3 = BSD-3-Clause (hardware wrappers and utilities — allows commercial use)."
+  help: "Licence for the generated project. noncommercial = BSD-3-Clause-NonCommercial (BSD-3 terms plus a non-commercial clause; research/academic/education only, commercial use needs a separate agreement). bsd3 = BSD-3-Clause (hardware wrappers and utilities — allows commercial use). none = no licence while the choice is undecided (private repos only): no LICENSE file and no licence metadata, so all rights are reserved."
   choices:
     "BSD-3 + non-commercial clause (default)": noncommercial
     "BSD-3-Clause (hardware wrappers / utilities)": bsd3
+    "None yet (undecided; private repos only)": none
   default: noncommercial
 
 private_repo_deps:

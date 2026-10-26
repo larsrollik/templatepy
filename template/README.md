@@ -38,4 +38,8 @@ uv run pytest
 
 ## License
 
+[% if license_type == "none" -%]
+No licence has been chosen yet. This is a private repository; all rights reserved.
+[%- else -%]
 See [LICENSE](LICENSE).
+[%- endif %]
