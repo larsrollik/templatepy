@@ -104,4 +104,25 @@ else
   echo "WARN: install/import step failed or was skipped (non-fatal)"
 fi
 
+echo "==> Asserting license_type=none generates no licence..."
+NONE_OUT="$(dirname "$SRC")/generated-none"
+uvx copier copy --defaults --trust \
+  --data project_name="Dummy Project" \
+  --data project_slug="$SLUG" \
+  --data project_description="A dummy project for smoke testing" \
+  --data author_name="Test Author" \
+  --data author_email="test@example.com" \
+  --data github_username="testuser" \
+  --data python_requires="3.12" \
+  --data license_type="none" \
+  --data private_repo_deps=false \
+  "$SRC" "$NONE_OUT" >/dev/null
+test ! -e "$NONE_OUT/LICENSE" || { echo "FAIL: LICENSE generated for license_type=none"; exit 1; }
+if grep -nE '^license|LICENSE' "$NONE_OUT/CITATION.cff" "$NONE_OUT/pyproject.toml" "$NONE_OUT/README.md"; then
+  echo "FAIL: licence metadata generated for license_type=none (above)"
+  exit 1
+fi
+uv run --with pyyaml python -c "import yaml; yaml.safe_load(open('$NONE_OUT/CITATION.cff'))" \
+  || { echo "FAIL: CITATION.cff is not valid YAML for license_type=none"; exit 1; }
+
 echo "==> SMOKE TEST PASSED"

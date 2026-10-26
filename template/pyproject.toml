@@ -7,8 +7,8 @@ name = "[[ project_slug ]]"
 dynamic = ["version"]
 description = "[[ project_description ]]"
 readme = { file = "README.md", content-type = "text/markdown" }
-license = { file = "LICENSE" }
-authors = [
+[% if license_type != "none" %]license = { file = "LICENSE" }
+[% endif %]authors = [
     { name = "[[ author_name ]]", email = "[[ author_email ]]" },
 ]
 requires-python = ">=[[ python_requires ]]"
@@ -38,8 +38,8 @@ include = [
     "/src/[[ project_slug ]]",
     "/tests",
     "/README.md",
-    "/LICENSE",
-    "/pyproject.toml",
+[% if license_type != "none" %]    "/LICENSE",
+[% endif %]    "/pyproject.toml",
     "/CITATION.cff",
     "/VERSION",
 ]

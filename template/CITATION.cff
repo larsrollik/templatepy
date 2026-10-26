@@ -7,7 +7,7 @@ repository-code: https://github.com/[[ github_username ]]/[[ github_repo ]]
 url: https://github.com/[[ github_username ]]/[[ github_repo ]]
 [% if license_type == "bsd3" -%]
 license: BSD-3-Clause
-[%- else -%]
+[%- elif license_type == "noncommercial" -%]
 # BSD-3-Clause-NonCommercial has no SPDX id, so CFF points at the licence file instead.
 license-url: https://github.com/[[ github_username ]]/[[ github_repo ]]/blob/main/LICENSE
 [%- endif %]
