@@ -1,0 +1,39 @@
+name: Renovate
+
+on:
+  # Nightly run. The preset's schedule decides when PRs open; the nightly cadence
+  # lets a green PR that may auto-merge do so within a day.
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  LOG_LEVEL: debug
+  RENOVATE_REPOSITORIES: ${{ github.repository }}  # operate on this repo only
+
+jobs:
+  renovate:
+    name: Renovate dependency scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      # Author PRs as the CI GitHub App, not GITHUB_TOKEN: a PR opened with
+      # GITHUB_TOKEN triggers no other workflow, so CI would not run on it and its
+      # merge would not trigger versioning. The App also reads private presets and
+      # can write commit statuses, which minimumReleaseAge needs. Without
+      # owner/repositories the token is scoped to this repo.
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ secrets.[[ ci_app_client_id_secret ]] }}
+          private-key: ${{ secrets.[[ ci_app_private_key_secret ]] }}
+
+      - uses: renovatebot/github-action@v46.1.17
+        with:
+          configurationFile: renovate.json
+          token: ${{ steps.app-token.outputs.token }}

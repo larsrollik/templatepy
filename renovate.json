@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "enabledManagers": ["pep621", "pre-commit"],
+  "pre-commit": { "enabled": true },
+  "ignorePaths": ["template/**", "**/node_modules/**"],
+  "schedule": ["before 6am on monday"],
+  "timezone": "Europe/London",
+  "minimumReleaseAge": "3 days",
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "labels": ["dependencies"]
+}
