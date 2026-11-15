@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -840,7 +840,7 @@
 <h2 id="create-a-new-project">Create a new project<a class="headerlink" href="#create-a-new-project" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>copier<span class="w"> </span>copy<span class="w"> </span>gh:larsrollik/templatepy<span class="w"> </span>my-new-project
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">cd</span><span class="w"> </span>my-new-project
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>git<span class="w"> </span>init<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>-A<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;chore: initial commit from templatepy&quot;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>git<span class="w"> </span>init<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>-A<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"chore: initial commit from templatepy"</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>dev
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>install<span class="w"> </span>--hook-type<span class="w"> </span>pre-commit<span class="w"> </span>--hook-type<span class="w"> </span>commit-msg
 </code></pre></div>
@@ -915,6 +915,16 @@
 <td>How CI authenticates to clone the private deps. <strong>app</strong> = org-owned GitHub App, per-run token via <code>actions/create-github-app-token@v3</code> using <code>client-id</code> (org secrets <code>CI_APP_CLIENT_ID</code> + <code>CI_APP_PRIVATE_KEY</code>, names configurable; the App needs Contents:read on the private repos). <strong>pat</strong> = the <code>PRIVATE_REPO_ACCESS_TOKEN</code> secret. See <a href="private-repo-auth/">Private repo auth</a>.</td>
 </tr>
 <tr>
+<td><code>enable_renovate</code></td>
+<td><code>true</code> / <code>false</code>, default <code>true</code> (GitHub only)</td>
+<td>Adds the nightly <code>renovate.yml</code> workflow and <code>renovate.json</code>. Renovate runs as the GitHub App whose Client ID and private key are in the secrets named by <code>ci_app_client_id_secret</code> / <code>ci_app_private_key_secret</code> (asked when this is on), so CI runs on its PRs.</td>
+</tr>
+<tr>
+<td><code>renovate_preset</code></td>
+<td>free text, default <code>github&gt;{github_username}/renovate-config</code></td>
+<td>Preset <code>renovate.json</code> extends. Use <code>config:recommended</code> when the account or org has no shared preset repo.</td>
+</tr>
+<tr>
 <td><code>test_on_windows</code></td>
 <td><code>false</code> / <code>true</code>, default <code>false</code></td>
 <td>Adds <code>windows-latest</code> to the CI test matrix (for path-sensitive or Windows-targeted packages).</td>
@@ -978,18 +988,20 @@
 <a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>│       ├── ci.yml               # lint on push; tests on PR to main
 <a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>│       ├── versioning.yml       # on merge to main: cz bump + tag (App bot or GITHUB_TOKEN)
 <a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>│       ├── release.yml          # on tag/dispatch: build → GitHub release (+ PyPI if enabled)
-<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>│       ├── pr-review.yml        # optional — only if enable_llm_pr_review
-<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>│       └── docs.yml             # optional — only if enable_docs_publishing
-<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>├── scripts/
-<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>│   ├── setup_repo.sh            # guided: create repo → install App → protect main
-<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>│   └── setup_branch_protection.sh  # install the main-protected ruleset
-<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>├── docs/
-<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>│   ├── index.md
-<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>│   └── repository-setup.md      # App, permissions, secrets, protection
-<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>├── pyproject.toml
-<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>├── CITATION.cff                 # citation metadata for Zenodo + GitHub
-<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>├── .pre-commit-config.yaml
-<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>└── LICENSE
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>│       ├── renovate.yml         # nightly Renovate as the CI App (if enable_renovate)
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>│       ├── pr-review.yml        # optional — only if enable_llm_pr_review
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>│       └── docs.yml             # optional — only if enable_docs_publishing
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>├── scripts/
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>│   ├── setup_repo.sh            # guided: create repo → install App → protect main
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>│   └── setup_branch_protection.sh  # install the main-protected ruleset
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>├── docs/
+<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>│   ├── index.md
+<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>│   └── repository-setup.md      # App, permissions, secrets, protection
+<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>├── renovate.json                # extends renovate_preset (if enable_renovate)
+<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>├── pyproject.toml
+<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>├── CITATION.cff                 # citation metadata for Zenodo + GitHub
+<a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a>├── .pre-commit-config.yaml
+<a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a>└── LICENSE
 </code></pre></div>
 
 
@@ -1046,10 +1058,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.sections", "navigation.top", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.sections", "navigation.top", "content.code.copy"], "search": "assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>
