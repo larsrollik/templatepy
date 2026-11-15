@@ -68,7 +68,27 @@ and bypass **repository admins** and **the App**. It resolves the App id from th
 
 For a solo repo you approve/merge via your admin bypass; with collaborators the
 review requirement is real. Tune with `--reviews N` / `--check <job-name>`.
+[% if enable_renovate and ci_platform in ['github','both'] %]
+## 4. Renovate
 
+`.github/workflows/renovate.yml` runs Renovate nightly (and on manual dispatch)
+against this repo only, with `renovate.json`, which extends
+`[[ renovate_preset ]]`. It authenticates as a GitHub App rather than
+`GITHUB_TOKEN`: a PR opened with `GITHUB_TOKEN` triggers no workflows, so CI
+would never run on Renovate's PRs and their merges would not trigger
+`versioning.yml`.
+
+Store the App's Client ID and private key in these secrets (repo or org level):
+
+```sh
+gh secret set [[ ci_app_client_id_secret ]] --repo [[ github_username ]]/[[ github_repo ]] --body "<CLIENT_ID>"
+gh secret set [[ ci_app_private_key_secret ]] --repo [[ github_username ]]/[[ github_repo ]] < path/to/app.private-key.pem
+```
+
+The App needs, on this repo: Contents, Pull requests, Issues (dependency
+dashboard) and Commit statuses (`minimumReleaseAge`) as read and write, plus
+Workflows read and write if the preset updates GitHub Actions versions.
+[% endif %]
 ## How the pieces fit
 
 | Actor | Role |

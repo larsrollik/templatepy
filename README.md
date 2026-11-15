@@ -100,3 +100,9 @@ Three publish/automation extras are off by default; enable per project:
 
 When off, the corresponding workflow file is not generated at all (no
 "not configured" placeholder checks).
+
+`enable_renovate` is on by default (GitHub only): a nightly `renovate.yml` plus a
+`renovate.json` that extends `renovate_preset` (default
+`github>{github_username}/renovate-config`). Renovate authenticates as the GitHub
+App named by `ci_app_client_id_secret` / `ci_app_private_key_secret`, so its PRs
+run CI.

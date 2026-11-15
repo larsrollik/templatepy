@@ -52,6 +52,8 @@ uv run pre-commit install --hook-type pre-commit --hook-type commit-msg
 | `license_type` | `noncommercial` / `bsd3` | `noncommercial` for MSW-core packages; `bsd3` for standalone hardware drivers |
 | `private_repo_deps` | `false` / `true`, default `false` | Set `true` only if the repo has private GitHub dependencies; injects a git auth step in CI. All standard repos use `false` (PyPI deps only). |
 | `private_repo_auth` | `app` / `pat`, default `app` (asked only when `private_repo_deps=true`) | How CI authenticates to clone the private deps. **app** = org-owned GitHub App, per-run token via `actions/create-github-app-token@v3` using `client-id` (org secrets `CI_APP_CLIENT_ID` + `CI_APP_PRIVATE_KEY`, names configurable; the App needs Contents:read on the private repos). **pat** = the `PRIVATE_REPO_ACCESS_TOKEN` secret. See [Private repo auth](private-repo-auth.md). |
+| `enable_renovate` | `true` / `false`, default `true` (GitHub only) | Adds the nightly `renovate.yml` workflow and `renovate.json`. Renovate runs as the GitHub App whose Client ID and private key are in the secrets named by `ci_app_client_id_secret` / `ci_app_private_key_secret` (asked when this is on), so CI runs on its PRs. |
+| `renovate_preset` | free text, default `github>{github_username}/renovate-config` | Preset `renovate.json` extends. Use `config:recommended` when the account or org has no shared preset repo. |
 | `test_on_windows` | `false` / `true`, default `false` | Adds `windows-latest` to the CI test matrix (for path-sensitive or Windows-targeted packages). |
 | `enable_pypi_publishing` | `false` / `true`, default `false` | Adds the PyPI publish step (+ OIDC `id-token`) to `release.yml`. Off still makes GitHub/Forgejo releases. See [PyPI publishing](pypi-publishing.md). |
 | `enable_docs_publishing` | `false` / `true`, default `false` | Adds the `docs.yml` GitHub Pages / Forgejo deploy workflow. `mkdocs.yml` + docs deps are always generated regardless. |
@@ -125,6 +127,7 @@ my-project/
 │       ├── ci.yml               # lint on push; tests on PR to main
 │       ├── versioning.yml       # on merge to main: cz bump + tag (App bot or GITHUB_TOKEN)
 │       ├── release.yml          # on tag/dispatch: build → GitHub release (+ PyPI if enabled)
+│       ├── renovate.yml         # nightly Renovate as the CI App (if enable_renovate)
 │       ├── pr-review.yml        # optional — only if enable_llm_pr_review
 │       └── docs.yml             # optional — only if enable_docs_publishing
 ├── scripts/
@@ -133,6 +136,7 @@ my-project/
 ├── docs/
 │   ├── index.md
 │   └── repository-setup.md      # App, permissions, secrets, protection
+├── renovate.json                # extends renovate_preset (if enable_renovate)
 ├── pyproject.toml
 ├── CITATION.cff                 # citation metadata for Zenodo + GitHub
 ├── .pre-commit-config.yaml
